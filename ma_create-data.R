@@ -39,7 +39,7 @@ create_data_setting1 <- function(nobs, ncov, cens_rate=0.5){
   )
   covs_tmp <- data.frame(covariates)
   obs_data <- cbind(obs_tmp, covs_tmp)
-  return(obs.data)
+  return(obs_data)
 }
 
 #Setting 2
@@ -215,7 +215,7 @@ create.crossval.data = function(data.used, v, time.point){
     
     # Create imputation
     imp.val.dr = create.imp.dr.brier.km(obs = obs.train, delta = delta.train, covs = cov.train, quant=0.1, time.point = time.point)
-    imp.val.bj = create.imp.bj.brier(obs = obs.train, delta = delta.train, covs = cov.train, quant=0, time.point = time.point)
+    imp.val.bj = create.imp.bj.brier(obs = obs.train, delta = delta.train, covs = cov.train, time.point = time.point)
     data.ipcw = create.ipcw.weights(obs = data.used$time, delta = data.used$event, covs = data.used[, -c(1,2)], quant=0.1, time.point = time.point)
     data.ipcw = data.ipcw[val.sample == 1, 3]
     

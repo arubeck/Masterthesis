@@ -22,7 +22,7 @@ truncate_data <- function(obs, delta, tau = NULL, quant = 0.05){
 
 #functions that estimates conditional censoring distribution
 #first approach: Kaplan-Meier estimator
-KMestimate_G <- function(obs, delta, tau, quant){
+KMestimate_G <- function(obs, delta, tau=NULL, quant=0.05){
   #number of observations
   n = length(obs)
   #truncate data, if no truncation is desired, set quant=0
@@ -41,7 +41,7 @@ KMestimate_G <- function(obs, delta, tau, quant){
   return(est_G)
 }
   
-SurvTreeEstimate_G <- function(obs, delta, covs, tau, quant){
+SurvTreeEstimate_G <- function(obs, delta, covs, tau=NULL, quant=0.05){
   #number of observations
   n = length(obs)
   #change perspective: for G we need indicator to indicate censoring, not the event
@@ -185,7 +185,7 @@ BrierRandomForest_m <- function(obs, delta, covs, time.point){
 }
 
 #calculation of parameters needed for trafo
-parameter_RegularTreeKM <- function(obs, delta, covs, tau, quant){
+parameter_RegularTreeKM <- function(obs, delta, covs, tau=NULL, quant=0.05){
   n = length(obs)
   
   # Calculating the conditional expectation    
@@ -238,7 +238,7 @@ parameter_RegularTreeKM <- function(obs, delta, covs, tau, quant){
   return(parms)
 }
   
-parameter_BrierTreeKM <- function(obs, delta, covs, tau, quant, time.point){
+parameter_BrierTreeKM <- function(obs, delta, covs, tau=NULL, quant=0.05, time.point){
   n = length(obs)
   
   # Creating the new T(t) dataset
@@ -287,7 +287,7 @@ parameter_BrierTreeKM <- function(obs, delta, covs, tau, quant, time.point){
   return(parms)
 }
 
-parameter_BJBrier <- function(obs, delta, covs, tau, quant, time.point){
+parameter_BJBrier <- function(obs, delta, covs, time.point){
   obs.t = pmin(obs, time.point)
   delta.t = delta * (obs <= time.point) + (obs > time.point)
   
@@ -299,7 +299,7 @@ parameter_BJBrier <- function(obs, delta, covs, tau, quant, time.point){
   return(a1)
 }
 
-parameter_BJ <- function(obs, delta, covs, tau, quant, time.point){
+parameter_BJ <- function(obs, delta, covs, time.point){
   # Calculating the conditional expectation    
   m1 = RandomForestEstimate_m(obs,delta,covs)
   a1 = delta *  log(obs) + (1 - delta) * diag(m1)

@@ -5,7 +5,7 @@ library(rpart)
 #import data as obs, delta and covs
 #requires ma_auxiliaryFunctions
 
-create.imp.dr.l2 = function(obs,delta,covs,tau,quant,time.point){
+create.imp.dr.l2 = function(obs,delta,covs,tau=NULL,quant=0.05,time.point){
   n = length(obs)
   
   parms = parameter_BrierTreeKM(obs=obs,delta=delta,covs=covs, tau=tau, quant=quant, time.point)
@@ -19,15 +19,15 @@ create.imp.dr.l2 = function(obs,delta,covs,tau,quant,time.point){
 }
 
 # Create imputation for buckley James and l2 loss
-create.imp.bj.l2 = function(obs,delta,covs,tau,quant,time.point){
+create.imp.bj.l2 = function(obs,delta,covs,time.point){
   
-  y.imp.all = parameter_BJ(obs, delta, covs, tau, quant, time.point)
+  y.imp.all = parameter_BJ(obs, delta, covs, time.point)
   
   return(y.imp.all)
 }
 
 # Create imputation for dr and brier loss
-create.imp.dr.brier = function(obs,delta,covs,tau,quant,time.point){
+create.imp.dr.brier = function(obs,delta,covs,tau=NULL,quant=0.05,time.point){
   n = length(obs)
   parms = parameter_BrierTreeKM(obs,delta,covs,tau,quant,time.point)
   a1 <- parms[(n+1):(2*n)]
@@ -38,7 +38,7 @@ create.imp.dr.brier = function(obs,delta,covs,tau,quant,time.point){
 }
 
 # Create imputation for dr and brier loss
-create.imp.dr.brier.km = function(obs,delta,covs,tau, quant, time.point){
+create.imp.dr.brier.km = function(obs,delta,covs,tau=NULL, quant=0.05, time.point){
   n = length(obs)
   parms = parameter_BrierTreeKM(obs,delta,covs,tau,quant, time.point)
   a1 <- parms[(n+1):(2*n)]
@@ -49,14 +49,14 @@ create.imp.dr.brier.km = function(obs,delta,covs,tau, quant, time.point){
 }
 
 # Create imputation for dr and brier loss
-create.imp.bj.brier = function(obs,delta,covs,tau,quant, time.point){
-  y.brier = parameter_BJBrier(obs,delta,covs, tau, quant, time.point)
+create.imp.bj.brier = function(obs,delta,covs, time.point){
+  y.brier = parameter_BJBrier(obs,delta,covs, time.point)
   
   return(y.brier)
 }
 
 # Create imputation for dr and brier loss
-create.ipcw.weights = function(obs,delta,covs,tau, quant, time.point){
+create.ipcw.weights = function(obs,delta,covs,tau=NULL, quant=0.05, time.point){
   
   # Creating the new T(t) dataset
   data.tmp <- truncate_data(obs, delta, tau=time.point)
