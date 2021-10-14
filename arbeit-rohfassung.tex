@@ -133,6 +133,7 @@
 	- growing importance of machine learning in many areas, as medicine
 	- many different approaches
 	- problem: treatment of missing data
+	- need specialized techniques as in contrast to standard regression or classification tasks the outcome can for example often not be fully observed
 	
 	\newpage
 	
@@ -141,13 +142,14 @@
 	
 	In this section we briefly describe the main ideas of survival analysis, the concept of censoring and parametric and semiparametric approaches to the problem of estimating survival times.
 	
-	Survival analysis is used in various fields, as medicine, insurance and finance to predict a certain risk.
+	Survival analysis is used in various fields such as medicine, insurance and finance to predict a certain risk.
 	The main goal is to estimate and analyze the time until a specified event occurs.
-	An application for the medical field could for example be the time to death after the outbreak of a disease.
+	An application inside the medical field could be a study about the time to death after the outbreak of a disease.
 	
 	\todo[inline]{add more about the general setting (time series of data, consider medical cases as examples, ...)}
+	\todo[inline]{add explanation of true/observed survival time}
 	
-	In this thesis, we consider one event of interest, that can either occur or not.
+	In this thesis we consider one event of interest that can either occur or not.
 	It is also possible to consider competing risks, i.e. multiple different events that are taken into account.
 	A detailed explanation of this case is for example given in \citet*[chapter~8]{bookfailuretime}.
 	We also assume that the event of interest can only take place once during the observed period.
@@ -156,16 +158,16 @@
 	
 	\subsection{Censoring} \label{censoring}
 	
-	\todo[inline]{add reference}
+	This section relies on \citet*{sabook} and \citet*{mathsabook}.
 	
-	Survival data is often incomplete, which means that for some subjects the particular event is not observed within the study period. 
+	Survival data is often incomplete meaning that for some subjects the particular event is not observed within the study period. 
 	We refer to this data as censored.
 	
-	Even though censored data is not observed until the event, it still contains valuable information.
+	Even though censored data is not observed until the event, it still contains valuable information about the time between the entry of the study and the event.
 	Assuming data arising from a medical study, there are three possible reasons why censoring occurs:
 	\begin{itemize}
 		\item The study ends before a participant experiences the event.
-		\item A participant is lost to follow-up during the study period.
+		\item A participant is lost to follow-up during the study period. %XXX evtl follow-up erklären?
 		\item A participant withdraws from the study or experiences a different event that makes further follow-up impossible.
 	\end{itemize}
 
@@ -173,41 +175,38 @@
 	We call the data right censored, if the true survival time is equal to or greater than the observed survival time.
 	
 	There are two other types of censoring that may occur.
-	If the survival time is less than or equal to the observed survival time, the data is left censored.
+	If the true survival time is less than or equal to the observed survival time, the data is left censored.
 	This could arise due to subjects that already experienced the event of interest before entering the study.
 	A more general case is interval censoring. It occurs if we only know that the true survival time lies within specified time interval, but cannot observe it directly.
 	The last case incorporates right censoring and left censoring as special cases.
 	
 	Even though censored data is not fully observed, we cannot treat them the same as uncensored data or even leave them out completely, as this would both lead to biased estimators.
-	
-	\todo[inline]{add reference for biased estimators}
+	For example, if we treat censored subjects as if they experienced the event at their censoring time, we potentially ignore the time period between the drop out of the study and the event.
+	This would lead to an artificially lowered survival curve.
 		
-	In this thesis we will consider the data to be possibly right censored, but not left or interval censored.
+	In this thesis we consider the data to be possibly right censored, but not left or interval censored.
 	Further information about left and interval censoring can for example be found in \citet*{bookfailuretime}.
 	
 	For further analysis, we make three assumptions about censoring, which are independent, random and non-informative censoring.
-	
-	Random censoring
-	
-	Independent censoring
-	
-	non-informative censoring
-	
-	These assumptions are covered more detailed in \citet*{bookfailuretime}.
+	To achieve random censoring, we assume that the failure rate for censored subjects is the same as the failure rate for the uncensored individuals, that remain in the risk set.
+	Independent censoring is the assumption that censoring occurs random within any subgroup of interest.
+	The third assumption, namely that censoring is non-informative, means that given the covariates the distribution of survival times is conditionally independent of the distribution of censoring times.
+	These assumptions are covered in greater detail in \citet*{bookfailuretime}.
 	
 	
 	\subsection{Survival Analysis Data} \label{sabasics}
 	
 	This section mainly relies on \citet*{sabook}.
 	
-	\todo[inline]{uberleitungs blabla}
+	We now describe how the survival data for one patient $i = 1, \dots, n$ can be represented.
 	
-	We denote by $T_i \geq 0$ the random variable for the survival time of subject $i$ and by $C_i \geq 0$ the random variable for the censoring time of individual $i$.
-	The observed time is given by $\tilde{T_i} = min\{T_i,C_i\}$.
-	The explanatory (or predictor) variables are given by the vector $X_i = (X_{i1}, \dots , X_{ip}) \in \delta \subset \mathbb{R}^p$, where $\delta$ denotes the bounded covariate space.
-	The event indicator $d_i \in \{0,1\}$ specifies whether subject $i$ has experienced the event of interest ($d_i=1$) or the data is censored ($d_i=0$).
+	We denote by $T_i \geq 0$ the random variable for the true survival time of subject $i$ and by $C_i \geq 0$ the random variable for the censoring time of individual $i$.
+	The observed time is then given by $\tilde{T_i} = \min\{T_i,C_i\}$.
+	We also observe $p$ specific characteristics for each subject, that might play a role in the prediction of the survival time.
+	These explanatory (or predictor) variables are known for each individual and given by the vector $X_i = (X_{i1}, \dots , X_{ip}) \in \delta \subset \mathbb{R}^p$, where $\delta$ denotes the bounded covariate space.
+	The event indicator $\Delta_i = I(T_i \leq C_i)$ specifies whether subject $i$ has experienced the event of interest ($\Delta_i=1$) or the data is censored ($\Delta_i=0$).
 	
-	The basic data layout then has the form $(\tilde{T}_i, d_i, X_i)$, $i = 1, \dots , n$, where $n$ is the number of patients in the study.
+	Then the basic data layout has the form $(\tilde{T}_i, \Delta_i, X_i)$, $i = 1, \dots , n$, where $n$ is the number of patients included in the study.
 	
 	\todo[inline]{outcome is possibly transformed: h(T) instead of T}
 	
@@ -222,10 +221,10 @@
 		h(t) = \lim_{\Delta t \to 0}\frac{P(t \leq T < t + \Delta t \vert T \geq t)}{\Delta t}.
 	\end{equation*} 
 	
-	It is a measure of instantaneous potential, that can for example be used to identify a specific model form.
+	It is a measure of instantaneous potential to experience the event, that can be used to identify a specific model form.
 	
 	The hazard function has two important properties: it is a non-negative function, i.e. $h(t) \geq 0$ $ \forall t$ and it has no upper bound.
-	In particular, this means that the hazard function can start anywhere in $\mathbb{R}^+$ and go up and down in any direction over time.
+	In contrast to the survivor function $S$ the hazard function does not necessarily have any monotonic properties.
 
 	There exists a clearly defined relationship between the survivor function $S(t)$ and the hazard function $h(t)$:
 	\begin{equation*}
@@ -247,50 +246,51 @@
 	
 	An approach to the estimation of survival time are parametric survival models.
 	Here, we assume a specific family of distributions for the survival time and then use the given data to estimate the parameters of the distribution.
-	These parameters can for examples be estimated using linear, logistic or poisson regression.
-	Common choices for the family of distributions when analyzing survival times are the weibull, exponential or lognormal distribution.
+	These parameters can for examples be estimated using linear, logistic or Poisson regression.
+	Common choices for the family of distributions when analyzing survival times are the Weibull, exponential or lognormal distribution.
 	The parametric approach is discussed in further detail in \citet*{sabook}
 	
-	Two of the main advantages of the parametric survival model are its simplicity and that it is more consistent with the theoretical survival function $S(t)$ than for example nondistributional approaches.
+	Three of the main advantages of the parametric survival model are its simplicity,  that it is more consistent with the theoretical survival function $S(t)$ than for example nondistributional approaches and that it specifies the whole survival function.
 	
 	A big disadvantage is, that the quality of the estimation using parametric models strongly depends on a suitable choice of the family of distributions.
 	As a consequence, a detailed analysis of the data and a precise understanding of the families of distributions are required.
-	The cox proportional hazard model tries to overcome these limitations and is described in the following.
+	The Cox proportional hazard model tries to overcome these limitations and is described in the following.
 	
-	The cox proportional hazards model (cox PH model) is a popular approach to analyzing survival data.
-	In contrast to parametric models, it does not require an assumption of the distribution of the outcome.
-	An other important advantages is, that it is robust, i.e. it closely approximates the correct parametric model of the survival function.
+	The Cox proportional hazards model (Cox PH model) is a popular approach to analyzing survival data.
+	In contrast to parametric models, it does not require an assumption about the distribution of the outcome.
+	Another important advantages is its robustness, i.e. it closely approximates the correct parametric model of the survival function.
 	
-	The model is built upon the following formulation of the hazard function:
+	The model is built upon the following assumption about the form of the hazard function:
 	\begin{equation*}
 	h(t,x) = h_0(t) \exp \left(\sum_{i=1}^p \beta_i x_i\right),
 	\end{equation*}
 	where $x=(x_1,\dots,x_p)$ are the explanatory variables.
-	This includes the central assumption of the cox PH model, which is the proportional hazards (PH) assumption.
+	This includes the central assumption of the Cox PH model, which is the proportional hazards (PH) assumption.
 	It states that there exists a function $h_0(t)$, the baseline hazard, that does not involve the predictor variables and is thus independent of the observations.
 	
 	As the baseline hazard $h_0(t)$ is not specified, the Cox PH model is a semiparametric model.
 	Typically, maximum likelihood is used to estimate the parameters $\beta_i$, $i=1,\dots ,n$.
 	
-	\todo[inline]{add: when to choose parametric model and when cox model}
+	If we are sure which family of distributions models the survival times correctly, parametric models give the best estimate.
+	But if we are in doubt that the model is correct, the Cox PH model gives reliable results.
 	
-	As it is necessary for the performance of the cox PH model that the PH assumption holds, there are several tests that can be performed, e.g. graphical techniques or goodness-of-fit-tests.
+	As it is necessary for the performance of the Cox PH model that the PH assumption holds, there are several tests that can be performed, e.g. graphical techniques or goodness-of-fit-tests.
 	Further details can for example be found in \citet*{sabook}.
 	
-	If the PH assumption is not fulfilled, we can for example use a stratified cox procedure instead, which is a modified version of the cox PH model.
+	If the PH assumption is not fulfilled, we can for example use a stratified Cox procedure instead, which is a modified version of the Cox PH model.
 	The general idea is to categorize the data and divide it into subgroups in a way that within each subgroup the PH assumption is met.
-	Then for each subgroup the cox PH model can be applied to obtain partial likelihood functions, that can then be combined to an overall likelihood.
+	Then for each subgroup the Cox PH model can be applied to obtain partial likelihood functions, that can then be combined to an overall likelihood.
 	This approach is explained in greater detail in \citet*{sabook}.
 	
-	There exist various other modifications of the cox PH model.
-	\todo[inline]{add penalized cox model}
+	There exist various other modifications of the Cox PH model.
+	\todo[inline]{add penalized Cox model}
 	
 	In many cases it may be too simplistic to assume that the effect of the covariates is linear, as it is the case for the Cox PH model.
 	Thus, we need a richer family of survival models to properly fit survival data with nonlinear risk functions.
 	
 	One possible approach to compensate for this disadvantage is to use deep learning procedures.
 	In this thesis, we take a closer look at this approach.
-	But first, we introduce the main ideas of deep learning and take a closer look at feed forward networks.
+	But first, we introduce the main ideas of deep learning and explain the idea of feed forward networks.
 	\newpage
 	
 	\section{Principles of Deep Learning}\label{basicsdl}
@@ -313,7 +313,7 @@
 	make the training error small and make the gap between the training and the test error small.
 	
 	If the first task is not fullfilled, underfitting occurs. This means that the error value on the training set is not sufficiently low for our model.
-	If the second task is not fullfilled, overfitting occurs. In this case, the gab between training and test error is too large.
+	If the second task is not fullfilled, overfitting occurs. In this case, the gap between training and test error is too large.
 	
 	\todo[inline]{add that mostly overfitting is a real problem + Quelle}
 	
@@ -334,7 +334,7 @@
 	The final layer is called the output layer.
 	We want to achieve that this layer produces a value that is close to the desired output $y$, i.e. for each data $x$ and corresponding label $y$: $y \approx f^*(x)$.
 	
-	The remaining layers are called hidden layers because we do not specify what exact output they generate.
+	The remaining layers are called hidden layers because we do not specify what output they generate.
 	We are only interested in the prediction, the output of the final layer.
 	The hidden layers are vector valued functions whose dimensions define the width of the model.
 	
@@ -405,7 +405,7 @@
 	\end{enumerate}
 	\end{Algorithm}
 
-	We will now take a closer look at these steps.
+	We will now further analyze these steps.
 
 	First we define the layout of the neural network we want to use for our prediction.
 	For this, we need to set the number of layers $K$ and define the functions $f_{\beta_k}^{(k)}(X)$ for each layer $k = 1, \dots, K$.
@@ -492,11 +492,11 @@
 	The Buckley-James Transformation is given by
 	
 	\begin{equation}\label{eq:bjtrafo}
-		Y_{BJ}^* (\mathcal{O}) = \Delta Y + (1-\Delta)m(Y,X;S),
+		Y_{BJ}^* (\mathcal{O}; S) = \Delta Y + (1-\Delta)m(Y,X;S),
 	\end{equation}
 	where
 	\begin{equation}\label{eq:condmean}
-		m(t,x;S) = E_S[T \vert T > t, X=x] = \frac{1}{S(t\vert X=x)} \int_t^{\infty} u dS(u\vert X=x)
+		m(t,x;S) = E_S[T \vert T > t, X=x] = -\frac{1}{S(t\vert X=x)} \int_t^{\infty} u dS(u\vert X=x)
 	\end{equation}%XXX
 	and $S(.\vert X)$ denotes the conditional survival function.
 	
@@ -522,7 +522,7 @@
 	Here, the basic idea is to weight the contribution of each uncensored observation by the inverse probability of being censored.
 	The IPCW mapping is defined as follows:
 	\begin{equation*}
-	Y_{IPCW}^*(\mathcal{O}) = \frac{\Delta Y}{G(Y \vert X)}.
+	Y_{IPCW}^*(\mathcal{O}; G) = \frac{\Delta Y}{G(Y \vert X)}.
 	\end{equation*}
 	When there is no censored data in the whole data set, the response remains unchanged.
 	
@@ -540,7 +540,7 @@
 	It is defined as follows:
 	
 	\begin{equation}\label{eq:drcut}
-	Y_{DR}^* (\mathcal{O}) = \frac{\Delta Y}{G(Y\vert X)} + \frac{(1-\Delta)m(Y,X;S)}{G(Y \vert X)} - \int_{0}^{Y} \frac{m(c,X;S)}{G(c \vert X)} d\Lambda_G(c \vert X),
+	Y_{DR}^* (\mathcal{O}; G, S) = \frac{\Delta Y}{G(Y\vert X)} + \frac{(1-\Delta)m(Y,X;S)}{G(Y \vert X)} - \int_{0}^{Y} \frac{m(c,X;S)}{G(c \vert X)} d\Lambda_G(c \vert X),
 	\end{equation}
 	with $m(c,X;S)$ as defined in equation (\ref{eq:condmean}) and the cumulative hazard function $\Lambda_G(t\vert X)=-\int_{0}^{t}1/G(u\vert X)dG(u\vert X)$.
 	
@@ -550,48 +550,12 @@
 	In total, the doubly robust transformation can be seen as an augmented inverse probability weighted mapping.
 	For further details about the augmentation refer to \citet*{bookfailuretime}.
 		
-	The double robustness property is formalized in theorem 1 in \citet*{drcut} and is reproduced below.
+	The double robustness property is shown in theorem 3.1 in \citet*{culs} and is reproduced below.
 	
 	\begin{Theorem}\label{thm:dr}
-		Suppose that the response $Y$ and the censoring time $C$ are continuous random variables, that they are conditionally independent given the covariates X, and that the conditional distribution $G_0(C\vert X)$ has a conditional density $g_0(. \vert X)$.
-		Assume that $Y \leq \tau < \infty$ for some $\tau$ and that $S(\tau \vert X)=0$ with probability one for some conditional function $\tilde{S}(\tau \vert X)$.
-		Suppose further that $\tilde{G}(\tau \vert X)\geq \varepsilon > 0$ for some $\varepsilon$ and conditional survival function $\tilde{G}(\tau \vert X)$, with corresponding conditional density $\tilde{g}(.\vert X)$.
-		Assume that $\tilde{g}(.\vert X=x)$ is absolutely continuous with respect to $g_0(.\vert X=x)$ for all $x$.
-		We will use the convention that $m(y,x;\tilde{S})$ is set to zero if $\tilde{S}(y \vert X=x)=0$.
-		Then, if either $S_0(.\vert X)$ or $G_0(.\vert X)$ are specified correctly, i.e. $S_0(.\vert X)=\tilde{S}(. \vert X)$ or $G_0(.\vert X)=\tilde{G}(. \vert X)$, it holds that
-		\begin{equation*}
-		E[Y_{DR}^*(\mathcal{O})\vert X] = E[Y \vert X].
-		\end{equation*}
+		Let $S(. \vert .)$ and $G(.\vert .)$ be functions on $(t,x)\in \mathbb{R} \times \delta$ satisfying the regularity conditions given in appendix S.5 in \citet*{culs}. Then, the transformations $Y_{DR}^* (\mathcal{O}; G, S_0)$, $Y_{DR}^* (\mathcal{O}; G_0, S)$ and $Y_{DR}^* (\mathcal{O}; G_0, S_0)$ are each CUTs for $Y$.
 	\end{Theorem}
 
-	The doubly robust CUT in \citet*{drcut}, adapted to our notation, is defined as
-	\begin{equation*}
-	\hat{Y}_{DR}(\mathcal{O}) = \frac{\Delta Y}{G(Y\vert X)}+ \frac{(1-\Delta)(m(Y,X;S))}{G(Y\vert X)}-\int_{-\infty}^{Y} \frac{m(c,X;S)}{G^2(c\vert X)}dG(c \vert X).
-	\end{equation*}
-	
-	If we can show that $Y^*_{DR}(\mathcal{O})=Y_{DR}(\mathcal{O})$, we can apply theorem \ref{thm:dr} to the transformation described in equation (\ref{eq:drcut}).
-	
-	\begin{Lemma}
-		Under the conditions of theorem \ref{thm:dr} it holds that $Y^*_{DR}(\mathcal{O})=Y_{DR}(\mathcal{O})$.
-	\end{Lemma}
-
-	\begin{proof}
-		As the first two arguments are the same, we only further investigate the integral.
-		
-		\begin{equation*}
-		\begin{split}
-			\int_{-\infty}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}dG(c \vert X) &= \int_{0}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}dG(c \vert X)\\
-			&= \int_{0}^{Y}\frac{m(c,X;S)}{G(c\vert X)}\frac{G'(c \vert X)}{G(c\vert X)}dc\\
-			&= \int_{0}^{Y}\frac{-m(c,X;S)}{G(c\vert X)}d\Lambda_G(c\vert X)
-		\end{split}
-		\end{equation*}
-		\begin{equation*}
-		\begin{split}
-		&\Lambda_G(c\vert X) = - \int_{0}^{c} \frac{G^\prime(t \vert X)}{G(t \vert X)}dt\\
-		\Leftrightarrow&\frac{d\Lambda_G(c\vert X)}{dc} = -\frac{G^\prime(c \vert X)}{G(c \vert X)}
-		\end{split}
-		\end{equation*}
-	\end{proof}
 
 	\subsection{Censoring unbiased loss functions}\label{sec:cudls}
 	\citet*{culs} and \citet*{basearticle}.
@@ -706,7 +670,7 @@
 	For this target parameter we use the $L_2$ loss as our full data loss.
 	
 	\todo[inline]{add reason why we need tau from Strawderman 2000}
-	
+	A direct estimation of the mean survival $E[T\vert X]$ requires strong assumptions about the survival distribution.
 	This is why we alternatively estimate the restricted mean survival $E[\min(T, \tau)\vert X]$ for a fixed constant $\tau$.
 	
 	Analogously to the estimation of survival probabilities, we need to incorporate the constant $\tau$ in the data set.
@@ -894,11 +858,11 @@
 	The estimate is implemented in R in the following way.
 	First, we fit a survival tree using the function rpart, that is provided in the package rpart.
 	The tree method classifies the observations according to the covariates in different subgroups.
-	Within each subgroup a KM estimator is calculated and then connect them to an overall estimator for the observations.%XXXX
+	Within each subgroup a KM estimator is calculated and then connected to an overall estimator for the observations. %XXXX
 	Further details can be found in \citet*{relativerisktrees}.
 	
 	The survival curve $S_0(t\vert X)$ should not be estimated using the Kaplan-Meier estimator, as we presume that the observed time $T$ depends on the covariates $X$.
-	Instead, the survival curve is estimated via a random survival forest procedure, as we already suggested for the censoring distribution.
+	Instead, the survival curve is estimated via a random survival forest procedure.
 	In R this estimator can be implemented the function rfscr from the package randomForestSRC. 
 	%For a detailed explanation refer to \citet*{drtrees}.
 	
@@ -913,7 +877,7 @@
 	This section is based on \citet*{drtrees}.
 	
 	For the estimation of the conditional expectation $m_k$ given in equation (\ref{eq:condexp}), we assume that the observed time is transformed with the function $h(T) = I(T>t)$.
-	Using this and plugging in the estimator of the survival curve $\hat{S(.\vert X)}$ results in
+	Using this and plugging in the estimator of the survival curve $\hat{S}(.\vert X)$ results in
 	\begin{equation*}
 	\begin{split}
 	\hat{m}_{k,t} (u, X_i; \hat{S}) &= E_{\hat{S}}[h^k(T)\vert T \geq u, X=X_i]\\
@@ -966,17 +930,15 @@
 	To predict the survival probabilities we use a feedforward network with two layers.
 	The first layer consists of 15 units and uses the relu activation function $\phi(x) = \max(0, x)$.
 	As this layer is our input layer, we use the dropout rate $1-p=0.2$.
-	\todo[inline]{add reference for choice of dropout}
+	
 	The second layer, which is our output layer, consists of one unit and uses the sigmoid activation function, which is given by $\phi(x)=(1+e^{-t})^{-1}$.
 	We choose this activation function to make sure that the resulting value can be interpreted as a probability.
 	
 	For the gradient descent we use the mean squared error as loss function, the batch size is set to 32 and we use 100 epochs.
 	In one epoch we go through the whole dataset in batches of 32, which means that we perform the gradient descent algorithm $(number of observations)/32*100$ -- times to find the optimal parameter.
+	After fitting the keras model with the training data, we evaluate its performance with the test data and the resulting IPC weighted mean squared error.
 	
-	After fitting the keras model with the training data, we evaluate its performance with the IPC weighted mean squared error.
-	
-	Then we perform 5-fold cross validation to choose a suitable penalization error $\eta$ from the sequence $(0, 0.001, 0.01, 0.1)$.
-	
+	As a second deep learning model we perform 5-fold cross validation to choose a suitable penalization term $\eta$ from the sequence $(0, 0.001, 0.01, 0.1)$.
 	The performance of the resulting penalized feedforward network is also evaluated with the IPC weighted mean squared error.
 	
 	The procedure described above is performed twice.
@@ -984,16 +946,16 @@
 	\subsubsection{Algorithms Used for Comparison}
 	\todo[inline]{think of better title}
 	
-	We compare the deep learning algorithms that use the transformed data to three different approaches: a cox model, a penalized cox model and a random forest model.
+	We compare the deep learning algorithms that use the transformed data to three different approaches: a Cox PH model, a penalized Cox model and a random forest model.
 	
 	As a first step, we transform the responses $Y=h(T)=I(T>t)$, with the prespecified time point $t$.
 	
-	The cox model, which is explained in further detail in section \ref{cox}, can be estimated in R using the function coxph from the package survival.
+	The Cox PH model, which is explained in further detail in section \ref{cox}, can be estimated in R using the function coxph from the package survival.
 	We then create the corresponding survival curve using the function survfit.
 	
-	The second model, which is the penalized cox model, is very similar to the cox model.
+	The second model, which is the penalized Cox model, is very similar to the Cox PH model.
 	As a first step, a cross validated generalized linear model is evaluated to determine the covariates that need to be included in the model to minimize the mean cross-validated error.
-	These covariates are then used to fit a cox model in the same way as described earlier in this section.
+	These covariates are then used to fit a Cox PH model in the same way as described earlier in this section.
 	
 	As a third model we consider a random forest model.
 	This can be implemented using the R-function rfscr from the package randomForestSRC.
@@ -1002,7 +964,12 @@
 	The performance of all of the above mentioned models is evaluated using a IPC weighted mean squared error.
 	
 	\subsection{Simulation Results}
-	We now compare the results using different methods for time to event estimation.
+	In this section we compare the different methods for survival analysis, which are described in section XXX for each of the settings presented in section XXX.
+	
+	First the data is generated according to the current setting.
+	Then, the IPC weighted mean squared error of each of the models is calculated and used as our performance measure.
+	We repeat this procedure 50 times and compare the resulting errors.
+	
 	
 	\newpage
 	\section{Real Data}
@@ -1025,7 +992,7 @@
 	
 	\begin{appendices}
 		\section{Proofs}
-		\subsection{Strawderman}\label{proof:strawderman}
+		\subsection{Auxiliary Lemma for Theorem \ref{thm:equi}}\label{proof:strawderman}
 		\todo[inline]{change title}
 		
 		\begin{Lemma}\label{lem:equi}
@@ -1085,6 +1052,7 @@
 		%\section{Further Simulations}
 		
 		%\section{R-Code}
+		
 	\end{appendices}
 	
 \end{document}
