@@ -2,8 +2,9 @@
 
 \usepackage[english]{babel}
 \usepackage{ucs}
-\usepackage[utf8x]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{hyperref}
 
 \usepackage[toc,page]{appendix}
 
@@ -301,13 +302,14 @@
 	
 	Machine learning describes a broad class of algorithms having the goal to learn or extract information from a given sample without the need of explicit programming.
 	
-	To achieve this machine learning algorithms mainly consist of a task and a performance measure.
+	To achieve this machine learning algorithms require the specification of a task and a performance measure.
 	A task could be to recognize whether a cat or a dog is on a picture, given examples of already classified pictures.
 	The algorithm then build a prediction model based on a given training sample.
 	In the example above the training sample consists of pictures of cats and dogs and a corresponding label, that specifies what is seen on the picture.
-	The performance measure then describes how well this task was achieved by calculating some sort of distinct between the predicted label and the real label that is given in the training sample.
+	The performance measure then describes how well this task was achieved by calculating some sort of distance between the predicted label and the real label that is given in the training sample.
+	It is a key requirement to specify a suitable performance measure when applying machine learning algorithms.
 	
-	Machine learning algorithms can be classified according to what kind of experience they are allowed to have during the learning process.
+	Machine learning algorithms are often classified according to what kind of experience they are allowed to have during the learning process.
 
 	The central challenge for a machine learning algorithm is that it must perform well on new and previously unseen inputs, i.e. the error measure on the test set should be as small as possible and at the same time the error measure on the training set should also be reduced.
 	This means that there are two factors that determine how well a machine learning algorithm will perform:
@@ -325,9 +327,10 @@
 	More precisely, given the data $x$ and the desired output $y$, the goal is to find $f^*$, such that $f^*(x)=y$.
 	This is achieved by defining a mapping $y = f(x; \beta)$ and learning the parameters $\beta$ that result in the best function approximation.
 	
-	The term 'network' suggests that the mapping $f$ is a composition of many different functions, i.e.
-	$ f(x) = f^{(K)}\circ \dots \circ f^{(1)}(x)$.
-	The functions $f^{(i)}$ are called layers and the number of composed functions $K$ gives the depth of the model.
+	The term 'network' suggests that the mapping $f$ is a composition of many different functions.
+	A directed acyclic graph is used to describe how these functions, often referred to as units, are composed together in the model.
+	For example, the network could consist of a chain of $K$ functions $ f(x) = f^{(K)}\circ \dots \circ f^{(1)}(x)$.
+	In this case each function $f^{(i)},$ $i=1,\dots,K$ forms a layer and the number of composed functions $K$ gives the depth of the model.
 	
 	The final layer is called the output layer.
 	We want to achieve that this layer produces a value that is close to the desired output $y$, i.e. for each data $x$ and corresponding label $y$: $y \approx f^*(x)$.
@@ -335,47 +338,34 @@
 	The remaining layers are called hidden layers because we do not specify what output they generate.
 	We are only interested in the prediction, the output of the final layer.
 	The hidden layers are vector valued functions whose dimensions define the width of the model.
+	Before using a deep feedforward network it is necessary to determine the structure of the associated directed acyclic graph.
+	This is achieved by setting the number of units and specifying how these units are connected.
 	
 	The networks are called feedforward networks because information only travels in one direction from input to output, i.e. there are no feedback connections between the layers.
 	
-	Deep feedforward networks can extend linear models to overcome its limitations.
-	The idea is to apply the linear model not directly to the data $x$ but to a transformed input $\phi(x)$, where $\phi$ is a nonlinear transformation.
-	The remaining question is, how to choose this mapping $\phi$.
-	The deep learning approach to this problem is to define the mapping $y = \phi(x, \beta)^Tw$ and learn the parameter $\beta$.
-	This is an example for a deep feedforward network with one hidden layer, namely $\phi$.
+	
+%	Deep feedforward networks can extend linear models to overcome its limitations.
+%	The idea is to apply the linear model not directly to the data $x$ but to a transformed input $\phi(x)$, where $\phi$ is a nonlinear transformation.
+%	The remaining question is, how to choose this mapping $\phi$.
+%	The deep learning approach to this problem is to assume that $\phi$ depends on some parameters $\beta$ and to define the mapping $y = \phi(x, \beta)^Tw$ and learn the parameter $\beta$.
+%	This is an example for a deep feedforward network with one hidden layer, namely $\phi$.
 	
 	When building deep feedforward networks overfitting can occur.
 	A common approach to counteract this effect is a regularization method called dropout.
 	According to \citet*{dropout} the principle idea is to randomly drop units from the neural network during each step of the learning algorithm.
 	For this method, a dropout rate $p$ must be chosen, that specifies, that a unit is included in the current iteration with probability $1-p$.
-	As a consequence, each of the hidden units must be able to perform well regardless of the other units included in the model.
+	As a consequence, each of the hidden units must be able to perform well regardless of the other units included in the model and the co-dependence is minimized.
 	Further details about the dropout regularization can be found in \citet*{dropout}.
-	
 	
 	
 	soll rein:
 	\begin{itemize}
-		\item model is associated with a directed acyclic graph
-		\item what are units
 		\item most loss functions non convex for neural networks -> use iterative, gradient based optimizers. Important: initialize all weights to small random values
-		\item important aspect of designing deep feedforward model: choice of cost function
-		\item most neural networks are trained using maximum likelihood -> cost function = negative log likelihood (gradient of cost function must be large and predictable enough to serve as a good guide for the learning algorithm -> use sigmoid output unit(for binomial), use softmax for multinoulli); most popular cost function: cross entropy cost function
-		\item when using feedforward networks: need to determine how many units we need and how they are connected
 	\end{itemize}
 	
 	
 	
 	\newpage
-%	\section{Survival Outcomes} \label{survivalout}
-%	In this section we want to use deep learning algorithms, as feedforward networks, for time to event estimation.
-%	
-%	Standard survival analysis tools, as for example the Kaplan Meyer Method, can not estimate censored data consistently good, because of induced informative censoring.
-%	\todo[inline]{explain induces informative censoring}
-%	These methods also often rely on restrictive assumptions.
-%	Consider for example the cox PH model described in section \ref{cox}, where we had the proportional hazards assumption.
-%	
-%	We will now try to overcome these limitations by using deep learning to analyze survival data.
-	
 	
 	\section{Deep Learning for Fully Observed Data} \label{uncensored}
 	This section follows the ideas of \citet*{basearticle} and insights described in \citet*{deeplbook}.
@@ -848,12 +838,13 @@
 	\todo[inline]{add sentence that these results are generated in functions}
 			
 	\subsection{Implementation of the CUDL Algorithm}
+	For the implementation we performed minor changes in the R code of \citet*{basearticle} which is publicly available in one of the authors github repository \url{https://www.github.com/jonsteingrimsson/CensoringDL}.
 		
 	\subsubsection{Estimating the Survival Curves $S_0(\cdot\vert\cdot)$ and $G_0(\cdot\vert\cdot)$}
 	This section follows the ideas presented in \citet*{drcut} and \citet*{drtrees}.
 	
 	If the censoring time is completely independent of both, the event time $T$ and the explanatory variables $X$, the conditional survival function $\tilde{G}(\cdot\vert X)=\tilde{G}(\cdot)$ can be efficiently estimated with the Kaplan-Meier (KM) estimator.
-	This KM estimator is given by
+	The KM estimator is given by
 	\begin{equation*}
 		\hat{G}(t) = \prod_{T_{(i)}\leq t} \frac{n_i-d_i}{n_i},
 	\end{equation*}
@@ -863,7 +854,7 @@
 	To minimize the required number of assumptions and to cover previously excluded cases, we chose to estimate the censoring survival curve $G_0(t \vert X)$ using the survival tree method.
 	This tree based method extends the ph regression to tree-structured relative risk functions.
 	The estimate is implemented in R in the following way.
-	First, we fit a survival tree using the function rpart, that is provided in the package rpart.
+	First, we fit a survival tree using the function \texttt{rpart}, that is provided in the package rpart.
 	The tree method classifies the observations according to the explanatory variables in different subgroups.
 	Within each subgroup a KM estimator is calculated for the related data and then the estimators are connected to an overall estimator for the observations. %XXXX
 	Further details can be found in \citet*{relativerisktrees}.
