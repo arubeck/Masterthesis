@@ -534,14 +534,65 @@
 	In total, the doubly robust transformation can be interpreted as an augmented inverse probability weighted mapping.
 	For further details about the augmentation refer to \citet*{bookfailuretime}.
 		
-	The double robustness property is shown in theorem 3.1 in \citet*{culs} and is reproduced below.
+	Then we can show the double robustness property using theorem 3.1 in \citet*{drcut} which is reproduced below.
 	
 	\begin{Theorem}\label{thm:dr}
-		Let $S(\cdot \vert \cdot)$ and $G(\cdot\vert \cdot)$ be functions on $(t,x)\in \mathbb{R} \times \delta$ satisfying the regularity conditions given in appendix S.5 in \citet*{culs}. Then, the transformations $Y_{DR}^* (\mathcal{O}; G, S_0)$, $Y_{DR}^* (\mathcal{O}; G_0, S)$ and $Y_{DR}^* (\mathcal{O}; G_0, S_0)$ are each CUTs for $Y$.
+		Suppose that the response $Y$ and the censoring time $C$ are continuous random variables, that they are conditionally independent given the explanatory variables $X$, and that the conditional distribution $F_0(\cdot \vert X) = 1 - G_0(\cdot \vert X)$ has a conditional density $f_0(\cdot \vert X)$.
+		Assume that $Y \leq \tau < \infty$ for some $\tau$ and that $\tilde{S}(\tau \vert X)=0$ with probability one for some conditional function $\tilde{S}(\cdot \vert X)$.
+		Suppose further that $\tilde{G}(\tau \vert X)\geq \varepsilon > 0$ for some $\varepsilon$ and conditional survival function $\tilde{G}(\cdot \vert X)$, with corresponding conditional density $\tilde{g}(\cdot\vert X)$.
+		Assume that $\tilde{g}(\cdot\vert X=x)$ is absolutely continuous with respect to $g_0(\cdot\vert X=x)$ for all $x$.
+		We will use the convention that $m(y,x;\tilde{S})$ is set to zero if $\tilde{S}(y \vert X=x)=0$.
+		Then, if either $S_0(\cdot\vert X)$ or $G_0(\cdot\vert X)$ are specified correctly, i.e. $\tilde{S}(\cdot\vert X)=S_0(\cdot\vert X)$ or $\tilde{G}(\cdot\vert X)=G_0(\cdot\vert X)$, it holds that
+		\begin{equation*}
+		E[Y_{d}^*(\mathcal{O};\tilde{G}, \tilde{S})\vert X] = E[Y \vert X],
+		\end{equation*}
+		with 
+		\begin{equation}\label{eq:drcut2}
+		Y_d^*(\mathcal{O}; G,S) = \frac{\Delta Y}{G(Y\vert X)}+\frac{(1-\Delta)m(Y,X;S)}{G(Y \vert X)}-\int_{-\infty}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}dF(c\vert X)
+		\end{equation}
 	\end{Theorem}
+	In the following Lemma we show that the transformations $Y_d^*$ and $Y_{DR}^*$ are equivalent and thus theorem 5.1 can be implied to show that $Y_{DR}^*(\mathcal{O}; G_0, \tilde{S})$, $Y_{DR}^*(\mathcal{O}; \tilde{G}, S_0)$ and $Y_{DR}^*(\mathcal{O}; G_0, S_0)$ are each CUTs.
 	
-	\todo[inline]{wieder zu anderem Theorem ändern und Gleichheit zeigen}
-
+	\begin{Lemma}
+		Using the regularity conditions described in theorem \ref{thm:dr} it holds that $Y_{DR}^*(\mathcal{O}; G_0, \tilde{S})$, $Y_{DR}^*(\mathcal{O}; \tilde{G}, S_0)$ and $Y_{DR}^*(\mathcal{O}; G_0, S_0)$ are each CUTs.
+	\end{Lemma}
+	\begin{proof}
+		We show the lemma by proofing that $Y_d^*$ and $Y_{DR}^*$ both perform the same transformation and as a consequence theorem \ref{thm:dr} can be applied to $Y_{DR}^*$.
+		The first two terms of the transformation $Y_d^*$ are equal to those in the transformation $Y_{DR}^*$.
+		Thus it is sufficient to show that
+		\begin{equation*}
+		\int_{-\infty}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}dF(c\vert X) = \int_{0}^{Y} \frac{m(c,X;S)}{G(c \vert X)} d\Lambda_G(c \vert X).
+		\end{equation*}
+		As we only consider positive event times the censoring distribution is only defined for nonnegative values.
+		Thus the lower bound of the left hand integral can be set to 0.
+		\begin{equation*}
+		\begin{split}
+		\int_{-\infty}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}dF(c\vert X) &= \int_{0}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}dF(c\vert X)\\
+		&= \int_{0}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}d(-G(c\vert X))
+		\end{split}
+		\end{equation*}
+		For the second step we used the relation $F(\cdot\vert X)= 1-G(\cdot\vert X)$ and that a constant term in the integrator vanishes.
+		Next, we use the definition of the cumulative hazard function and that according to the regularity conditions $G(\cdot \vert X)$ has a density function $g(\cdot \vert X)$
+		\begin{equation*}
+			\Lambda_G(c \vert X) = - \int_{0}^{c}\frac{1}{G(u\vert X)}dG(u\vert X) = - \int_{0}^{c}\frac{g(u\vert X)}{G(u\vert X)}du.
+		\end{equation*}
+		The main theorem of integral calculus
+		\todo{Ist das die richtige Uebersetzung für HDI?}
+		then gives
+		\begin{equation*}
+		\frac{d\Lambda_G(c \vert X)}{dc} = -\frac{g(c\vert X)}{G(c\vert X)}.
+		\end{equation*}
+		Using this and the density of $G$ yields
+		\begin{equation*}
+		\begin{split}
+		\int_{-\infty}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}dF(c\vert X) &= \int_{0}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}d(-G(c\vert X))\\
+		& = \int_{0}^{Y}\frac{m(c,X;S)}{G(c\vert X)}\frac{(-g(c\vert X))}{G(c\vert X)}dc\\
+		&= \int_{0}^{Y}\frac{m(c,X;S)}{G(c\vert X)}\frac{d\Lambda_G(c \vert X)}{dc}dc\\
+		&= \int_{0}^{Y}\frac{m(c,X;S)}{G(c\vert X)}d\Lambda_G(c \vert X).
+		\end{split}
+		\end{equation*}
+		As a consequence theorem \ref{thm:dr} can also be applied for $Y_{DR}^*$ and we obtain that the doubly robust transformation is a CUT if the survivor function $S(\cdot\vert X)$ or the censoring function $G(\cdot\vert X)$ are specified correctly.
+	\end{proof}
 
 	\subsection{Censoring unbiased loss functions}\label{sec:cudls}
 	\citet*{culs} and \citet*{basearticle}.
@@ -924,6 +975,7 @@
 	
 	For the gradient descent we use the mean squared error as loss function, the batch size is set to 32 and we use 100 epochs.
 	In one epoch we go through the whole dataset in batches of 32, which means that we perform the gradient descent algorithm $(number of observations)/32*100$ -- times to find the optimal parameter.
+	\todo[inline]{Add dimension of weight vector (which is 25*15+15+15+1)}
 	After fitting the keras model with the training data, we evaluate its performance with the test data and the resulting IPC weighted mean squared error.
 	
 	As a second deep learning model we perform 5-fold cross validation to choose a suitable penalization term $\eta$ from the sequence $(0, 0.001, 0.01, 0.1)$.
