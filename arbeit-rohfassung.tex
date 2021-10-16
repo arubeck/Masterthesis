@@ -343,12 +343,8 @@
 	
 	The networks are called feedforward networks because information only travels in one direction from input to output, i.e. there are no feedback connections between the layers.
 	
-	
-%	Deep feedforward networks can extend linear models to overcome its limitations.
-%	The idea is to apply the linear model not directly to the data $x$ but to a transformed input $\phi(x)$, where $\phi$ is a nonlinear transformation.
-%	The remaining question is, how to choose this mapping $\phi$.
-%	The deep learning approach to this problem is to assume that $\phi$ depends on some parameters $\beta$ and to define the mapping $y = \phi(x, \beta)^Tw$ and learn the parameter $\beta$.
-%	This is an example for a deep feedforward network with one hidden layer, namely $\phi$.
+	\todo[inline]{activation functions erklären}
+	\todo[inline]{optimize loss function/performance measure to calculate weights for each unit with gradient based optimizers}
 	
 	When building deep feedforward networks overfitting can occur.
 	A common approach to counteract this effect is a regularization method called dropout.
@@ -358,20 +354,15 @@
 	Further details about the dropout regularization can be found in \citet*{dropout}.
 	
 	
-	soll rein:
-	\begin{itemize}
-		\item most loss functions non convex for neural networks -> use iterative, gradient based optimizers. Important: initialize all weights to small random values
-	\end{itemize}
-	
-	
-	
 	\newpage
 	
 	\section{Deep Learning for Fully Observed Data} \label{uncensored}
 	This section follows the ideas of \citet*{basearticle} and insights described in \citet*{deeplbook}.
 	
 	As described in section \ref{sabasics}, we assume that the dataset consists for each subject $i = 1,\dots,n$ of a positive continuous failure time $T_i \in \mathbb{R}^+$ and a vector of explanatory variables $X_i = (X_{i1}, \dots , X_{ip}) \in \delta \subset \mathbb{R}^p$.
-	The set $\delta$ describes the bounded space consisting of all values that the explanatory variables can take.
+	When evaluating a medical study these explanatory variables could for example be age, in which treatment group the patient was or the individuals oxygen concentration in blood at the beginning of the study.
+	The set $\delta$ describes the bounded space consisting of all values that the explanatory variables can take in the specific context.
+	In the example described above, a possible choice for $\delta$ could be $\delta = [0, 120] \times \{0,1,2\} \times [50, 200]$
 	We assume that the outcome $T_i$ is possibly transformed via a monotone function $h: \mathbb{R}^+ \rightarrow \mathbb{R}$.
 	%XXX kurze Erklärung wieso das h sinnvoll ist bzw gebraucht wird
 	Possible choices for this transformation $h(T_i)$ are the identity function $h(T_i)=T_i$ or the logarithmic transformation $h(T_i)= \ln (T_i)$.
@@ -631,6 +622,7 @@
 	In this section we specify how the survival probabilities $P(T\geq t \vert X)$ can be estimated for a specified time point $t$.
 	As mentioned before, the target parameter determines the choice of loss function.
 	For the estimation of survival probabilities we can use the Brier loss $L_{t,2}(T, \beta(X)) = (I(T \geq t) - \beta(X))^2$ as our full data loss.
+	\todo{beweisen?}
 	
 	As a first step we have to define a modified dataset with respect to the fixed time point $t$:
 	\begin{equation*}
@@ -684,8 +676,6 @@
 	This section relies on \citet*{basearticle}.
 	
 	We now describe how we can implement the doubly robust and Buckley-James CUDL algorithm using a specific response transformation.
-	
-	\todo[inline]{add paragraph that choice of h gives estimators for both, L2 and Brier loss}
 	
 	We use the following response transformation:
 	\begin{equation*}
