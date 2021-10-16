@@ -807,14 +807,14 @@
 		In our first setting we simulate the dataset such that the proportional hazards assumption is met.
 		To achieve this we create 300 independent observations with 25 explanatory variables $X=(X_1,\dots,X_{25})$.
 		This vector is multivariate normal with mean zero and a covariance matrix $M$ with elements $m_{ij}=0.9^{\vert i-j\vert}$.
-		The survival times are simulated from an exponential distribution with mean $\mu = \exp\left(0.1\sum_{i=9}^{18}X_i\right)$.
-		The censoring distribution is also simulated from an exponential distribution with mean XXX.
+		The survival times are then simulated from an exponential distribution with mean $\mu = \exp\left(0.1\sum_{i=9}^{18}X_i\right)$.
+		The censoring distribution is also simulated from an exponential distribution with mean 0.5, which results in approximately XXX\% censored data.
 	\end{setting}
 
 	\begin{setting}		
 		In our second setting the proportional hazards assumption is mildly violated.
 		Again, we simulate 300 independent observations with 25 explanatory variables $X=(X_1,\dots, X_{25})$.
-		This vector now consists of 20 iid uniform random variables on the interval $[0,1]$.
+		This vector now consists of 25 iid uniform random variables on the interval $[0,1]$.
 		The survival time follows an exponential distribution with mean $\mu = \sin(X_1\pi)+2\vert X_2-0.5\vert + X_3^3$.
 		The censoring times are uniformly distributed on the interval $[0,6]$.
 		This results in approximately XXX\% censoring.
@@ -838,7 +838,7 @@
 	\todo[inline]{add sentence that these results are generated in functions}
 			
 	\subsection{Implementation of the CUDL Algorithm}
-	For the implementation we performed minor changes in the R code of \citet*{basearticle} which is publicly available in one of the authors github repository \url{https://www.github.com/jonsteingrimsson/CensoringDL}.
+	For the implementation we performed minor changes in the \texttt{R} code of \citet*{basearticle} which is publicly available in one of the authors github repository \url{https://www.github.com/jonsteingrimsson/CensoringDL}.
 		
 	\subsubsection{Estimating the Survival Curves $S_0(\cdot\vert\cdot)$ and $G_0(\cdot\vert\cdot)$}
 	This section follows the ideas presented in \citet*{drcut} and \citet*{drtrees}.
@@ -853,15 +853,15 @@
 	
 	To minimize the required number of assumptions and to cover previously excluded cases, we chose to estimate the censoring survival curve $G_0(t \vert X)$ using the survival tree method.
 	This tree based method extends the ph regression to tree-structured relative risk functions.
-	The estimate is implemented in R in the following way.
-	First, we fit a survival tree using the function \texttt{rpart}, that is provided in the package rpart.
+	The estimate is implemented in \texttt{R} in the following way.
+	First, we fit a survival tree using the function \texttt{rpart}, that is provided in the package \texttt{rpart} and explained in greater detail in \citet*{rpart}.
 	The tree method classifies the observations according to the explanatory variables in different subgroups.
 	Within each subgroup a KM estimator is calculated for the related data and then the estimators are connected to an overall estimator for the observations. %XXXX
 	Further details can be found in \citet*{relativerisktrees}.
 	
 	The survival curve $S_0(t\vert X)$ should not be estimated using the Kaplan-Meier estimator, as we presume that the observed time $T$ depends on the explanatory variables $X$.
 	Instead, the survival curve is estimated via a random survival forest procedure.
-	In R this estimator can be implemented the function rfscr from the package randomForestSRC. 
+	In \texttt{R} this estimator can be implemented using the function \texttt{rfscr} from the package \texttt{randomForestSRC}. 
 	%For a detailed explanation refer to \citet*{drtrees}.
 	
 	It is possible to choose different estimators for $S_0(\cdot\vert X)$ and $G_0(\cdot\vert X)$ respectively.
@@ -899,9 +899,9 @@
 	
 	\subsubsection{Transformation of Survival Data}
 	
-	We now describe how the transformation of the responses $T$ described in section XXX can be implemented in R.
+	We now describe how the transformation of the responses $T$ described in section XXX can be implemented in \texttt{R}.
 	
-	We use the Buckley-James as well as the douby robust transformation to compare their performance.
+	We use the Buckley-James as well as the doubly robust transformation to compare their performance.
 	
 	For the Buckley-James transformation we estimate the conditional expectation $m$ using the random forest method with the Brier loss as full data loss.
 	The distribution of survival times is then calculated with a survival tree, as described in section XXX.
@@ -923,7 +923,7 @@
 	
 	\subsubsection{Keras Model for Transformed Data}
 	
-	In this section we describe how the deep learning model from algorithm \ref{alg:censor} can be implemented in R.
+	In this section we describe how the deep learning model from algorithm \ref{alg:censor} can be implemented in \texttt{R}.
 	
 	To predict the survival probabilities we use a feedforward network with two layers.
 	The first layer consists of 15 units and uses the relu activation function $\phi(x) = \max(0, x)$.
@@ -948,16 +948,17 @@
 	
 	As a first step, we transform the responses $Y=h(T)=I(T>t)$, with the prespecified time point $t$.
 	
-	The Cox PH model, which is explained in further detail in section \ref{cox}, can be estimated in R using the function coxph from the package survival.
-	We then create the corresponding survival curve using the function survfit.
+	The Cox PH model, which is explained in further detail in section \ref{cox}, can be estimated in \texttt{R} using the function \texttt{coxph} from the package \texttt{survival}.
+	Refer to \citet*{survival} for further information.
+	We then create the corresponding survival curve using the function \texttt{survfit}.
 	
 	The second model, which is the penalized Cox model, is very similar to the Cox PH model.
 	As a first step, a cross validated generalized linear model is evaluated to determine the explanatory variables that need to be included in the model to minimize the mean cross-validated error.
 	These explanatory variables are then used to fit a Cox PH model in the same way as described earlier in this section.
 	
 	As a third model we consider a random forest model.
-	This can be implemented using the R-function rfscr from the package randomForestSRC.
-	The resulting survival curve is estimated using the function predict.
+	This can be implemented using the \texttt{R} function \texttt{rfscr} from the package \texttt{randomForestSRC}.
+	The resulting survival curve is estimated using the function \texttt{predict}.
 	
 	The performance of all of the above mentioned models is evaluated using a IPC weighted mean squared error.
 	
