@@ -299,18 +299,16 @@
 	\section{Principles of Deep Learning}\label{basicsdl}
 	This section relies on \citet*{deeplbook}.
 	
-	\todo[inline]{allgemeines zu ML}
+	Machine learning describes a broad class of algorithms having the goal to learn or extract information from a given sample without the need of explicit programming.
 	
-	Machine Learning algorithms consist of a task and a performance measure.
+	To achieve this machine learning algorithms mainly consist of a task and a performance measure.
+	A task could be to recognize whether a cat or a dog is on a picture, given examples of already classified pictures.
+	The algorithm then build a prediction model based on a given training sample.
+	In the example above the training sample consists of pictures of cats and dogs and a corresponding label, that specifies what is seen on the picture.
+	The performance measure then describes how well this task was achieved by calculating some sort of distinct between the predicted label and the real label that is given in the training sample.
 	
-	- classified according to what kind of experience they are allowed to have during the learning process
-	
-	- learn/extract information from a given sample
-	
-	- build prediction model according to the training sample
-	
-	
-	
+	Machine learning algorithms can be classified according to what kind of experience they are allowed to have during the learning process.
+
 	The central challenge for a machine learning algorithm is that it must perform well on new and previously unseen inputs, i.e. the error measure on the test set should be as small as possible and at the same time the error measure on the training set should also be reduced.
 	This means that there are two factors that determine how well a machine learning algorithm will perform:
 	make the training error small and make the gap between the training and the test error small.
@@ -318,14 +316,11 @@
 	If the first task is not fullfilled, underfitting occurs. This means that the error value on the training set is not sufficiently low for our model.
 	If the second task is not fullfilled, overfitting occurs. In this case, the gap between training and test error is too large.
 	
-	\todo[inline]{add that mostly overfitting is a real problem + Quelle}
-	
 	A common approach to reduce the possibility of overfitting is regularization.
 	In principal, regularization is any modification of a learning algorithm, that aims to reduce its generalization error but not its training error.
 	In practice this is often achieved by adding a penalty to the cost function.
 	
-	\todo[inline]{add: difference of ML and DL}
-	
+	Deep Learning models are machine learning models that are based on artificial neural networks.
 	A commonly used deep learning model are deep feedforward networks that aim to approximate some function $f^*$.
 	More precisely, given the data $x$ and the desired output $y$, the goal is to find $f^*$, such that $f^*(x)=y$.
 	This is achieved by defining a mapping $y = f(x; \beta)$ and learning the parameters $\beta$ that result in the best function approximation.
@@ -349,12 +344,12 @@
 	The deep learning approach to this problem is to define the mapping $y = \phi(x, \beta)^Tw$ and learn the parameter $\beta$.
 	This is an example for a deep feedforward network with one hidden layer, namely $\phi$.
 	
-	When using deep feedforward networks overfitting can occur.
+	When building deep feedforward networks overfitting can occur.
 	A common approach to counteract this effect is a regularization method called dropout.
-	For this method, a dropout rate $p$ must be chosen, that specifies, that a unit is included in the model with probability $1-p$.
-	In each step of the learning algorithm it is reevaluated which units are part of the model.
+	According to \citet*{dropout} the principle idea is to randomly drop units from the neural network during each step of the learning algorithm.
+	For this method, a dropout rate $p$ must be chosen, that specifies, that a unit is included in the current iteration with probability $1-p$.
 	As a consequence, each of the hidden units must be able to perform well regardless of the other units included in the model.
-	Further details about the dropout regularization can be found in \citet*[chapter~7.12]{deeplbook}.
+	Further details about the dropout regularization can be found in \citet*{dropout}.
 	
 	
 	
