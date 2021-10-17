@@ -1,4 +1,4 @@
-\documentclass[12pt, a4paper]{article}
+\documentclass[12pt, a4paper]{scrartcl}
 
 \usepackage[english]{babel}
 \usepackage{ucs}
@@ -64,6 +64,8 @@
 }
 
 \pagestyle{plain} %maybe headings, not sure yet
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2pt} %XXX maybe change distance
 
 \theoremstyle{definition}
 \newtheorem{Algorithm}{Algorithm}[section]
@@ -242,7 +244,7 @@
 	
 	%\todo[inline]{add: counting process allows definition of (point) estimators, mathsabook p. 140 and Chapter 3.6}
 	
-	\subsection{Parametric and Semiparametic Approaches to Estimation of Survival Time} \label{cox}
+	\subsection{(Semi-)Parametic Approaches to Estimation of Survival Time} \label{cox}
 
 	This section relies on \citet*{sabook}.
 	
@@ -721,7 +723,7 @@
 	
 	Selecting the $L_2$ loss as the full data loss and applying the CUDL algorithms to the modified data set gives us an estimator for the restricted mean survival.
 	
-	\subsection{Implementation Based on the Doubly Robust Transformation}
+	\subsection{Implementation Based on a Doubly Robust Transformation}\label{trafo}
 	%%maybe specify title (which algorithm?)
 	
 	This section relies on \citet*{basearticle}.
@@ -774,6 +776,7 @@
 		\end{split}
 		\end{equation}
 		This equality can be shown by reordering the terms in the sum above in alphabetical order.
+		
 		Lemma \ref{lem:equi} provided in the appendix states that $A_{0i}+B_{0i}-C_{0i} = 1$ holds true.
 		This leads us to
 		\begin{equation*}
@@ -800,18 +803,18 @@
 		 
 		 If we can show that the penalization parameter selected by minimizing the cross-validated loss with the loss $L_2^*(\mathcal{O}, \beta; G,S)$ is the same if we replace the $L_2^*$ loss by $L_{DR}^{(2)}(\mathcal{O}, \beta; G,S)$, both prediction models produce the identical output.
 		
-		To show this, we use the notation from section XXX.
-		Recall that $\delta_{i,l}$ indicates whether observation $i$ is an element of the subset $K_l$.
+		To show this, we use the notation from section \ref{basicsdl}.
+		Recall that $a_{i,l}$ indicates whether observation $i$ is an element of the subset $K_l$.
 		
 		As $L_2^*(\mathcal{O}, \beta; G,S)$ and $L_{DR}^{(2)}(\mathcal{O}, \beta; G,S)$ are equal up to a term that does not depend on $\beta$, it holds that
 		\begin{equation*}
-		\sum_{l=1}^{D} \sum_{i=1}^{n} \delta_{i,l} L_2^*(\mathcal{O}, \beta; G,S) = \sum_{l=1}^{D} \sum_{i=1}^{n} \delta_{i,l} L_{DR}^{(2)}(\mathcal{O}, \beta; G,S) + const(\mathcal{O}; G,S).
+		\sum_{l=1}^{D} \sum_{i=1}^{n} a_{i,l} L_2^*(\mathcal{O}, \beta; G,S) = \sum_{l=1}^{D} \sum_{i=1}^{n} a_{i,l} L_{DR}^{(2)}(\mathcal{O}, \beta; G,S) + const(\mathcal{O}; G,S).
 		\end{equation*}
 		This shows that
 		\begin{equation*}
 		\begin{split}
-		 &\argmin_{m \in \{1,\dots, M\}}\sum_{l=1}^{D} \sum_{i=1}^{n} \delta_{i,l} L_2^*(\mathcal{O}, \beta; G,S)\\
-		  = &\argmin_{m \in \{1,\dots, M\}}\sum_{l=1}^{D} \sum_{i=1}^{n} \delta_{i,l} L_{DR}^{(2)}(\mathcal{O}, \beta; G,S),
+		 &\argmin_{m \in \{1,\dots, M\}}\sum_{l=1}^{D} \sum_{i=1}^{n} a_{i,l} L_2^*(\mathcal{O}, \beta; G,S)\\
+		  = &\argmin_{m \in \{1,\dots, M\}}\sum_{l=1}^{D} \sum_{i=1}^{n} a_{i,l} L_{DR}^{(2)}(\mathcal{O}, \beta; G,S),
 		 \end{split}
 		\end{equation*}
 		which completes the proof.
@@ -833,21 +836,18 @@
 	\newpage
 
 	\section{Simulation Study} \label{simulation}
-	In this section we compare the performance of XXX
-	\todo[inline]{add names of algorithms for comparison}.
+	In this section we compare the performance of the CUDL algorithms to a Cox PH model, a penalized Cox PH model and a survival tree method using simulated survival data.
 	
-		
-	Our goal is to estimate the conditional survival probability $P(T>t\vert X)$ for a prespecified time point $t$.
-	To achieve this, we first transform the response to account for that goal and set $Y=h(T)=I(T>t)$.
+	For comparison we estimate the conditional survival probability $P(T>t\vert X)$ for a prespecified time point $t$.
 	
-	\subsection{Simulation Settings}
+	\subsection{Simulation Settings}\label{settings}
 
 	The different settings for our simulation follow those presented in \citet*{culs}.
 	
 	\begin{setting}
 		In our first setting we simulate the dataset such that the proportional hazards assumption is met.
 		To achieve this we create 300 independent observations with 25 explanatory variables $X=(X_1,\dots,X_{25})$.
-		This vector is multivariate normal with mean zero and a covariance matrix $M$ with elements $m_{ij}=0.9^{\vert i-j\vert}$.
+		This vector is multivariate normal with mean zero and a covariance matrix $\Sigma$ with elements $\sigma_{ij}=0.9^{\vert i-j\vert}$.
 		The survival times are then simulated from an exponential distribution with mean $\mu = \exp\left(0.1\sum_{i=9}^{18}X_i\right)$.
 		The censoring distribution is also simulated from an exponential distribution with mean 0.5, which results in approximately XXX\% censored data.
 	\end{setting}
@@ -871,17 +871,17 @@
 
 	\begin{setting}
 		In the last setting we consider the case where the censoring distribution depends on the explanatory variables.
-		Again, we simulate 300 independent observations where the explanatory variables $X=(X_1,\dots,X_{25})$ are multivariate normal with mean zero and the covariance matrix $M$ with $m_{ij}=0.75^{\vert i-j\vert}$.
+		Again, we simulate 300 independent observations where the explanatory variables $X=(X_1,\dots,X_{25})$ are multivariate normal with mean zero and the covariance matrix $\Sigma$ with elements $\sigma_{ij}=0.75^{\vert i-j\vert}$.
 		The survival distribution is now a log-normal distribution with mean $\mu = 0.1 \vert \sum_{i=1}^5 X_i \vert + 0.1 \vert \sum_{i=16}^{20}X_i$.
 		The censoring times are also simulated according to a log-normal distribution with mean $\tilde{\mu}=\mu+0.5$ and scale parameter $\lambda = 1$.
 		In this setting approximately XXX\% of our data are censored.
 	\end{setting}
 	\todo[inline]{add sentence that these results are generated in functions}
 			
-	\subsection{Implementation of the CUDL Algorithm}
+	\subsection{Implementation of the CUDL Algorithm}\label{impl}
 	For the implementation we performed minor changes in the \texttt{R} code of \citet*{basearticle} which is publicly available in one of the authors github repository \url{https://www.github.com/jonsteingrimsson/CensoringDL}.
 		
-	\subsubsection{Estimating the Survival Curves $S_0(\cdot\vert\cdot)$ and $G_0(\cdot\vert\cdot)$}
+	\subsubsection{Estimating the Survival Curves $S_0(\cdot\vert\cdot)$ and $G_0(\cdot\vert\cdot)$}\label{estsurv}
 	This section follows the ideas presented in \citet*{drcut} and \citet*{drtrees}.
 	
 	If the censoring time is completely independent of both, the event time $T$ and the explanatory variables $X$, the conditional survival function $\tilde{G}(\cdot\vert X)=\tilde{G}(\cdot)$ can be efficiently estimated with the Kaplan-Meier (KM) estimator.
@@ -929,10 +929,9 @@
 	In this thesis, when estimating the survival curve we always use discrete estimators, that have jumps at the finite observed event times $0=T_{(0)}<T_{(1)}<\dots<T_{(n)}$.
 	As a consequence the integral is in fact a finite sum, given by
 	\begin{equation*}
-	\hat{m}_t (u, X_i; \hat{S}) = -\frac{1}{\hat{S}(u\vert X_i)}\sum_{i=1}^n I(T_{(i)}>t)(T_{(i)}-T_{(i-1)}).
+	\hat{m}_t (u, X_i; \hat{S}) = -\frac{1}{\hat{S}(u\vert X_i)}\sum_{i=1}^n I(T_{(i)}>t)(T_{(i)}-T_{(i-1)}),
 	\end{equation*}
-	
-	\todo[inline]{add procedure described in code}
+	which can be implemented in \texttt{R}.
 	
 	\subsubsection{Selecting Truncation Time to Ensure Positivity}
 	
@@ -940,29 +939,31 @@
 	
 	\subsubsection{Transformation of Survival Data}
 	
-	We now describe how the transformation of the responses $T$ described in section XXX can be implemented in \texttt{R}.
+	We now describe how the transformation of the responses $T$ described in section \ref{trafo} can be implemented in \texttt{R}.
 	
 	We use the Buckley-James as well as the doubly robust transformation to compare their performance.
 	
-	For the Buckley-James transformation we estimate the conditional expectation $m$ using the random forest method with the Brier loss as full data loss.
-	The distribution of survival times is then calculated with a survival tree, as described in section XXX.
+	For the Buckley-James transformation we estimate the conditional expectation $\hat{m}$ using the random forest method with the Brier loss as full data loss.
+	The distribution of survival times is then calculated with a survival tree, as described in section \ref{estsurv}.
 	In this case, the transformed response is given by
 	\begin{equation*}
-	Y^*_{BJ}(\mathcal{O}(t)) = \Delta(t)I(T>t)+ (1-\Delta(t))m(T, X; S),
+	Y^*_{BJ}(\mathcal{O}(t)) = \Delta(t)I(T>t)+ (1-\Delta(t))\hat{m}(T, X; \hat{S}),
 	\end{equation*}
 	which equals the Buckley-James transformation given in equation (\ref{eq:bjtrafo}) with response $Y=h(T)=I(T>t)$ and the truncated observations $\mathcal{O}(t)$.
 	
 	For the doubly robust transformation given in equation (\ref{eq:drcut}) we have to calculate $A_{1i}$, $B_{1i}$ and $C_{1i}$.
-	Again, we can plug in $h(T)=I(T>t)$, the estimated expectation $m$ and the estimated censoring function $\hat{G}$ and obtain
+	Again, we can plug in $h(T)=I(T>t)$, the estimated conditional expectation $\hat{m}$ and the estimated censoring function $\hat{G}$ and obtain
 	\begin{equation*}
 		A_{1i}(t)=\frac{\Delta_i(t)I(\tilde{T}_i >t)}{\tilde{G}(\tilde{T}_i\vert X_i)},
 	\end{equation*}
 	\begin{equation*}
-		B_{1i}(t) = \frac{(1-\Delta_i(t))m(\tilde{T}_i, X_i; \hat{S})}{\hat{G}(\tilde{T}_i \vert X_i)}
+		B_{1i}(t) = \frac{(1-\Delta_i(t))\hat{m}(\tilde{T}_i, X_i; \hat{S})}{\hat{G}(\tilde{T}_i \vert X_i)}
 	\end{equation*}
 	and
-	
-	\subsubsection{Keras Model for Transformed Data}
+	\begin{equation*}
+	C_{1i}(t)
+	\end{equation*}
+	\subsubsection{Keras Model for Transformed Data}\label{keras}
 	
 	In this section we describe how the deep learning model from algorithm \ref{alg:censor} can be implemented in \texttt{R}.
 	
@@ -983,7 +984,7 @@
 	
 	The procedure described above is performed twice.
 	First for the response that is transformed using the Buckley-James transformation and then for the doubly robust transformed response.
-	\subsubsection{Algorithms Used for Comparison}
+	\subsubsection{Algorithms Used for Comparison}\label{comp}
 	\todo[inline]{think of better title}
 	
 	We compare the deep learning algorithms that use the transformed data to three different approaches: a Cox PH model, a penalized Cox model and a random forest model.
@@ -991,7 +992,7 @@
 	As a first step, we transform the responses $Y=h(T)=I(T>t)$, with the prespecified time point $t$.
 	
 	The Cox PH model, which is explained in further detail in section \ref{cox}, can be estimated in \texttt{R} using the function \texttt{coxph} from the package \texttt{survival}.
-	Refer to \citet*{survival} for further information.
+	Refer to \citet*{survival-package} for further information.
 	We then create the corresponding survival curve using the function \texttt{survfit}.
 	
 	The second model, which is the penalized Cox model, is very similar to the Cox PH model.
@@ -1005,7 +1006,7 @@
 	The performance of all of the above mentioned models is evaluated using a IPC weighted mean squared error.
 	
 	\subsection{Simulation Results}
-	In this section we compare the different methods for survival analysis, which are described in section XXX for each of the settings presented in section XXX.
+	In this section we compare the different methods for survival analysis, which are described in section \ref{keras} and \ref{comp}  for each of the settings presented in section \ref{settings}.
 	
 	First the data is generated according to the current setting.
 	Then, the IPC weighted mean squared error of each of the models is calculated and used as our performance measure.
@@ -1015,9 +1016,37 @@
 	
 	
 	\newpage
-	\section{Real Data}
-	\todo[inline]{change title}
+	\section{Application to a Real World Scenario}
+	%\todo[inline]{maybe change title}
+	In this section we analyze the performance of the models described in section \ref{impl} when applied to a real world scenario.
+	
+	\subsection{Mayo Clinic Primary Biliary Cholangitis Data}
 	\todo[inline]{describe data set}
+	The Mayo Clinic primary biliary cholangitis data ican be found in the \texttt{R} package \texttt{survival} and is provided by \citet*{survival-book}.
+	
+	Primary biliary cholangitis (PBC) is an autoimmune disease that leads to demolition of the small bile ducts in the liver.
+	The disease progresses slow but is inexhortable and can lead to cirrhosis and liver decompensation.
+	The data originates from the Mayo Clinic trial in PBC that was carried out between 1974 and 1984.
+	In this ten year interval a total of 312 PBC patients took part in the randomized placebo controlled trial of the drug D-penicillamine.
+	Additional 106 cases did not participate in the clinical trial but were followed for survival.
+	This results in data of 418 individuals.
+	
+	In the data set the survival time of each individual is given by the variable \texttt{time}.
+	It is described as the number of days between registration and either death, transplantation ot the end of the study and takes values between 41 and 4795.
+	The \texttt{status} variable is an event indicator for three possible cases, either the patient was right censored, received a transplant or experienced the event meaning that the subject died.
+	As we only consider one event instead of two, each patient that received a transplant is treated as censored.
+	
+	The data set contains 17 explanatory variables, which are age in years, sex, a treatment variable that indicates if the patient was in the placebo or treatment group or was not part of the clinical trial and various other medical features that might influence the survival time.
+	All of the given explanatory variables are transformed into numerical values.
+	\todo[inline]{explanatory variables in Tabelle genauer erklären}
+	
+	For further calculations we excluded cases with missing explanatory variables.
+	This leads to 276 observations that can be used for our models.
+	As a next step we added a uniformly distributed confounder to assure that each observed survival time is different.
+	This is very important for the estimation of the survival and censoring functions, as estimators like the KM estimator assume the observed times to be distinct.
+	\subsection{Results}
+	%\todo[inline]{maybe change title}
+	
 	\todo[inline]{evaluate algorithms with data set}
 	\todo[inline]{compare resulting error}
 	\newpage
