@@ -148,9 +148,10 @@
 	Survival analysis is used in various fields such as medicine, insurance and finance to predict a certain risk.
 	The main goal is to estimate and analyze the time until a specified event occurs.
 	An application inside the medical field could be a study about the time to death after the outbreak of a disease.
-	
-	\todo[inline]{add more about the general setting (time series of data, consider medical cases as examples, ...)}
-	\todo[inline]{add explanation of true/observed survival time}
+	In this case the patient enters the study as soon as the disease is diagnosed.
+	After a certain time the patient dies.
+	As the event of interest is death we will refer to the time period between study entry and death as the \emph{true survival time}.
+	In some cases we cannot observe the patient's true survival time due to censoring which will be explained in greater detail in section \ref{censoring}.
 	
 	In this thesis we consider one event of interest that can either occur or not.
 	It is also possible to consider competing risks, i.e. multiple different events that are taken into account.
@@ -166,6 +167,7 @@
 	Survival data is often incomplete meaning that for some subjects the particular event is not observed within the study period.
 	We refer to this data as censored.
 	In this case we cannot observe the true survival time which is the time when the event occurs, but instead we observe the censoring time which is the time from which on the censored subject is no longer examined.
+	The observed survival time is then either given by the true survival time (if the patient experiences the event) or the censoring time (if the patient is censored).
 	
 	Even though censored data is not observed until the event, it still contains valuable information about the time between the entry of the study and the event.
 	Assuming data arising from a medical study, there are three possible reasons why censoring occurs:
@@ -180,8 +182,11 @@
 	
 	There are two other types of censoring that may occur.
 	If the true survival time is less than or equal to the observed censoring time, the data is \emph{left censored}.
-	This could arise due to subjects that already experienced the event of interest before entering the study.
-	A more general case is \emph{interval censoring}. It occurs if we only know that the true survival time lies within a specified time interval, but cannot observe it directly.
+	This could arise due to subjects that already experienced the event of interest before entering the study making the true event time unobservable.
+	Consider analysis of the Corona disease where patients enter the study as soon as they experience symptoms.
+	It is not possible to determine the exact time when the patient contracted the disease, thus leading to left censored data.
+	A more general case is \emph{interval censoring}.
+	It occurs if we only know that the true survival time lies within a specified time interval, but cannot observe it directly.
 	The last case incorporates right censoring and left censoring as special cases.
 	
 	Even though censored data is not fully observed, we cannot treat them the same as uncensored data or even leave them out completely, as this would both lead to biased estimators.
@@ -244,7 +249,7 @@
 	
 	%\todo[inline]{add: counting process allows definition of (point) estimators, mathsabook p. 140 and Chapter 3.6}
 	
-	\subsection{(Semi-)Parametic Approaches to Estimation of Survival Time} \label{cox}
+	\subsection{(Semi-)Parametric Approaches to Estimation of Survival Time} \label{cox}
 
 	This section relies on \citet*{sabook}.
 	
@@ -258,7 +263,7 @@
 	
 	A big disadvantage is, that the quality of the estimation using parametric models strongly depends on a suitable choice of the family of distributions.
 	As a consequence, a detailed analysis of the data and a precise understanding of the families of distributions are required.
-	The Cox proportional hazard model tries to overcome these limitations and is described in the following.
+	The Cox proportional hazard model tries to overcome these limitations by relaxing the parametric approach and is described in the following.
 	
 	The \emph{Cox proportional hazards model} (Cox PH model) is a popular approach to analyzing survival data.
 	
@@ -266,13 +271,12 @@
 	\begin{equation*}
 	h(t,x) = h_0(t) \exp \left(\sum_{i=1}^p \beta_i x_i\right),
 	\end{equation*}
-	where $x=(x_1,\dots,x_p)$ are the explanatory variables.
+	where $x=(x_1,\dots,x_p)$ are the explanatory variables and $\beta = (\beta_1,\dots, \beta_p)$ is a vector of weights.
 	This includes the central assumption of the Cox PH model, which is the proportional hazards (PH) assumption.
-	It states that there exists a function $h_0(t)$, the baseline hazard, that does not involve the predictor variables and is thus independent of the observations.
-	
+	It states that there exists a function $h_0(t)$, the baseline hazard, that does not involve the predictor variables and is thus independent of the explanatory variables.
+
+	Typically, maximum likelihood is used to estimate the weights $\beta_i$, $i=1,\dots ,p$.
 	As the baseline hazard $h_0(t)$ is not specified, the Cox PH model is a semiparametric model.
-	Typically, maximum likelihood is used to estimate the parameters $\beta_i$, $i=1,\dots ,n$.
-	\todo{Sätze besser verbinden bzw mehr Kontext}
 	
 	In contrast to parametric models, the Cox PH model does not require an assumption about the distribution of the outcome.
 	Another important advantages is its robustness meaning that it closely approximates the correct parametric model of the survival function.
@@ -420,7 +424,7 @@
  	
  	In step four we use the optimal penalization parameter $\eta_{m^*}$ to estimate the vector of weights $\hat{\beta}_{\eta_{m^*}}^{(l)}$ and then build the final prediction model $f_{\hat{\beta}_{\eta_{m^*}}^{(l)}}(X)$.
  	
- 	The estimated vector of weights $\beta$ minimizes the expected loss used in the algorithm.
+ 	The vector of weights $\beta(X)$ that is estimated using the explanatory variables $X$ minimizes the expected loss used in the algorithm.
  	Thus, the parameter that we want to estimate determines the choice of loss function.
  	If we use for example the $L_2$ loss, the population parameter estimated by the full data deep learning algorithm is the conditional mean $E[h(T) \vert X]$.
  	If we instead want to estimate survival probabilities $P(T\geq t \vert X )$ for a fixed time point $t$, we can use the Brier loss which is given by $E[(I(T\geq t)-\beta(X))^2]$.
@@ -440,12 +444,12 @@
 	 
 	 where $\tilde{T_i}$ denotes the observed time and $\Delta_i$ indicates, whether subject $i$ experienced the event of interest or was censored.
 	 
-	 We define the conditional survivor functions for $T$ and $C$ as $S_0(u \vert X)=P(T>u \vert X)$ and $G_0(u \vert X)=P(T>u \vert X)$ respectively.
+	 We define the conditional survivor functions for $T$ and $C$ as $S_0(u \vert X)=P(T>u \vert X)$ and $G_0(u \vert X)=P(C>u \vert X)$ respectively.
 	 \todo{evtl zugehörige Verteilungsfunktion hier mit rein nehmen}
 	 In contrast to section \ref{sabasics} the survivor function now depends on the explanatory variables $X$.
 	 We assume that the censoring time $C$ is continuous and that the corresponding censoring mechanism is non-informative, i.e. that $C$ is independent of $T\vert X$.
 	 
-	 For further calculations we also assume that $G_0(\tilde{T} \vert X)\geq \varepsilon > 0$ for some $\varepsilon >0$, to ensure positivity of the conditional censoring function.
+	 For further calculations we also assume that $G_0(T \vert X)\geq \varepsilon > 0$ for some $\varepsilon >0$, to ensure positivity of the conditional censoring function.
 	
 	The main difficulty in extending algorithm \ref{alg:nocensor} to possibly censored data is to define a suitable loss function, that can be calculated in the presence of censoring and at the same time reduces to the full data loss $L(h(T), f(X))$ if the data is not censored.
 	To close the gap between what is done in the presence and absence of censoring, we will now define \textit{censoring unbiased transformations}.
@@ -490,13 +494,17 @@
 	For an uncensored subject, i.e. $\Delta = 1$, the response remains unchanged.
 	If the response is censored, i.e. $\Delta = 0$, it is mapped to its conditional expectation. %%%besser formulieren, klingt bissi holprig
 	
-	\todo[inline]{show that BJ Trafo is a CUT}
+	\begin{Theorem}\label{thm:bj}
+		Under mild regularity conditions on the survivor functions $S(\cdot\vert\cdot)$ and $G(\cdot\vert\cdot)$ it holds that $Y_{BJ}^*(\mathcal{O}; S_0)$ is a CUT.
+	\end{Theorem}
+	
+	The proof is given in appendix XXX and follows the ideas in \citet*{drcut} with $G(t\vert x)=1$ for all $(t,w)$.
 	
 	The Buckley-James Transformation has an important property.
 	Among all CUTs $Y^*(\mathcal{O})$ the mapping $Y_{BJ}^* (\mathcal{O})$ results in the best predictor of the original response, i.e.
 	
 	\begin{equation*}
-	Y_{BJ}^* (\mathcal{O})= \argmin_{Y^*(\mathcal{O})~is~a~CUT} E \vert Y^*(\mathcal{O}) - Y \vert ^2.
+	Y_{BJ}^* (\mathcal{O})= \argmin_{Y^*(\mathcal{O})~is~a~CUT} E[ \vert Y^*(\mathcal{O}) - Y \vert ^2].
 	\end{equation*}
 	
 	On the other hand, it requires the correct specification of the survivor function $S(\cdot\vert X)$.
@@ -522,7 +530,8 @@
 	The Buckley-James estimator, as well as the IPCW mapping, depend on the nuisance parameters $S(\cdot\vert X)$ and $G(\cdot\vert X)$ respectively.
 	As a consequence, poor estimators of these two conditional functions can significantly degrade the performance of regression applied to the transformed data.
 	
-	A third mapping, that requires a well approximation of either  $S(\cdot\vert X)$ or $G(\cdot\vert X)$, but not necessarily both, is the so called doubly robust mapping.
+	A third mapping is the doubly robust mapping.
+	In this context doubly robust implies that the mapping requires a well approximation of either  $S(\cdot\vert X)$ or $G(\cdot\vert X)$, but not necessarily both.
 	It is defined as follows:
 	
 	\begin{equation}\label{eq:drcut}
@@ -578,7 +587,7 @@
 		\begin{equation*}
 			\Lambda_G(c \vert X) = - \int_{0}^{c}\frac{1}{G(u\vert X)}dG(u\vert X) = - \int_{0}^{c}\frac{g(u\vert X)}{G(u\vert X)}du.
 		\end{equation*}
-		The main theorem of integral calculus
+		The fundamental theorem of integral calculus
 		\todo{Ist das die richtige Uebersetzung für HDI?}
 		then gives
 		\begin{equation*}
@@ -602,7 +611,8 @@
 	The theory of censoring unbiased transformations can be directly applied to loss functions and results in a class of censoring unbiased loss functions. 
 	These loss functions can be calculated in the presence and absence of censoring, and reduce to the full data loss if the survival time is not censored.
 	
-	In this thesis we focus on two censoring unbiased estimators for the estimated loss $\mathcal{R} (\beta) = E[L(h(T),\beta(X))]$ that both reduce to the full data loss in the absence of censoring: the doubly robust loss function and the Buckley-James estimator.
+	In this thesis we focus on estimation of the loss $\mathcal{R} (\beta) = E[L(h(T),\beta(X))]$, where $\beta(X)$ is the weight vector estimated using the explanatory variables $X$.
+	For this we consider two censoring unbiased estimators that both reduce to the full data loss in the absence of censoring: the doubly robust loss function and the Buckley-James estimator.
 	
 	\todo[inline]{add from basearticle: why IPCW is no longer considered/no suitable choice for estimator of full data loss}
 	
@@ -632,7 +642,7 @@
 	where for a survival curve $S$
 	\begin{equation}\label{eq:exploss}
 	\begin{split}
-		m_l(u,x,\beta; S) &= E_S[L(h(T), \beta(X)) \vert T \geq u, X = x]\\
+		m_L(u,x,\beta; S) &= E_S[L(h(T), \beta(X)) \vert T \geq u, X = x]\\
 		&= - \int_u^{\infty} \frac{L(h(t), \beta(x))}{S(u \vert w)} dS(t\vert w)
 	\end{split}
 	\end{equation}
@@ -730,7 +740,7 @@
 	
 	We now describe how we can implement the doubly robust and Buckley-James CUDL algorithm using a specific response transformation.
 	
-	We use the following response transformation:
+	We use the following response transformation for each subject $i$ with observations $\mathcal{O}_i = (h(\tilde{T_i}), \Delta_i, X_i) \in \mathcal{O}$:
 	\begin{equation*}
 	D(O_i; G,S) = A_{1i}(G)+B_{1i}(G,S) - C_{1i}(G,S),
 	\end{equation*}
@@ -842,14 +852,15 @@
 	
 	\subsection{Simulation Settings}\label{settings}
 
-	The different settings for our simulation follow those presented in \citet*{culs}.
+	The different simulation settings follow those presented in \citet*{culs}.
 	
 	\begin{setting}
 		In our first setting we simulate the dataset such that the proportional hazards assumption is met.
 		To achieve this we create 300 independent observations with 25 explanatory variables $X=(X_1,\dots,X_{25})$.
 		This vector is multivariate normal with mean zero and a covariance matrix $\Sigma$ with elements $\sigma_{ij}=0.9^{\vert i-j\vert}$.
 		The survival times are then simulated from an exponential distribution with mean $\mu = \exp\left(0.1\sum_{i=9}^{18}X_i\right)$.
-		The censoring distribution is also simulated from an exponential distribution with mean 0.5, which results in approximately XXX\% censored data.
+		As a consequence, only the explanatory variables $X_9,\dots,X_{18}$ are relevant for the survival time.
+		The censoring distribution is also simulated from an exponential distribution with mean 0.5 which results in approximately 35\% censored data.
 	\end{setting}
 
 	\begin{setting}		
@@ -857,29 +868,32 @@
 		Again, we simulate 300 independent observations with 25 explanatory variables $X=(X_1,\dots, X_{25})$.
 		This vector now consists of 25 iid uniform random variables on the interval $[0,1]$.
 		The survival time follows an exponential distribution with mean $\mu = \sin(X_1\pi)+2\vert X_2-0.5\vert + X_3^3$.
+		This implies that only the explanatory variables $X_1,X_2,X_3$ matter for the survival time, the remaining explanatory variables $X_4,\dots,X_{25}$ are irrelevant.
 		The censoring times are uniformly distributed on the interval $[0,6]$.
-		This results in approximately XXX\% censoring.
+		This results in approximately 23\% censoring.
 	\end{setting}
 		
 	\begin{setting}
 		In this setting, the proportional hazards assumption is strongly violated.
-		Our dataset consists of 300 independent observations and the explanatory variables $X=(X_1,\dots,X_{25})$ are each multivariate normal with mean zero and covariance matrix $M$ with $m_{ij}=0.75^{\vert i-j\vert}$.
-		Now, the survival times are simulated using the gamma distribution with  mean $\mu = 0.5 + 0.3 \vert \sum_{i=11}^{15} X_i \vert$ and scale parameter $\beta = 2$, which results in the shape parameter $\alpha = \frac{2}{\mu}$.
+		Our dataset consists of 300 independent observations and the explanatory variables $X=(X_1,\dots,X_{25})$ are each multivariate normal with mean zero and covariance matrix $\Sigma$ with $\sigma_{ij}=0.75^{\vert i-j\vert}$.
+		Now, the survival times are simulated using the gamma distribution with  mean $\mu = 0.5 + 0.3 \vert \sum_{i=11}^{15} X_i \vert$ and scale parameter $\beta = 2$, which results in the shape parameter $\alpha = 2/\mu$.
+		Here we consider that only the explanatory variables $X_{11},\dots,X_{15}$ are relevant for the survival time.
 		The censoring times are uniformly distributed on the interval $[0,15]$.
-		This leads to approximately XXX\% censoring.
+		This leads to approximately 30\% censoring.
 	\end{setting}
 
 	\begin{setting}
 		In the last setting we consider the case where the censoring distribution depends on the explanatory variables.
 		Again, we simulate 300 independent observations where the explanatory variables $X=(X_1,\dots,X_{25})$ are multivariate normal with mean zero and the covariance matrix $\Sigma$ with elements $\sigma_{ij}=0.75^{\vert i-j\vert}$.
 		The survival distribution is now a log-normal distribution with mean $\mu = 0.1 \vert \sum_{i=1}^5 X_i \vert + 0.1 \vert \sum_{i=16}^{20}X_i$.
+		As a consequence the explanatory variables $X_{6},\dots,X_{15}$ and $X_{21},\dots,X_{25}$ are irrelevant for the survival time.
 		The censoring times are also simulated according to a log-normal distribution with mean $\tilde{\mu}=\mu+0.5$ and scale parameter $\lambda = 1$.
-		In this setting approximately XXX\% of our data are censored.
+		In this setting approximately 36\% of our data are censored.
 	\end{setting}
 	\todo[inline]{add sentence that these results are generated in functions}
 			
 	\subsection{Implementation of the CUDL Algorithm}\label{impl}
-	For the implementation we performed minor changes in the \texttt{R} code of \citet*{basearticle} which is publicly available in one of the authors github repository \url{https://www.github.com/jonsteingrimsson/CensoringDL}.
+	For the implementation we adapted the \texttt{R} code of \citet*{basearticle} which is publicly available in one of the authors github repository \url{https://www.github.com/jonsteingrimsson/CensoringDL}.
 		
 	\subsubsection{Estimating the Survival Curves $S_0(\cdot\vert\cdot)$ and $G_0(\cdot\vert\cdot)$}\label{estsurv}
 	This section follows the ideas presented in \citet*{drcut} and \citet*{drtrees}.
@@ -1012,7 +1026,26 @@
 	Then, the IPC weighted mean squared error of each of the models is calculated and used as our performance measure.
 	We repeat this procedure 50 times and compare the resulting errors.
 	
+	XXXXXXXXXXX
 	
+	Overall: does not affect performance of Cox, penalized Cox and random forest procedure if they are applied to transformed data instead of not transformed.
+	
+	for setting 1:
+	
+	Deep learning approaches are outperformed by other algorithms.
+	Penalized Cox and random forest result in the best estimators.
+	Doubly robust performs better than Buckley James.
+	
+	for setting 2:
+	
+	Penalized Cox and random forest are both significantly better than deep learning approaches.
+	Doubly robust performs better than Buckley James.
+	
+	for setting 3:
+	
+	Same as for setting 1 and 2.
+	
+	setting 4:
 	
 	
 	\newpage
@@ -1021,8 +1054,7 @@
 	In this section we analyze the performance of the models described in section \ref{impl} when applied to a real world scenario.
 	
 	\subsection{Mayo Clinic Primary Biliary Cholangitis Data}
-	\todo[inline]{describe data set}
-	The Mayo Clinic primary biliary cholangitis data ican be found in the \texttt{R} package \texttt{survival} and is provided by \citet*{survival-book}.
+	The Mayo Clinic primary biliary cholangitis data can be found in the \texttt{R} package \texttt{survival} and is provided by \citet*{survival-book}.
 	
 	Primary biliary cholangitis (PBC) is an autoimmune disease that leads to demolition of the small bile ducts in the liver.
 	The disease progresses slow but is inexhortable and can lead to cirrhosis and liver decompensation.
@@ -1031,19 +1063,21 @@
 	Additional 106 cases did not participate in the clinical trial but were followed for survival.
 	This results in data of 418 individuals.
 	
+	For further calculations we exclude cases with missing entries.
+	This leads to 276 observations that can be used for our models.
+	
 	In the data set the survival time of each individual is given by the variable \texttt{time}.
 	It is described as the number of days between registration and either death, transplantation ot the end of the study and takes values between 41 and 4795.
 	The \texttt{status} variable is an event indicator for three possible cases, either the patient was right censored, received a transplant or experienced the event meaning that the subject died.
 	As we only consider one event instead of two, each patient that received a transplant is treated as censored.
+	This leads to approximately $59.78\%$ censoring.
 	
 	The data set contains 17 explanatory variables, which are age in years, sex, a treatment variable that indicates if the patient was in the placebo or treatment group or was not part of the clinical trial and various other medical features that might influence the survival time.
 	All of the given explanatory variables are transformed into numerical values.
 	\todo[inline]{explanatory variables in Tabelle genauer erklären}
 	
-	For further calculations we excluded cases with missing explanatory variables.
-	This leads to 276 observations that can be used for our models.
 	As a next step we added a uniformly distributed confounder to assure that each observed survival time is different.
-	This is very important for the estimation of the survival and censoring functions, as estimators like the KM estimator assume the observed times to be distinct.
+	This is very important for the estimation of the survival and censoring functions, as estimators like the KM estimator assume the observed times to be distinct. 
 	\subsection{Results}
 	%\todo[inline]{maybe change title}
 	
@@ -1064,6 +1098,43 @@
 	
 	\begin{appendices}
 		\section{Proofs}
+		\subsection{Proof of Theorem \ref{thm:bj}}\label{proof:bjcut}
+		\begin{proof}
+			The transformation $Y_{BJ}^*(\mathcal{O}; S_0)$ is a CUT if $E[Y_{BJ}^*(\mathcal{O}; S_0)\vert X] = E[Y\vert X]$ holds.
+			
+			Because of the linearity of the expectation we can analyze each term in $Y_{BJ}^*(\mathcal{O}; S_0)$ separately.
+			For the first term we obtain:
+			\begin{equation*}
+			\begin{split}
+			E[\Delta Y\vert X] &= E[E[\Delta Y \vert Y, X]\vert X] = E[Y P(\Delta = 1\vert Y,X)\vert X]\\
+			&= E[Y G(Y\vert X)\vert X] = \int_{0}^{\tau} y G(y\vert X)d(1-S(y\vert X))\\
+			&= - \int_{0}^{\tau} y G(y\vert X)dS(y\vert X)
+			\end{split}
+			\end{equation*}
+			For the second term we obtain:
+			\begin{equation*}
+			\begin{split}
+			E[(1-\Delta)m(Y,X;S)] &= E[E[(1-\Delta)m(Y,X;S)\vert Y,X]\vert X]\\
+			&= E[m(Y,X;S)P(\Delta = 0\vert Y, X)\vert X]\\
+			&= E[m(Y,X;S)S(Y\vert X)\vert X]\\
+			&= E\left[-\frac{S(Y\vert X)}{S_0(Y\vert X)}\int_{Y}^{\tau}ydS_0(y\vert X)\right]\\
+			&= \int_{0}^{\tau}\frac{S(c\vert X)}{S_0(c\vert X)}\int_{Y}^{\tau}ydS_0(y\vert X)dG(c\vert X)\\
+			&= \int_0^{\infty}\int_0^{\infty} \frac{S(c\vert X)}{S_0(c\vert X)} I(c <y<\tau) y dS_0(y\vert X)dG(c\vert X)\\
+			&= \int_0^{\tau}y\int_0^y \frac{S(c\vert X)}{S_0(c\vert X)} dG(c\vert X)dS_0(y\vert X)
+			\end{split}
+			\end{equation*}
+			Combining both and setting $S=S_0$ yields
+			\begin{equation*}
+			\begin{split}
+			E[Y_{BJ}^*(\mathcal{O}; S_0)\vert X] &= E[\Delta Y\vert X] + E[(1-\Delta)m(Y,X;S_0)]\\
+			&= - \int_{0}^{\tau} y G(y\vert X)dS_0(y\vert X) + \int_0^{\tau}y\int_0^y \frac{S_0(c\vert X)}{S_0(c\vert X)} dG(c\vert X)dS_0(y\vert X)\\
+			&= - \int_{0}^{\tau} y \left[G(y\vert X)-\int_0^ydG(c\vert X)\right]dS_0(y\vert X)\\
+			&= - \int_{0}^{\tau} y \left[G(y\vert X)-(G(y\vert X)-1)\right]dS_0(y\vert X)\\
+			&= - \int_{0}^{\tau} ydS_0(y\vert X)\\
+			&= E[Y\vert X].
+			\end{split}
+			\end{equation*}
+		\end{proof}
 		\subsection{Auxiliary Lemma for Theorem \ref{thm:equi}}\label{proof:strawderman}
 		
 		\begin{Lemma}\label{lem:equi}
@@ -1120,6 +1191,7 @@
 			\end{split}
 			\end{equation*}
 		\end{proof}
+	
 		%\section{Further Simulations}
 		
 		%\section{R-Code}
