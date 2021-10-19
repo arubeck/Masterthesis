@@ -93,7 +93,7 @@
 	\begin{center}
 		\Huge Master Thesis\\
 		\vspace{0.5cm}
-		\LARGE University Augsburg\\
+		\LARGE University of Augsburg\\
 		\vspace{0.3cm}
 		Department of Mathematics\\
 		\vspace{0.3cm}
@@ -141,23 +141,23 @@
 	\newpage
 	
 	\section{Principles of Survival Analysis}
-	This section is based on \citet*{sabook} and \citet*{mathsabook}.
-	
-	In this section we briefly describe the main ideas of survival analysis, the concept of censoring and parametric and semiparametric approaches to the problem of estimating survival times.
+		
+	In this section following \citet*{sabook} and \citet*{mathsabook} we briefly describe the main ideas of survival analysis, the concept of censoring, and parametric and semiparametric approaches to the problem of estimating survival times.
 	
 	Survival analysis is used in various fields such as medicine, insurance and finance to predict a certain risk.
 	The main goal is to estimate and analyze the time until a specified event occurs.
-	An application inside the medical field could be a study about the time to death after the outbreak of a disease.
+	A medical application could be a study about the time to death after the outbreak of a disease.
 	In this case the patient enters the study as soon as the disease is diagnosed.
 	After a certain time the patient dies.
 	As the event of interest is death we will refer to the time period between study entry and death as the \emph{true survival time}.
 	In some cases we cannot observe the patient's true survival time due to censoring which will be explained in greater detail in Section \ref{censoring}.
 	
-	In this thesis we consider one event of interest that can either occur or not.
-	It is also possible to consider competing risks, i.e. multiple different events that are taken into account.
+	In this thesis we consider a single event of interest that can either occur or not.
+	It is also possible to consider competing risks meaning that multiple different events that are taken into account.
 	A detailed explanation of this case is for example given in \citet*[Chapter~8]{bookfailuretime}.
 	We also assume that the event of interest can only take place once during the observed period.
-	It is also possible to study recurrent events, i.e. events that can happen to a subject multiple times.
+	It is also possible to study recurrent events.
+	In this setting events can happen to a subject multiple times.
 	For further details refer to \citet*[Chapter~9]{bookfailuretime}.
 	
 	\subsection{Censoring} \label{censoring}
@@ -167,7 +167,7 @@
 	Survival data is often incomplete meaning that for some subjects the particular event is not observed within the study period.
 	We refer to this data as censored.
 	In this case we cannot observe the true survival time which is the time when the event occurs, but instead we observe the censoring time which is the time from which on the censored subject is no longer examined.
-	The observed survival time is then either given by the true survival time (if the patient experiences the event) or the censoring time (if the patient is censored).
+	The observed survival time is then either given by the true survival time (if we observe that the patient experiences the event) or the censoring time (if the patient is censored).
 	
 	Even though censored data is not observed until the event, it still contains valuable information about the time between the entry of the study and the event.
 	Assuming data arising from a medical study, there are three possible reasons why censoring occurs:
@@ -197,10 +197,10 @@
 	Further information about left and interval censoring can for example be found in \citet*{bookfailuretime}.
 	
 	\todo{passende Stelle für censoring assumptions finden}
-	There are three main assumptions about censoring, that are often required for further analysis, which are independent, random and non-informative censoring.
-	To achieve random censoring, we assume that the failure rate for censored subjects is the same as the failure rate for the uncensored individuals, that remain in the risk set.
-	Independent censoring is the assumption that censoring occurs random within any subgroup of interest.
-	The third assumption, namely that censoring is non-informative, means that given the explanatory variables the distribution of survival times is conditionally independent of the distribution of censoring times.
+	There are three main assumptions about censoring that are often required for further analysis, which are independent, random and non-informative censoring.
+	To achieve random censoring, we assume that the failure rate for censored subjects is the same as the failure rate for the uncensored individuals that remain in the risk set.
+	Independent censoring is the assumption that censoring occurs randomly within any subgroup of interest.
+	The third assumption, namely that censoring is non-informative, means that given the explanatory variables, the distribution of survival times is conditionally independent of the distribution of censoring times.
 	These assumptions are covered in greater detail in \citet*{bookfailuretime}.
 	
 	
@@ -210,31 +210,34 @@
 	
 	We now describe how the survival data for each of the patients $i = 1, \dots, n$ can be represented.
 	
-	We denote by $T_i \geq 0$ one realization of the random variable for the true survival time of subject $i$ and by $C_i \geq 0$ one realization of the random variable for the censoring time of individual $i$.
+	We denote by $T_i \geq 0$ the random variable for the true survival time of subject $i$ and by $C_i \geq 0$ the random variable for the censoring time of individual $i$.
+	The variables $T_1,\dots,T_n$ and $C_1,\dots,C_n$ are each identically and independently distributed.
 	As we consider right censored data, the observed time is given by $\tilde{T_i} = \min\{T_i,C_i\}$.
-	We also observe $p$ specific characteristics for each subject, that might play a role in the prediction of the survival time.
+	We also observe $p$ specific characteristics for each subject that might play a role in the prediction of the survival time.
 	These explanatory (or predictor) variables are known for each individual and given by the vector $X_i = (X_{i1}, \dots , X_{ip}) \in \delta \subset \mathbb{R}^p$, where $\delta$ denotes the bounded space consisting of all possible values that the explanatory variables can take.
 	The event indicator $\Delta_i = I(T_i \leq C_i)$ specifies whether subject $i$ has experienced the event of interest ($\Delta_i=1$) or the data is censored ($\Delta_i=0$).
 	
 	Then the basic data layout has the form $(\tilde{T}_i, \Delta_i, X_i)$, $i = 1, \dots , n$, where $n$ is the number of patients included in the study.
 	
+	As it is common in the literature we will not further distinguish notationally between a random variable and its realization.
+	
 	%\todo[inline]{outcome is possibly transformed: h(T) instead of T}
 	
-	For analysis and prediction we often use two important functions: the survival function and the hazard function.
-	The survival function $S(t) = P(T > t)$ specifies the distribution of the survival time $F(t) = 1 - S(t)$.
+	Two important functions are frequently used for analysis and prediction of survival times: the survival function and the hazard function.
+	The survival function $S(t) = P(T > t)$ specifies the distribution of the survival time given by $F(t) = 1 - S(t)$.
 	It can for example be used to analyze and compare the time to event of two different groups.
-	The survival function has three important properties: $S(t)$ is a non-increasing function, $S(0)=1$ and $S(\infty)=0$.
+	The survival function has three important properties: $S(\cdot)$ is a non-increasing function, $S(0)=1$ and $\lim_{t \to \infty} S(t)=0$.
 	These properties follow directly from the relation $F(t)=1-S(t)$ and that $F$ is a proper distribution function.
 	
-	The hazard function $h(t)$, also called conditional failure rate, is given by
+	The hazard function $h(\cdot)$, also called conditional failure rate, is given by
 	\begin{equation*}
 		h(t) = \lim_{\Delta t \to 0}\frac{P(t \leq T < t + \Delta t \vert T \geq t)}{\Delta t}.
 	\end{equation*} 
 	
 	It is a measure of instantaneous potential to experience the event and can be used to identify a specific model form.
 	
-	The hazard function has two important properties: it is a non-negative function, i.e. $h(t) \geq 0$ $ \forall t$ and it has no upper bound.
-	In contrast to the survival function $S(\cdot)$ the hazard function does not necessarily have any monotonic properties.
+	The hazard function has two important properties: it is a non-negative function, i.e.~$h(t) \geq 0$ $ \forall t$, and it has no upper bound.
+	In contrast to the survival function $S(\cdot)$, the hazard function does not necessarily have any monotonicity properties.
 
 	There exists a clearly defined relationship between the survival function $S(t)$ and the hazard function $h(t)$:
 	\begin{equation*}
@@ -243,7 +246,7 @@
 		h(t) & = - \left[ \frac{dS(t)/dt}{S(t)}\right].
 	\end{split}
 	\end{equation*}
-	As a consequence, specifying one of the two function directly gives us the remaining.
+	As a consequence, specifying one of the two functions directly gives the other one.
 	
 	%XXX - KM curves, log rank test
 	
@@ -290,17 +293,16 @@
 	If the PH assumption is not fulfilled, we can for example use a stratified Cox procedure instead, which is a modified version of the Cox PH model.
 	The general idea is to categorize the data and divide it into subgroups in a way that within each subgroup the PH assumption is met.
 	Then for each subgroup the Cox PH model can be applied to obtain partial likelihood functions, that can then be combined to an overall likelihood.
-	This approach is explained in greater detail in \citet*{sabook}.
+	This approach is explained in greater detail in \citet*[Chapter~5]{sabook}.
 	
 	There exist various other modifications of the Cox PH model.
-	\todo[inline]{add penalized Cox model}
 	
 	In many cases it may be too simplistic to assume that the effect of the explanatory variables is linear, as it is the case for the Cox PH model.
 	Thus, we need a richer family of survival models to properly fit survival data with nonlinear risk functions.
 	
 	One possible approach to compensate for this disadvantage is to use deep learning procedures.
 	In this thesis, we take a closer look at this approach.
-	But first, we introduce the main ideas of deep learning and explain the idea of feed forward networks.
+	But first, we introduce the main ideas of deep learning and explain the idea of feedforward networks.
 	\newpage
 	
 	\section{Principles of Deep Learning}\label{basicsdl}
@@ -341,7 +343,7 @@
 	In this case each function $f^{(k)}$, $k=1,\dots,K$ forms a layer and the number of composed functions $K$ gives the depth of the model.
 	The dimension of the output of each layer $f^{(k)}$ is denoted by $n_k$ and determines the width of the layer.
 	Typically these functions are vector valued and instead of thinking of the layer as a vector-to-vector function, we can interpret it as many \emph{units} that each represent a vector-to-scalar function.
-	Considering $f^{(1)}(x,y)= (x^2,2y)$ we can represent the function by the units $f^{(1)}_1 (x) = x^2$ and $f^{(1)}_2(y) = 2y$.
+	Considering $f^{(1)}(x,y)= (x^2+y,2y)$ we can represent the function by two units $f^{(1)}_1 (x,y) = x^2+y$ and $f^{(1)}_2(x,y) = 2y$.
 	
 	The final layer is called the output layer.
 	We want to achieve that this layer produces a value that is close to the desired output $y$, i.e. for each data $x$ and corresponding label $y$: $y \approx f^*(x)$.
@@ -364,7 +366,8 @@
 	
 	The above described procedure can be used to iteratively calculate the output of the final layer.
 	
-	\todo[inline]{add sentence: learn parameter beta for example by gradient descent}
+	A central question in dealing with feedforward networks is how to determine appropriate weights and biases.
+	There are several techniques for this training procedure for instance stochastic gradient descent.
 	
 	The above described networks are called feedforward networks because information only travels in one direction from input to output, i.e. there are no feedback connections between the layers.
 	
@@ -468,7 +471,7 @@
 	The main difficulty in extending Algorithm \ref{alg:nocensor} to allow for censored data is to define a suitable loss function, that can be calculated in the presence of censoring and at the same time reduces to the full data loss $L(h(T), f(X))$ if the data is not censored.
 	To close the gap between what is done in the presence and absence of censoring, we will now define \textit{censoring unbiased transformations}.
 	
-	\subsection{Censoring unbiased transformations}\label{sec:drtrafo}
+	\subsection{Censoring Unbiased Transformations}\label{sec:drtrafo}
 	This section is based on \citet*{culs} and \citet*{drcut}.
 	
  	\todo{general case with Y response variable, could for example be event time}
@@ -490,9 +493,9 @@
 
 	In other words, a censoring unbiased transformation maps the observed time $\tilde T$ in a way that it keeps its conditional mean structure.
 	
-	We will now take a closer look at three specific CUTs: the Buckley-James transformation, the inverse probability of censoring weighted mapping and a doubly robust censoring unbiased transformation.
+	We will now take a closer look at three specific CUTs: the Buckley--James transformation, the inverse probability of censoring weighted mapping and a doubly robust censoring unbiased transformation.
 	
-	The Buckley-James transformation is given by
+	The Buckley--James transformation is given by
 	
 	\begin{equation}\label{eq:bjtrafo}
 		Y_{BJ}^* (\mathcal{O}; S) = \Delta \tilde{T} + (1-\Delta)m(C,X;S),
@@ -515,7 +518,7 @@
 	
 	The proof is given in appendix XXX and follows the ideas in \citet*{drcut} with $G(t\vert X)=1$ for all $(t,X)$.
 	
-	The Buckley-James Transformation has an important property.
+	The Buckley--James Transformation has an important property.
 	Among all CUTs $Y^*(\mathcal{O})$ the mapping $Y_{BJ}^* (\mathcal{O})$ results in the best predictor of the original response, i.e.
 	
 	\begin{equation*}
@@ -523,9 +526,9 @@
 	\end{equation*}
 	
 	On the other hand, it requires the correct specification of the survival function $S(\cdot\vert X)$.
-	\todo[inline]{check benefits of doubly robust trafo in contrast to Buckley-James OR downsides of BJ}
+	\todo[inline]{check benefits of doubly robust trafo in contrast to Buckley--James OR downsides of BJ}
 
-	In contrast to the Buckley-James transformation, which depends on the survival function $S(\cdot\vert X)$, it is also possible to build mappings that instead depend only on the censoring mechanism.
+	In contrast to the Buckley--James transformation, which depends on the survival function $S(\cdot\vert X)$, it is also possible to build mappings that instead depend only on the censoring mechanism.
 	One example for this is the inverse probability of censoring weighted (IPCW) mapping.
 	Here, the basic idea is to weight the contribution of each uncensored observation by the inverse probability of being censored.
 	This way both, the censoring and the survival distributions, are taken into account.
@@ -542,7 +545,7 @@
 %	\todo[inline]{add sth about IPCW weights}
 	
 
-	The Buckley-James estimator, as well as the IPCW mapping, depend on the nuisance parameters $S(\cdot\vert X)$ and $G(\cdot\vert X)$ respectively.
+	The Buckley--James estimator, as well as the IPCW mapping, depend on the nuisance parameters $S(\cdot\vert X)$ and $G(\cdot\vert X)$ respectively.
 	As a consequence, poor estimators of these two conditional functions can significantly degrade the performance of regression applied to the transformed data.
 	
 	A third mapping is the doubly robust mapping.
@@ -555,7 +558,7 @@
 	with $m(c,X;S)$ as defined in equation (\ref{eq:condmean}) and the cumulative hazard function $\Lambda_G(t\vert X)=-\int_{0}^{t}1/G(u\vert X)dG(u\vert X)$.
 	
 	The first term in equation (\ref{eq:drcut}) is equal to the IPCW transformation.
-	Similar to the Buckley-James transformation, a term that considers the censored data as well is added.
+	Similar to the Buckley--James transformation, a term that considers the censored data is added.
 	The last part can be seen as an augmentation term.
 	In total, the doubly robust transformation can be interpreted as an augmented inverse probability weighted mapping.
 	For further details about the augmentation refer to \citet*{bookfailuretime}.
@@ -618,23 +621,23 @@
 		As a consequence Theorem \ref{thm:dr} can also be applied for $Y_{DR}^*$ and we obtain that the doubly robust transformation is a CUT if the survival function $S(\cdot\vert X)$ or the censoring function $G(\cdot\vert X)$ are specified correctly.
 	\end{proof}
 
-	\subsection{Censoring unbiased loss functions}\label{sec:cudls}
+	\subsection{Censoring Unbiased Loss Functions}\label{sec:cudls}
 	\citet*{culs} and \citet*{basearticle}.
 	
 	The theory of censoring unbiased transformations can be directly applied to loss functions and results in a class of censoring unbiased loss functions. 
 	These loss functions can be calculated in the presence and absence of censoring, and reduce to the full data loss if the survival time is not censored.
 	
 	In this thesis we focus on estimation of the loss $\mathcal{R} (\beta) = E[L(h(T),\beta(X))]$, where $\beta(X)$ is the weight vector estimated using the explanatory variables $X$.
-	For this we consider two censoring unbiased estimators that both reduce to the full data loss in the absence of censoring: the doubly robust loss function and the Buckley-James estimator.
+	For this we consider two censoring unbiased estimators that both reduce to the full data loss in the absence of censoring: the doubly robust loss function and the Buckley--James estimator.
 	
 	\todo[inline]{add from basearticle: why IPCW is no longer considered/no suitable choice for estimator of full data loss}
 	
-	The Buckley-James estimator for $\mathcal{R}(\beta)$ is given by
+	The Buckley--James estimator for $\mathcal{R}(\beta)$ is given by
 	
 	\begin{equation}\label{eq:bj}
 	L_{BJ}(\mathcal{O}, \beta; S_0) = \frac{1}{n} \sum_{i=1}^n \left[ \Delta_i L(h(T_i), \beta(X_i))+(1-\Delta_i)m_L(C_i, X_i, \beta; S_0)\right].
 	\end{equation}
-	This estimated loss function is the average of the Buckley-James transformed full data loss.
+	This estimated loss function is the average of the Buckley--James transformed full data loss.
 	
 	Again, the structure of this estimator is rather intuitive.
 	For uncensored observations we add the full data loss $L(h(T_i), \beta(X_i))$ and for censored observations we use the expectation of the full data loss $m_L(C_i, X_i, \beta; S_0)$ given by equation (\ref{eq:exploss}).
@@ -668,7 +671,7 @@
 	
 	As a next step we can plug in estimators $\hat{S}$ and $\hat{G}$ for the conditional survival functions $S_0$ and $G_0$ respectively to obtain empirical estimators for the full data loss.
 	
-	For the empirical Buckley-James loss we obtain
+	For the empirical Buckley--James loss we obtain
 	
 	\begin{equation*}
 	L_{BJ}(\mathcal{O}, \beta; \hat{S}) = \frac{1}{n} \sum_{i=1}^n \left( \Delta_i L(h(T_i), \beta(X_i))+(1-\Delta_i)m_L(C_i, X_i, \beta; \hat{S})\right).
@@ -684,11 +687,11 @@
 	\end{split}
 	\end{equation*}
 	
-	If we use the incorrect model specification, that $\hat{G}(t,x)=1$ for all pairs $(t,x)$, the empirical  Buckley-James loss is equivalent to the empirical doubly robust loss, i.e. $L_{BJ}(\mathcal{O}, \beta; \hat{S})=L_{DR}(\mathcal{O}, \beta; \hat{S}, \hat{G} = 1)$.
+	If we use the incorrect model specification, that $\hat{G}(t,x)=1$ for all pairs $(t,x)$, the empirical  Buckley--James loss is equivalent to the empirical doubly robust loss, i.e. $L_{BJ}(\mathcal{O}, \beta; \hat{S})=L_{DR}(\mathcal{O}, \beta; \hat{S}, \hat{G} = 1)$.
 	\todo{evtl kurz zeigen?}
 	
-	We can now replace the full data loss function $L(h(T), f(X)))$ in Algorithm \ref{alg:nocensor} with either the empirical Buckley-James loss $L_{BJ}$ or the empirical doubly robust loss $L_{DR}$ and obtain a prediction model, that can be calculated with the observed data $\mathcal{O}$.
-	We refer to the resulting algorithms as the Buckley-James or the doubly robust deep learning algorithms respectively.
+	We can now replace the full data loss function $L(h(T), f(X)))$ in Algorithm \ref{alg:nocensor} with either the empirical Buckley--James loss $L_{BJ}$ or the empirical doubly robust loss $L_{DR}$ and obtain a prediction model, that can be calculated with the observed data $\mathcal{O}$.
+	We refer to the resulting algorithms as the Buckley--James or the doubly robust deep learning algorithms respectively.
 	As both loss functions are censoring unbiased loss functions, we refer to the resulting algorithms as censoring unbiased deep learning (CUDL). 
 	
 	\subsection{Estimating Survival Probabilities $P(T\geq t \vert X)$}
@@ -719,7 +722,7 @@
 	 	m_{L_2,t}(u,X,\beta;S) = E_S[(I(\tilde{T}\geq t)-\beta(X))^2 \vert T \geq u, X].
 	 \end{equation*}
 	
-	Analogously, by plugging in the Brier risk to the Buckley-James estimators we obtain the empirical Buckley-James Brier loss given by
+	Analogously, by plugging in the Brier risk to the Buckley--James estimators we obtain the empirical Buckley--James Brier loss given by
 	
 	\begin{equation*}
 		L_{BJ,t}(\mathcal{O},\beta; \hat{S}) = \frac{1}{n} \sum_{i=1}^n \left( \Delta_i(t)(I(\tilde{T}_i\geq t)-\beta(X_i))^2 + (1- \Delta_i(t))m_{L_2,t}(\tilde{T}_i(t), X_i; \hat{S})\right)
@@ -750,11 +753,11 @@
 
 	This section relies on \citet*{basearticle}.
 	
-	We now describe how we can implement the doubly robust and Buckley-James CUDL algorithm using a specific response transformation.
+	We now describe how we can implement the doubly robust and Buckley--James CUDL algorithm using a specific response transformation.
 	
 	We use the following response transformation for each subject $i$ with observations $\mathcal{O}_i = (h(\tilde{T_i}), \Delta_i, X_i) \in \mathcal{O}$:
 	\begin{equation*}
-	D(O_i; G,S) = A_{1i}(G)+B_{1i}(G,S) - C_{1i}(G,S),
+	D(\mathcal O_i; G,S) = A_{1i}+B_{1i} - C_{1i},
 	\end{equation*}
 	where for $k=0,1,2$
 	\begin{equation*}
@@ -765,13 +768,13 @@
 	\end{equation*}
 	and
 	\begin{equation*}
-	C_{ki} (G,S) = \int_{0}^{\tilde{T}_i} \frac{m_k(u, X_i; S)}{G(u \vert X_i)}d\Lambda_G(u \vert X_i).
+	C_{ki} = \int_{0}^{\tilde{T}_i} \frac{m_k(u, X_i; S)}{G(u \vert X_i)}d\Lambda_G(u \vert X_i).
 	\end{equation*}
 	For $k=1,2$
 	\begin{equation}\label{eq:condexp}
-	m_k(t,x;S) = E_S[h^k(T) \vert T \geq t, X = x] = -[S(t\vert x)]^{-1} \int_{t}^{\infty}[h(u)^k]dS(u\vert x)
+	m_k(t,X;S) = E_S[h^k(T) \vert T \geq t, X = x] = -[S(t\vert x)]^{-1} \int_{t}^{\infty}[h(u)^k]dS(u\vert x)
 	\end{equation}
-	and $m_0(t,x;S) = 1$ for all pairs $(t,x)$.
+	and $m_0(t,X;S) = 1$ for all $t$.
 	
 	The transformation described above is equal to the doubly robust CUT described in Section \ref{sec:drtrafo} and thus requires that at least one of the models $T\vert X$ or $C \vert X$ is correctly specified.
 	
@@ -843,7 +846,7 @@
 	\end{proof}
 
 	The assumptions on the conditional censoring function $G(\cdot\vert\cdot)$ are flexible enough to allow for $G(t\vert x)=1$ for all pairs $(t,x)$.
-	And as it holds that $L_{BJ}(\mathcal{O}, \beta; \hat{S})=L_{DR}(\mathcal{O}, \beta; \hat{S}, \hat{G} = 1)$, Theorem \ref{thm:equi} also applies to the CUDL using the Buckley-James loss.
+	And as it holds that $L_{BJ}(\mathcal{O}, \beta; \hat{S})=L_{DR}(\mathcal{O}, \beta; \hat{S}, \hat{G} = 1)$, Theorem \ref{thm:equi} also applies to the CUDL using the Buckley--James loss.
 	
 	Theorem \ref{thm:equi} allows us to implement the CUDL algorithm using software for fully observed outcomes.
 	This leads us to the following algorithm, as described in \citet*{basearticle}:
@@ -909,12 +912,13 @@
 	\subsubsection{Estimating the Survival Curves $S_0(\cdot\vert\cdot)$ and $G_0(\cdot\vert\cdot)$}\label{estsurv}
 	This section follows the ideas presented in \citet*{drcut} and \citet*{drtrees}.
 	
-	If the censoring time is completely independent of both, the event time $T$ and the explanatory variables $X$, the conditional survival function $\tilde{G}(\cdot\vert X)=\tilde{G}(\cdot)$ can be efficiently estimated with the Kaplan-Meier (KM) estimator.
-	The KM estimator is given by
+	If the censoring time $C$ is completely independent of both, the event time $T$ and the explanatory variables $X$, the conditional survival function $\tilde{G}(\cdot\vert X)=\tilde{G}(\cdot)$ can be efficiently estimated with the Kaplan-Meier (KM) estimator.
+	The KM estimator for the censoring function is given by
 	\begin{equation*}
-		\hat{G}(t) = \prod_{T_{(i)}\leq t} \frac{n_i-d_i}{n_i},
+		\hat{G}(t) = \prod_{i:\text{~} \tilde T_{(i)} \leq t} \left(1-\frac{1}{\#\{j: \tilde T_{(j)} \geq\tilde T_{(i)} \}}\right)^{1-\Delta_i},
 	\end{equation*}
-	where $T_{(1)}<\dots<T_{(n)}$ are the observed censoring times, that are increasingly ordered, $n_i$ denotes the number of subjects $i$ which are at risk at time $T_{(i)}$ and $d_i$ describes the number of subjects $i$ which are censored at time $T_{(i)}$.
+	where $\tilde T_{(1)}<\dots<\tilde T_{(n)}$ are the increasingly ordered observed times.
+	
 	For example if we consider that censoring is caused by the end of the study, the above stated independence assumption is met and the conditional censoring time can be calculated using the KM estimator.
 	
 	To minimize the required number of assumptions and to cover previously excluded cases, we chose to estimate the censoring survival curve $G_0(t \vert X)$ using the survival tree method.
@@ -925,7 +929,7 @@
 	Within each subgroup a KM estimator is calculated for the related data and then the estimators are connected to an overall estimator for the observations. %XXXX
 	Further details can be found in \citet*{relativerisktrees}.
 	
-	The survival curve $S_0(t\vert X)$ should not be estimated using the Kaplan-Meier estimator, as we presume that the observed time $T$ depends on the explanatory variables $X$.
+	The survival curve $S_0(t\vert X)$ should not be estimated using the KM estimator, as we presume that the observed time $\tilde T$ depends on the explanatory variables $X$.
 	Instead, the survival curve is estimated via a random survival forest procedure.
 	In \texttt{R} this estimator can be implemented using the function \texttt{rfscr} from the package \texttt{randomForestSRC}. 
 	%For a detailed explanation refer to \citet*{drtrees}.
@@ -951,7 +955,7 @@
 	\end{equation*}
 	for $k=1,2$.
 	Because $h(T)$ is an indicator function, the conditional expectation does no longer depend on $k$.
-	In this thesis, when estimating the survival curve we always use discrete estimators, that have jumps at the finite observed event times $0=T_{(0)}<T_{(1)}<\dots<T_{(n)}$.
+	In this thesis, when estimating the survival curve we always use discrete estimators having jumps at the finite observed event times $0=T_{(0)}<T_{(1)}<\dots<T_{(n)}$.
 	As a consequence the integral is in fact a finite sum, given by
 	\begin{equation*}
 	\hat{m}_t (u, X_i; \hat{S}) = -\frac{1}{\hat{S}(u\vert X_i)}\sum_{i=1}^n I(T_{(i)}>t)(T_{(i)}-T_{(i-1)}),
@@ -979,28 +983,29 @@
 	For the implementation we choose the truncation method as proposed by \citet*{drtrees}.
 	\subsubsection{Transformation of Survival Data}
 	
-	We now describe how the transformation of the responses $T$ described in Section \ref{trafo}, namely the Buckley-James and the doubly robust transformation, can be implemented in \texttt{R}.
+	We now describe how the transformation of the responses $\tilde T$ described in Section \ref{trafo}, namely the Buckley--James and the doubly robust transformation, can be implemented in \texttt{R}.
 	
-	For the Buckley-James transformation we estimate the conditional expectation $\hat{m}$ using the random forest method with the Brier loss as full data loss.
-	The distribution of survival times is then calculated with a survival tree, as described in Section \ref{estsurv}.
+	For the Buckley--James transformation we estimate the conditional expectation $\hat{m}$ using the random forest method with the Brier loss as full data loss.
+	The survival function is then calculated with a survival tree, as described in Section \ref{estsurv}.
 	In this case, the transformed response is given by
 	\begin{equation*}
-	Y^*_{BJ}(\mathcal{O}(t)) = \Delta(t)I(T>t)+ (1-\Delta(t))\hat{m}(T, X; \hat{S}),
+	Y^*_{BJ}(\mathcal{O}(t)) = \Delta(t)I(\tilde T>t)+ (1-\Delta(t))\hat{m}(\tilde T, X; \hat{S}),
 	\end{equation*}
-	which equals the Buckley-James transformation given in equation (\ref{eq:bjtrafo}) with response $Y=h(T)=I(T>t)$ and the observations $\mathcal{O}(t)$.
+	which equals the Buckley--James transformation given in equation (\ref{eq:bjtrafo}) with the observations $\mathcal{O}(t)$.
 	
 	For the doubly robust transformation given in equation (\ref{eq:drcut}) we have to calculate $A_{1i}$, $B_{1i}$ and $C_{1i}$.
-	Again, we can plug in $h(T)=I(T>t)$, the estimated conditional expectation $\hat{m}$ and the estimated censoring function $\hat{G}$ and obtain
+	Again, we can plug in $h(\tilde T)=I(\tilde T>t)$, the estimated conditional expectation $\hat{m}$ and the estimated censoring function $\hat{G}$ and obtain
 	\begin{equation*}
-		A_{1i}(t)=\frac{\Delta_i(t)I(\tilde{T}_i >t)}{\tilde{G}(\tilde{T}_i\vert X_i)},
+		A_{1i}(t)=\frac{\Delta_i(t)I(\tilde{T}_i >t)}{\hat{G}(\tilde{T}_i\vert X_i)},
 	\end{equation*}
 	\begin{equation*}
-		B_{1i}(t) = \frac{(1-\Delta_i(t))\hat{m}(\tilde{T}_i, X_i; \hat{S})}{\hat{G}(\tilde{T}_i \vert X_i)}
+		B_{1i}(t) = \frac{(1-\Delta_i(t))\hat{m}(h(\tilde{T}_i), X_i; \hat{S})}{\hat{G}(\tilde{T}_i \vert X_i)}
 	\end{equation*}
 	and
 	\begin{equation*}
-	C_{1i}(t)
+	C_{1i}(t) = \int_{0}^{\tilde T_i}\frac{\hat{m}(h(u), X_i; \hat{S})}{\hat{G}(u\vert X_i)}d\Lambda_{\hat{G}}(u \vert X_i).
 	\end{equation*}
+	The parameter $C_{1i}(t)$ can again be calculated using a finite sum.
 	\subsubsection{Keras Model for Transformed Data}\label{keras}
 	
 	In this section we describe how the deep learning model from Algorithm \ref{alg:censor} can be implemented in \texttt{R}.
@@ -1015,14 +1020,14 @@
 	For the gradient descent we use the mean squared error as loss function, the batch size is set to 32 and we use 100 epochs.
 	In one epoch we go through the whole dataset in batches of 32, which means that we perform the gradient descent algorithm $(number of observations)/32*100$ -- times to find the optimal parameter.
 	\todo[inline]{Add dimension of weight vector (which is 25*15+15+15+1)}
-	After fitting the keras model with the training data, we evaluate its performance with the test data and the resulting IPC weighted mean squared error.
+	After fitting the keras model with the training data, we evaluate its performance with the test data and the resulting Brier Score.
 	
 	As a second deep learning model we perform 5-fold cross validation to choose a suitable penalization term $\eta$ from the sequence $(0, 0.001, 0.01, 0.1)$.
-	The performance of the resulting penalized feedforward network is also evaluated with the IPC weighted mean squared error.
+	The performance of the resulting penalized feedforward network is also evaluated with the Brier Score.
 	
 	The procedure described above is performed twice.
-	First for the response that is transformed using the Buckley-James transformation and then for the doubly robust transformed response.
-	\subsubsection{Algorithms Used for Comparison}\label{comp}
+	First for the response that is transformed using the Buckley--James transformation and then for the doubly robust transformed response.
+	\subsubsection{Models Used for Comparison}\label{comp}
 	\todo[inline]{think of better title}
 	
 	We compare the deep learning algorithms that use the transformed data to three different approaches: a Cox PH model, a penalized Cox model and a random forest model.
@@ -1041,9 +1046,8 @@
 	This can be implemented using the \texttt{R} function \texttt{rfscr} from the package \texttt{randomForestSRC}.
 	The resulting survival curve is estimated using the function \texttt{predict}.
 	
-	The performance of all of the above mentioned models is evaluated using a IPC weighted mean squared error.
+	The performance of all of the above mentioned models is evaluated using the Brier Score.
 	
-	\subsubsection{Brier Score}\label{brier-score}
 	
 	\subsection{Simulation Results}
 	In this section we compare the different methods for survival analysis, which are described in Section \ref{keras} and \ref{comp}  for each of the settings presented in Section \ref{settings}.
@@ -1060,12 +1064,12 @@
 	
 	Deep learning approaches are outperformed by other algorithms.
 	Penalized Cox and random forest result in the best estimators.
-	Doubly robust performs better than Buckley James.
+	Doubly robust performs better than Buckle--James.
 	
 	for setting 2:
 	
 	Penalized Cox and random forest are both significantly better than deep learning approaches.
-	Doubly robust performs better than Buckley James.
+	Doubly robust performs better than Buckley--James.
 	
 	for setting 3:
 	
