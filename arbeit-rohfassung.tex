@@ -155,10 +155,10 @@
 	
 	In this thesis we consider one event of interest that can either occur or not.
 	It is also possible to consider competing risks, i.e. multiple different events that are taken into account.
-	A detailed explanation of this case is for example given in \citet*[chapter~8]{bookfailuretime}.
+	A detailed explanation of this case is for example given in \citet*[Chapter~8]{bookfailuretime}.
 	We also assume that the event of interest can only take place once during the observed period.
 	It is also possible to study recurrent events, i.e. events that can happen to a subject multiple times.
-	For further details refer to \citet*[chapter~9]{bookfailuretime}.
+	For further details refer to \citet*[Chapter~9]{bookfailuretime}.
 	
 	\subsection{Censoring} \label{censoring}
 	
@@ -285,7 +285,7 @@
 	But if we are in doubt that the model is correct, the Cox PH model gives reliable results.
 	
 	As it is necessary for the performance of the Cox PH model that the PH assumption holds, there are several tests that can be performed, e.g. graphical techniques or goodness-of-fit-tests.
-	Further details can for example be found in \citet*{sabook}.
+	Further details can for example be found in \citet*[Chapter~3]{sabook}.
 	
 	If the PH assumption is not fulfilled, we can for example use a stratified Cox procedure instead, which is a modified version of the Cox PH model.
 	The general idea is to categorize the data and divide it into subgroups in a way that within each subgroup the PH assumption is met.
@@ -452,22 +452,20 @@
 	
 	In this section we will now allow for the dataset to contain censored data meaning that in some cases we cannot observe the true event time of an individual.
 	
-	The observed dataset consists of $n$ independent and identically distributed observations and is given by 
-	
-	\begin{equation*}
-	\mathcal{O} = \{(\tilde{T_i} = \min \{T_i, C_i\}, \Delta_i = I(T_i \leq C_i), X_i); i = 1,\dots,n\},
-	\end{equation*}
+	The observed dataset consists of $n$ independent and identically distributed observations and is given by
+	$$\mathcal{O} = \{(\tilde{T_i} = \min \{T_i, C_i\}, \Delta_i = I(T_i \leq C_i), X_i); i = 1,\dots,n\},$$
+	 where $\tilde{T_i}$ denotes the observed time, which is either the event time $T_i$ or the censoring time $C_i$ and $\Delta_i$ indicates, whether subject $i$ experienced the event of interest or was censored.
+	 Again, the explanatory variables are given in $X_i$.
 	 
-	 where $\tilde{T_i}$ denotes the observed time and $\Delta_i$ indicates, whether subject $i$ experienced the event of interest or was censored.
-	 
-	 We define the conditional survival functions for $T$ and $C$ as $S_0(u \vert X)=P(T>u \vert X)$ and $G_0(u \vert X)=P(C>u \vert X)$ respectively.
+	 We define the true conditional survival functions for the event time $T$ and the censoring time $C$ as $S_0(u \vert X)=P(T>u \vert X)$ and $G_0(u \vert X)=P(C>u \vert X)$ respectively.
 	 \todo{evtl zugehörige Verteilungsfunktion hier mit rein nehmen}
 	 In contrast to Section \ref{sabasics} the survival function now depends on the explanatory variables $X$.
 	 We assume that the censoring time $C$ is continuous and that the corresponding censoring mechanism is non-informative, i.e. that $C$ is independent of $T\vert X$.
 	 
 	 For further calculations we also assume that $G_0(T \vert X)\geq \varepsilon > 0$ for some $\varepsilon >0$, to ensure positivity of the conditional censoring function.
+	 We refer to this as the positivity assumption.
 	
-	The main difficulty in extending algorithm \ref{alg:nocensor} to possibly censored data is to define a suitable loss function, that can be calculated in the presence of censoring and at the same time reduces to the full data loss $L(h(T), f(X))$ if the data is not censored.
+	The main difficulty in extending Algorithm \ref{alg:nocensor} to allow for censored data is to define a suitable loss function, that can be calculated in the presence of censoring and at the same time reduces to the full data loss $L(h(T), f(X))$ if the data is not censored.
 	To close the gap between what is done in the presence and absence of censoring, we will now define \textit{censoring unbiased transformations}.
 	
 	\subsection{Censoring unbiased transformations}\label{sec:drtrafo}
@@ -475,36 +473,37 @@
 	
  	\todo{general case with Y response variable, could for example be event time}
 	
-	For prediction with right censored data it is a popular approach to replace the possibly censored responses with surrogate values.
-	This can be achieved by using an appropriate mapping $Y^*(\cdot)$.
+	For prediction with right censored data it is a popular approach to replace the possibly censored observations $\tilde T$ with surrogate values.
+	This can be achieved by using an appropriate mapping $$Y^*(\cdot): \mathbb{R}^+ \to \mathbb{R}.$$
 	The transformed values are then inserted in standard smoothing algorithms.
 	
 	In our case the key requirement is that the mapping $Y^*(\cdot)$ is a censoring unbiased transformation, which is defined as follows.
 	
 	\begin{Definition}
-	Let $Y$ be a scalar function of the full data $\mathcal{F}$ and $Y^*(\mathcal{O})$ a scalar function of the observed data $\mathcal{O}$.
+	Let $\tilde T$ be a scalar function of the full data $\mathcal{F}$ and $Y^*(\mathcal{O})$ a scalar function of the observed data $\mathcal{O}$.
 	
-	Then we call $Y^*(\mathcal{O})$ a \textit{censoring unbiased transformation (CUT)} for $Y$ if for every point $x$ in $\delta$, i.e. $x \in \delta \subset \mathbb{R}^p$:
-
+	Then $Y^*(\mathcal{O})$ is a \textit{censoring unbiased transformation (CUT)} for $\tilde T$ if for every point $X$ in $\delta$:
 	\begin{equation*}
-	E[Y^*(\mathcal{O}) \vert X = x] = E[Y \vert X=x].
+	E[Y^*(\mathcal{O}) \vert X] = E[\tilde T \vert X].
 	\end{equation*}
 	\end{Definition}
 
-	In other words, a censoring unbiased transformation maps the response $Y$ in a way that it keeps its conditional mean structure.
+	In other words, a censoring unbiased transformation maps the observed time $\tilde T$ in a way that it keeps its conditional mean structure.
 	
-	We will now take a closer look at three specific CUTs: the Buckley-James Transformation, the inverse probability of censoring weighted mapping and a doubly robust censoring unbiased transformation.
+	We will now take a closer look at three specific CUTs: the Buckley-James transformation, the inverse probability of censoring weighted mapping and a doubly robust censoring unbiased transformation.
 	
-	The Buckley-James Transformation is given by
+	The Buckley-James transformation is given by
 	
 	\begin{equation}\label{eq:bjtrafo}
-		Y_{BJ}^* (\mathcal{O}; S) = \Delta Y + (1-\Delta)m(Y,X;S),
+		Y_{BJ}^* (\mathcal{O}; S) = \Delta \tilde{T} + (1-\Delta)m(C,X;S),
 	\end{equation}
 	where
 	\begin{equation}\label{eq:condmean}
-		m(t,x;S) = E_S[T \vert T > t, X=x] = -\frac{1}{S(t\vert X=x)} \int_t^{\infty} u dS(u\vert X=x)
+		m(t,X;S) = E_S[\tilde{T} \vert \tilde T > t, X] = -\frac{1}{S(t\vert X)} \int_t^{\infty} u dS(u\vert X)
 	\end{equation}%XXX
 	and $S(\cdot\vert X)$ denotes the conditional survival function.
+	
+	%XXX explain \tilde T, C
 	
 	This transformation is rather intuitive.
 	For an uncensored subject, i.e. $\Delta = 1$, the response remains unchanged.
@@ -514,13 +513,13 @@
 		Under mild regularity conditions on the survival functions $S(\cdot\vert\cdot)$ and $G(\cdot\vert\cdot)$ it holds that $Y_{BJ}^*(\mathcal{O}; S_0)$ is a CUT.
 	\end{Theorem}
 	
-	The proof is given in appendix XXX and follows the ideas in \citet*{drcut} with $G(t\vert x)=1$ for all $(t,w)$.
+	The proof is given in appendix XXX and follows the ideas in \citet*{drcut} with $G(t\vert X)=1$ for all $(t,X)$.
 	
 	The Buckley-James Transformation has an important property.
 	Among all CUTs $Y^*(\mathcal{O})$ the mapping $Y_{BJ}^* (\mathcal{O})$ results in the best predictor of the original response, i.e.
 	
 	\begin{equation*}
-	Y_{BJ}^* (\mathcal{O})= \argmin_{Y^*(\mathcal{O})~is~a~CUT} E[ \vert Y^*(\mathcal{O}) - Y \vert ^2].
+	Y_{BJ}^* (\mathcal{O})= \argmin_{Y^*(\mathcal{O})~is~a~CUT} E[ \vert Y^*(\mathcal{O}) - \tilde T \vert ^2].
 	\end{equation*}
 	
 	On the other hand, it requires the correct specification of the survival function $S(\cdot\vert X)$.
@@ -532,7 +531,7 @@
 	This way both, the censoring and the survival distributions, are taken into account.
 	The IPCW mapping is defined as follows:
 	\begin{equation*}
-	Y_{IPCW}^*(\mathcal{O}; G) = \frac{\Delta Y}{G(Y \vert X)}.
+	Y_{IPCW}^*(\mathcal{O}; G) = \frac{\Delta \tilde T}{G(\tilde T \vert X)}.
 	\end{equation*}
 
 	For the IPCW transformation we need to estimate the conditional censoring function given the explanatory variables $G(\cdot\vert X)$.
@@ -551,7 +550,7 @@
 	It is defined as follows:
 	
 	\begin{equation}\label{eq:drcut}
-	Y_{DR}^* (\mathcal{O}; G, S) = \frac{\Delta Y}{G(Y\vert X)} + \frac{(1-\Delta)m(Y,X;S)}{G(Y \vert X)} - \int_{0}^{Y} \frac{m(c,X;S)}{G(c \vert X)} d\Lambda_G(c \vert X),
+	Y_{DR}^* (\mathcal{O}; G, S) = \frac{\Delta \tilde T}{G(\tilde T\vert X)} + \frac{(1-\Delta)m(C,X;S)}{G(C \vert X)} - \int_{0}^{\tilde T} \frac{m(c,X;S)}{G(c \vert X)} d\Lambda_G(c \vert X),
 	\end{equation}
 	with $m(c,X;S)$ as defined in equation (\ref{eq:condmean}) and the cumulative hazard function $\Lambda_G(t\vert X)=-\int_{0}^{t}1/G(u\vert X)dG(u\vert X)$.
 	
@@ -564,18 +563,18 @@
 	Then we can show the double robustness property using Theorem 3.1 in \citet*{drcut} which is reproduced below.
 	
 	\begin{Theorem}\label{thm:dr}
-		Suppose that the response $Y$ and the censoring time $C$ are continuous random variables, that they are conditionally independent given the explanatory variables $X$, and that the conditional distribution $F_0(\cdot \vert X) = 1 - G_0(\cdot \vert X)$ has a conditional density $f_0(\cdot \vert X)$.
-		Assume that $Y \leq \tau < \infty$ for some $\tau$ and that $\tilde{S}(\tau \vert X)=0$ with probability one for some conditional function $\tilde{S}(\cdot \vert X)$.
+		Suppose that the observed time $\tilde T$ and the censoring time $C$ are continuous random variables, that they are conditionally independent given the explanatory variables $X$, and that the conditional distribution $F_0(\cdot \vert X) = 1 - G_0(\cdot \vert X)$ has a conditional density $f_0(\cdot \vert X)$.
+		Assume that $\tilde T \leq \tau < \infty$ for some $\tau$ and that $\tilde{S}(\tau \vert X)=0$ with probability one for some conditional function $\tilde{S}(\cdot \vert X)$.
 		Suppose further that $\tilde{G}(\tau \vert X)\geq \varepsilon > 0$ for some $\varepsilon$ and conditional survival function $\tilde{G}(\cdot \vert X)$, with corresponding conditional density $\tilde{g}(\cdot\vert X)$.
-		Assume that $\tilde{g}(\cdot\vert X=x)$ is absolutely continuous with respect to $g_0(\cdot\vert X=x)$ for all $x$.
-		We will use the convention that $m(y,x;\tilde{S})$ is set to zero if $\tilde{S}(y \vert X=x)=0$.
+		Assume that $\tilde{g}(\cdot\vert X)$ is absolutely continuous with respect to $g_0(\cdot\vert X)$ for all $X$.
+		We will use the convention that $m(t,X;\tilde{S})$ is set to zero if $\tilde{S}(t \vert X)=0$.
 		Then, if either $S_0(\cdot\vert X)$ or $G_0(\cdot\vert X)$ are specified correctly, i.e. $\tilde{S}(\cdot\vert X)=S_0(\cdot\vert X)$ or $\tilde{G}(\cdot\vert X)=G_0(\cdot\vert X)$, it holds that
 		\begin{equation*}
-		E[Y_{d}^*(\mathcal{O};\tilde{G}, \tilde{S})\vert X] = E[Y \vert X],
+		E[Y_{d}^*(\mathcal{O};\tilde{G}, \tilde{S})\vert X] = E[\tilde T \vert X],
 		\end{equation*}
 		with 
 		\begin{equation}\label{eq:drcut2}
-		Y_d^*(\mathcal{O}; G,S) = \frac{\Delta Y}{G(Y\vert X)}+\frac{(1-\Delta)m(Y,X;S)}{G(Y \vert X)}-\int_{-\infty}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}dF(c\vert X)
+		Y_d^*(\mathcal{O}; G,S) = \frac{\Delta \tilde T}{G(\tilde T\vert X)}+\frac{(1-\Delta)m(C,X;S)}{G(C \vert X)}-\int_{-\infty}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}dF(c\vert X)
 		\end{equation}
 	\end{Theorem}
 	In the following lemma we show that the transformations $Y_d^*$ and $Y_{DR}^*$ are equivalent and thus Theorem 5.1 can be applied to show that $Y_{DR}^*(\mathcal{O}; G_0, \tilde{S})$, $Y_{DR}^*(\mathcal{O}; \tilde{G}, S_0)$ and $Y_{DR}^*(\mathcal{O}; G_0, S_0)$ are each CUTs.
@@ -603,9 +602,7 @@
 		\begin{equation*}
 			\Lambda_G(c \vert X) = - \int_{0}^{c}\frac{1}{G(u\vert X)}dG(u\vert X) = - \int_{0}^{c}\frac{g(u\vert X)}{G(u\vert X)}du.
 		\end{equation*}
-		The fundamental theorem of integral calculus
-		\todo{Ist das die richtige Uebersetzung für HDI?}
-		then gives
+		The fundamental theorem of calculus then gives
 		\begin{equation*}
 		\frac{d\Lambda_G(c \vert X)}{dc} = -\frac{g(c\vert X)}{G(c\vert X)}.
 		\end{equation*}
@@ -690,7 +687,7 @@
 	If we use the incorrect model specification, that $\hat{G}(t,x)=1$ for all pairs $(t,x)$, the empirical  Buckley-James loss is equivalent to the empirical doubly robust loss, i.e. $L_{BJ}(\mathcal{O}, \beta; \hat{S})=L_{DR}(\mathcal{O}, \beta; \hat{S}, \hat{G} = 1)$.
 	\todo{evtl kurz zeigen?}
 	
-	We can now replace the full data loss function $L(h(T), f(X)))$ in algorithm \ref{alg:nocensor} with either the empirical Buckley-James loss $L_{BJ}$ or the empirical doubly robust loss $L_{DR}$ and obtain a prediction model, that can be calculated with the observed data $\mathcal{O}$.
+	We can now replace the full data loss function $L(h(T), f(X)))$ in Algorithm \ref{alg:nocensor} with either the empirical Buckley-James loss $L_{BJ}$ or the empirical doubly robust loss $L_{DR}$ and obtain a prediction model, that can be calculated with the observed data $\mathcal{O}$.
 	We refer to the resulting algorithms as the Buckley-James or the doubly robust deep learning algorithms respectively.
 	As both loss functions are censoring unbiased loss functions, we refer to the resulting algorithms as censoring unbiased deep learning (CUDL). 
 	
@@ -734,8 +731,8 @@
 	
 	This section follows the ideas presented in \citet*{basearticle} and \citet*{strawderman}.
 	
-	An other popular goal is to estimate the mean survival $E[T\vert X]$.
-	For this target parameter we use the $L_2$ loss as our full data loss.
+	Another popular goal is to estimate the mean survival $E[T\vert X]$.
+	For this target parameter we can use the $L_2$ loss as our full data loss.
 	
 	\todo[inline]{add reason why we need tau from Strawderman 2000}
 	A direct estimation of the mean survival $E[T\vert X]$ requires strong assumptions about the survival function $S$.
@@ -747,11 +744,10 @@
 		\mathcal{O}(\tau) = \{\tilde{T}_i(\tau) = \min\{T_i, C_i, \tau\}, \Delta_i(\tau) = I(\min\{T_i, \tau\}\leq C_i), X_i; i = 1, \dots , n\}.
 	\end{equation*}
 	
-	Selecting the $L_2$ loss as the full data loss and applying the CUDL algorithms to the modified data set gives us an estimator for the restricted mean survival.
+	Selecting the $L_2$ loss as the full data loss, choosing $h(t) = \min{t,\tau}$ and applying the CUDL algorithms to the modified data set gives us an estimator for the restricted mean survival.
 	
 	\subsection{Implementation Based on a Doubly Robust Transformation}\label{trafo}
-	%%maybe specify title (which algorithm?)
-	
+
 	This section relies on \citet*{basearticle}.
 	
 	We now describe how we can implement the doubly robust and Buckley-James CUDL algorithm using a specific response transformation.
@@ -906,7 +902,6 @@
 		The censoring times are also simulated according to a log-normal distribution with mean $\tilde{\mu}=\mu+0.5$ and scale parameter $\lambda = 1$.
 		In this setting approximately 36\% of our data are censored.
 	\end{setting}
-	\todo[inline]{add sentence that these results are generated in functions}
 			
 	\subsection{Implementation of the CUDL Algorithm}\label{impl}
 	For the implementation we adapted the \texttt{R} code of \citet*{basearticle} which is publicly available in one of the authors github repository \url{https://www.github.com/jonsteingrimsson/CensoringDL}.
@@ -971,15 +966,20 @@
 	When considering the IPCW and the doubly robust mapping having a denominator too close to zero can result in unstable finite sample performance.
 	This is even the case if the empirical positivity assumption holds.
 	
-	To ensure that the empirical positivity assumption holds and that the empirical censoring function is not too small a truncation time $\tau$ is introduced.
+	To ensure that the empirical positivity assumption holds and that the empirical censoring function is not too small a truncation time $\tau>0$ is introduced.
+	For truncation the general idea is to cut off the data after the truncation time $\tau$ meaning that for each observed survival time we set $\tilde{T}_i(\tau)=\min{\tilde{T}_i, \tau}$.
+	There are different methods of truncation depending on how the event indicator $\Delta_i$ is changed and the selection of the truncation time.
+	One possible approach is to set $$\Delta_i(\tau) = \Delta_i I(\tilde{T_i} \leq \tau)$$  for $i=1,\dots,n$ and choose the truncation time as the $95\%$ quantile of the observed times.
+	In this setting we interpret each observed time that has been cut off as censored and keep the event indicator for data that has not been changed.
+	The choice of truncation time leads to $5\%$ truncated data.
 	
+	A different approach that leads according to \citet*{drtrees} to the best approximation results is to set $$\Delta_i(\tau) = \Delta_i I(\tilde{T}_i\leq \tau) + I(\tilde{T}_i > \tau)$$ for $i=1,\dots,n$ and choose the truncation time as the $90\%$ quantile.
+	In this scenario we treat each subject whose observed survival time exceeds the truncation time as if they experienced the event at time $\tau$.
 	
-	
+	For the implementation we choose the truncation method as proposed by \citet*{drtrees}.
 	\subsubsection{Transformation of Survival Data}
 	
-	We now describe how the transformation of the responses $T$ described in Section \ref{trafo} can be implemented in \texttt{R}.
-	
-	We use the Buckley-James as well as the doubly robust transformation to compare their performance.
+	We now describe how the transformation of the responses $T$ described in Section \ref{trafo}, namely the Buckley-James and the doubly robust transformation, can be implemented in \texttt{R}.
 	
 	For the Buckley-James transformation we estimate the conditional expectation $\hat{m}$ using the random forest method with the Brier loss as full data loss.
 	The distribution of survival times is then calculated with a survival tree, as described in Section \ref{estsurv}.
@@ -987,7 +987,7 @@
 	\begin{equation*}
 	Y^*_{BJ}(\mathcal{O}(t)) = \Delta(t)I(T>t)+ (1-\Delta(t))\hat{m}(T, X; \hat{S}),
 	\end{equation*}
-	which equals the Buckley-James transformation given in equation (\ref{eq:bjtrafo}) with response $Y=h(T)=I(T>t)$ and the truncated observations $\mathcal{O}(t)$.
+	which equals the Buckley-James transformation given in equation (\ref{eq:bjtrafo}) with response $Y=h(T)=I(T>t)$ and the observations $\mathcal{O}(t)$.
 	
 	For the doubly robust transformation given in equation (\ref{eq:drcut}) we have to calculate $A_{1i}$, $B_{1i}$ and $C_{1i}$.
 	Again, we can plug in $h(T)=I(T>t)$, the estimated conditional expectation $\hat{m}$ and the estimated censoring function $\hat{G}$ and obtain
@@ -1003,7 +1003,7 @@
 	\end{equation*}
 	\subsubsection{Keras Model for Transformed Data}\label{keras}
 	
-	In this section we describe how the deep learning model from algorithm \ref{alg:censor} can be implemented in \texttt{R}.
+	In this section we describe how the deep learning model from Algorithm \ref{alg:censor} can be implemented in \texttt{R}.
 	
 	To predict the survival probabilities we use a feedforward network with two layers.
 	The first layer consists of 15 units and uses the relu activation function $\phi(x) = \max(0, x)$.
