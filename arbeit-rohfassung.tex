@@ -310,14 +310,14 @@
 	
 	To achieve this machine learning algorithms require the specification of a task and a performance measure.
 	A task could be to recognize whether a cat or a dog is on a picture, given examples of already classified pictures.
-	The algorithm then build a prediction model based on a given training sample.
-	In the example above the training sample consists of pictures of cats and dogs and a corresponding label, that specifies what is seen on the picture.
-	The performance measure then describes how well this task was achieved by calculating some sort of distance between the predicted label and the real label that is given in the training sample.
+	The algorithm then builds a prediction model based on a given training set.
+	In the example above the training set consists of pictures of cats and dogs and a corresponding label specifying what is seen on each picture.
+	The performance measure then describes how well this task was achieved by calculating some sort of distance between the predicted label and the real label that is given in the training set.
 	It is a key requirement to specify a suitable performance measure when applying machine learning algorithms.
 	
 	Machine learning algorithms are often classified according to what kind of experience they are allowed to have during the learning process.
 
-	The central challenge for a machine learning algorithm is that it must perform well on new and previously unseen inputs, i.e. the error measure on the test set should be as small as possible and at the same time the error measure on the training set should also be reduced.
+	The central challenge for a machine learning algorithm is that it must perform well on new and previously unseen inputs meaning that the error measure on the test set should be as small as possible and at the same time the error measure on the training set should also be reduced.
 	This means that there are two factors that determine how well a machine learning algorithm will perform:
 	make the training error small and make the gap between the training and the test error small.
 	
@@ -325,37 +325,53 @@
 	If the second task is not fullfilled, overfitting occurs. In this case, the gap between training and test error is too large.
 	
 	A common approach to reduce the possibility of overfitting is regularization.
-	In principal, regularization is any modification of a learning algorithm, that aims to reduce its generalization error but not its training error.
+	In principal, regularization is any modification of a learning algorithm, that aims to reduce its generalization error.
 	In practice this is often achieved by adding a penalty to the cost function.
 	
 	Deep Learning models are machine learning models that are based on artificial neural networks.
-	A commonly used deep learning model are deep feedforward networks that aim to approximate some function $f^*$.
+	A commonly used class of deep learning models are deep feedforward networks. Analogous to other estimators they aim to approximate some function $f^*$.
 	More precisely, given the data $x$ and the desired output $y$, the goal is to find $f^*$, such that $f^*(x)=y$.
 	This is achieved by defining a mapping $y = f(x; \beta)$ and learning the parameters $\beta$ that result in the best function approximation.
+	In this setting loss functions are used as a performance measure.
+	Possible choices include the $L_2$--loss or the Brier loss which are both further described in section \ref{censored}.
 	
 	The term 'network' suggests that the mapping $f$ is a composition of many different functions.
-	A directed acyclic graph is used to describe how these functions, often referred to as units, are composed together in the model.
+	A directed acyclic graph is used to describe how these functions are composed together in the model.
 	For example, the network could consist of a chain of $K$ functions $ f(x) = f^{(K)}\circ \dots \circ f^{(1)}(x)$.
-	In this case each function $f^{(i)},$ $i=1,\dots,K$ forms a layer and the number of composed functions $K$ gives the depth of the model.
+	In this case each function $f^{(k)}$, $k=1,\dots,K$ forms a layer and the number of composed functions $K$ gives the depth of the model.
+	The dimension of the output of each layer $f^{(k)}$ is denoted by $n_k$ and determines the width of the layer.
+	Typically these functions are vector valued and instead of thinking of the layer as a vector-to-vector function, we can interpret it as many \emph{units} that each represent a vector-to-scalar function.
+	Considering $f^{(1)}(x,y)= (x^2,2y)$ we can represent the function by the units $f^{(1)}_1 (x) = x^2$ and $f^{(1)}_2(y) = 2y$.
 	
 	The final layer is called the output layer.
 	We want to achieve that this layer produces a value that is close to the desired output $y$, i.e. for each data $x$ and corresponding label $y$: $y \approx f^*(x)$.
 	
 	The remaining layers are called hidden layers because we do not specify what output they generate.
 	We are only interested in the prediction, the output of the final layer.
-	The hidden layers are vector valued functions whose dimensions define the width of the model.
 	Before using a deep feedforward network it is necessary to determine the structure of the associated directed acyclic graph.
 	This is achieved by setting the number of units and specifying how these units are connected.
 	
-	The networks are called feedforward networks because information only travels in one direction from input to output, i.e. there are no feedback connections between the layers.
+	In the model each of the units $f^{(k)}_i$, $k=1,\dots,K$, $i = 1,\dots,n_{k}$ is associated with a vector of weights $a^{(k)}_i \in \mathbb{R}^{n_{k-1}}$, a bias term $b^{(k)}_i\in \mathbb{R}$ and an activation function $\phi: \mathbb{R} \to \mathbb{R}$.
+	The output of each unit $f^{(k)}_i$, $k=1,\dots,K$ is then calculated in the following manner
+	\begin{equation*}
+	f_i^{(k)}(y) = \phi \left(\left(a^{(k)}_i\right)^Ty + b^{(k)}_i\right),
+	\end{equation*}
+	where $y$ is the output of layer $f^{(k-1)}$.
+	These units are then combined to form the output of the whole layer which is given by $f^{(k)} = \left(f^{(k)}_1,\dots, f^{(k)}_{n_k}\right)^T$.
+	The output of the first layer $f^{(1)}$ is calculated using the data $x$ as input and $n_0$ is defined as the dimension of $x$.
+	Popular choices for the activation function are the relu activation function given by $\phi(x) = max(0,x)$ or the sigmoid activation function given by $\phi(x) = (1+e^{-x})^{-1}$.
+	The weights and the biases make up the learning parameter $\beta$.
 	
-	\todo[inline]{activation functions erklären}
-	\todo[inline]{optimize loss function/performance measure to calculate weights for each unit with gradient based optimizers}
+	The above described procedure can be used to iteratively calculate the output of the final layer.
+	
+	\todo[inline]{add sentence: learn parameter beta for example by gradient descent}
+	
+	The above described networks are called feedforward networks because information only travels in one direction from input to output, i.e. there are no feedback connections between the layers.
 	
 	When building deep feedforward networks overfitting can occur.
 	A common approach to counteract this effect is a regularization method called dropout.
 	According to \citet*{dropout} the principle idea is to randomly drop units from the neural network during each step of the learning algorithm.
-	For this method, a dropout rate $p$ must be chosen, that specifies, that a unit is included in the current iteration with probability $1-p$.
+	For this method, a dropout rate $p$ must be chosen which specifies, that a unit is included in the current iteration with probability $1-p$.
 	As a consequence, each of the hidden units must be able to perform well regardless of the other units included in the model and the co-dependence is minimized.
 	Further details about the dropout regularization can be found in \citet*{dropout}.
 	
@@ -434,7 +450,7 @@
 	
 	This section relies on \citet*{basearticle} as well as \citet*{deeplbook}.
 	
-	In this section we will now allow for the dataset to contain censored data, which means that in some cases we cannot observe the true event time of an individual.
+	In this section we will now allow for the dataset to contain censored data meaning that in some cases we cannot observe the true event time of an individual.
 	
 	The observed dataset consists of $n$ independent and identically distributed observations and is given by 
 	
@@ -444,7 +460,7 @@
 	 
 	 where $\tilde{T_i}$ denotes the observed time and $\Delta_i$ indicates, whether subject $i$ experienced the event of interest or was censored.
 	 
-	 We define the conditional survivor functions for $T$ and $C$ as $S_0(u \vert X)=P(T>u \vert X)$ and $G_0(u \vert X)=P(C>u \vert X)$ respectively.
+	 We define the conditional survival functions for $T$ and $C$ as $S_0(u \vert X)=P(T>u \vert X)$ and $G_0(u \vert X)=P(C>u \vert X)$ respectively.
 	 \todo{evtl zugehörige Verteilungsfunktion hier mit rein nehmen}
 	 In contrast to section \ref{sabasics} the survivor function now depends on the explanatory variables $X$.
 	 We assume that the censoring time $C$ is continuous and that the corresponding censoring mechanism is non-informative, i.e. that $C$ is independent of $T\vert X$.
@@ -531,7 +547,7 @@
 	As a consequence, poor estimators of these two conditional functions can significantly degrade the performance of regression applied to the transformed data.
 	
 	A third mapping is the doubly robust mapping.
-	In this context doubly robust implies that the mapping requires a well approximation of either  $S(\cdot\vert X)$ or $G(\cdot\vert X)$, but not necessarily both.
+	In this context doubly robust implies that the mapping requires a good approximation of either  $S(\cdot\vert X)$ or $G(\cdot\vert X)$, but not necessarily both.
 	It is defined as follows:
 	
 	\begin{equation}\label{eq:drcut}
@@ -985,7 +1001,7 @@
 	The first layer consists of 15 units and uses the relu activation function $\phi(x) = \max(0, x)$.
 	As this layer is our input layer, we use the dropout rate $1-p=0.2$.
 	
-	The second layer, which is our output layer, consists of one unit and uses the sigmoid activation function, which is given by $\phi(x)=(1+e^{-t})^{-1}$.
+	The second layer, which is our output layer, consists of one unit and uses the sigmoid activation function, which is given by $\phi(x)=(1+e^{-x})^{-1}$.
 	We choose this activation function to make sure that the resulting value can be interpreted as a probability.
 	
 	For the gradient descent we use the mean squared error as loss function, the batch size is set to 32 and we use 100 epochs.
