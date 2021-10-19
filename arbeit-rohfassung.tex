@@ -151,7 +151,7 @@
 	In this case the patient enters the study as soon as the disease is diagnosed.
 	After a certain time the patient dies.
 	As the event of interest is death we will refer to the time period between study entry and death as the \emph{true survival time}.
-	In some cases we cannot observe the patient's true survival time due to censoring which will be explained in greater detail in section \ref{censoring}.
+	In some cases we cannot observe the patient's true survival time due to censoring which will be explained in greater detail in Section \ref{censoring}.
 	
 	In this thesis we consider one event of interest that can either occur or not.
 	It is also possible to consider competing risks, i.e. multiple different events that are taken into account.
@@ -220,10 +220,10 @@
 	
 	%\todo[inline]{outcome is possibly transformed: h(T) instead of T}
 	
-	For analysis and prediction we often use two important functions: the survivor function and the hazard function.
-	The survivor function $S(t) = P(T > t)$ specifies the distribution of the survival time $F(t) = 1 - S(t)$.
+	For analysis and prediction we often use two important functions: the survival function and the hazard function.
+	The survival function $S(t) = P(T > t)$ specifies the distribution of the survival time $F(t) = 1 - S(t)$.
 	It can for example be used to analyze and compare the time to event of two different groups.
-	The survivor function has three important properties: $S(t)$ is a non-increasing function, $S(0)=1$ and $S(\infty)=0$.
+	The survival function has three important properties: $S(t)$ is a non-increasing function, $S(0)=1$ and $S(\infty)=0$.
 	These properties follow directly from the relation $F(t)=1-S(t)$ and that $F$ is a proper distribution function.
 	
 	The hazard function $h(t)$, also called conditional failure rate, is given by
@@ -234,9 +234,9 @@
 	It is a measure of instantaneous potential to experience the event and can be used to identify a specific model form.
 	
 	The hazard function has two important properties: it is a non-negative function, i.e. $h(t) \geq 0$ $ \forall t$ and it has no upper bound.
-	In contrast to the survivor function $S(\cdot)$ the hazard function does not necessarily have any monotonic properties.
+	In contrast to the survival function $S(\cdot)$ the hazard function does not necessarily have any monotonic properties.
 
-	There exists a clearly defined relationship between the survivor function $S(t)$ and the hazard function $h(t)$:
+	There exists a clearly defined relationship between the survival function $S(t)$ and the hazard function $h(t)$:
 	\begin{equation*}
 	\begin{split}
 		S(t) &= \exp \left( - \int_{0}^{t}h(u)du\right) \\
@@ -333,7 +333,7 @@
 	More precisely, given the data $x$ and the desired output $y$, the goal is to find $f^*$, such that $f^*(x)=y$.
 	This is achieved by defining a mapping $y = f(x; \beta)$ and learning the parameters $\beta$ that result in the best function approximation.
 	In this setting loss functions are used as a performance measure.
-	Possible choices include the $L_2$--loss or the Brier loss which are both further described in section \ref{censored}.
+	Possible choices include the $L_2$--loss or the Brier loss which are both further described in Section \ref{censored}.
 	
 	The term 'network' suggests that the mapping $f$ is a composition of many different functions.
 	A directed acyclic graph is used to describe how these functions are composed together in the model.
@@ -381,7 +381,7 @@
 	\section{Deep Learning for Fully Observed Data} \label{uncensored}
 	This section follows the ideas of \citet*{basearticle} and insights described in \citet*{deeplbook}.
 	
-	As described in section \ref{sabasics}, we assume that the dataset consists for each subject $i = 1,\dots,n$ of a positive continuous failure time $T_i \in \mathbb{R}^+$ and a vector of explanatory variables $X_i = (X_{i1}, \dots , X_{ip}) \in \delta \subset \mathbb{R}^p$.
+	As described in Section \ref{sabasics}, we assume that the dataset consists for each subject $i = 1,\dots,n$ of a positive continuous failure time $T_i \in \mathbb{R}^+$ and a vector of explanatory variables $X_i = (X_{i1}, \dots , X_{ip}) \in \delta \subset \mathbb{R}^p$.
 	When evaluating a medical study these explanatory variables could for example be age, in which treatment group the patient was or the individuals oxygen concentration in blood at the beginning of the study.
 	The set $\delta$ describes the bounded space consisting of all values that the explanatory variables can take in the specific context.
 	In the example described above, a possible choice for $\delta$ could be $\delta = [0, 120] \times \{0,1,2\} \times [50, 200]$
@@ -462,7 +462,7 @@
 	 
 	 We define the conditional survival functions for $T$ and $C$ as $S_0(u \vert X)=P(T>u \vert X)$ and $G_0(u \vert X)=P(C>u \vert X)$ respectively.
 	 \todo{evtl zugehörige Verteilungsfunktion hier mit rein nehmen}
-	 In contrast to section \ref{sabasics} the survivor function now depends on the explanatory variables $X$.
+	 In contrast to Section \ref{sabasics} the survival function now depends on the explanatory variables $X$.
 	 We assume that the censoring time $C$ is continuous and that the corresponding censoring mechanism is non-informative, i.e. that $C$ is independent of $T\vert X$.
 	 
 	 For further calculations we also assume that $G_0(T \vert X)\geq \varepsilon > 0$ for some $\varepsilon >0$, to ensure positivity of the conditional censoring function.
@@ -511,7 +511,7 @@
 	If the response is censored, i.e. $\Delta = 0$, it is mapped to its conditional expectation. %%%besser formulieren, klingt bissi holprig
 	
 	\begin{Theorem}\label{thm:bj}
-		Under mild regularity conditions on the survivor functions $S(\cdot\vert\cdot)$ and $G(\cdot\vert\cdot)$ it holds that $Y_{BJ}^*(\mathcal{O}; S_0)$ is a CUT.
+		Under mild regularity conditions on the survival functions $S(\cdot\vert\cdot)$ and $G(\cdot\vert\cdot)$ it holds that $Y_{BJ}^*(\mathcal{O}; S_0)$ is a CUT.
 	\end{Theorem}
 	
 	The proof is given in appendix XXX and follows the ideas in \citet*{drcut} with $G(t\vert x)=1$ for all $(t,w)$.
@@ -523,10 +523,10 @@
 	Y_{BJ}^* (\mathcal{O})= \argmin_{Y^*(\mathcal{O})~is~a~CUT} E[ \vert Y^*(\mathcal{O}) - Y \vert ^2].
 	\end{equation*}
 	
-	On the other hand, it requires the correct specification of the survivor function $S(\cdot\vert X)$.
+	On the other hand, it requires the correct specification of the survival function $S(\cdot\vert X)$.
 	\todo[inline]{check benefits of doubly robust trafo in contrast to Buckley-James OR downsides of BJ}
 
-	In contrast to the Buckley-James transformation, which depends on the survivor function $S(\cdot\vert X)$, it is also possible to build mappings that instead depend only on the censoring mechanism.
+	In contrast to the Buckley-James transformation, which depends on the survival function $S(\cdot\vert X)$, it is also possible to build mappings that instead depend only on the censoring mechanism.
 	One example for this is the inverse probability of censoring weighted (IPCW) mapping.
 	Here, the basic idea is to weight the contribution of each uncensored observation by the inverse probability of being censored.
 	This way both, the censoring and the survival distributions, are taken into account.
@@ -561,7 +561,7 @@
 	In total, the doubly robust transformation can be interpreted as an augmented inverse probability weighted mapping.
 	For further details about the augmentation refer to \citet*{bookfailuretime}.
 		
-	Then we can show the double robustness property using theorem 3.1 in \citet*{drcut} which is reproduced below.
+	Then we can show the double robustness property using Theorem 3.1 in \citet*{drcut} which is reproduced below.
 	
 	\begin{Theorem}\label{thm:dr}
 		Suppose that the response $Y$ and the censoring time $C$ are continuous random variables, that they are conditionally independent given the explanatory variables $X$, and that the conditional distribution $F_0(\cdot \vert X) = 1 - G_0(\cdot \vert X)$ has a conditional density $f_0(\cdot \vert X)$.
@@ -578,13 +578,13 @@
 		Y_d^*(\mathcal{O}; G,S) = \frac{\Delta Y}{G(Y\vert X)}+\frac{(1-\Delta)m(Y,X;S)}{G(Y \vert X)}-\int_{-\infty}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}dF(c\vert X)
 		\end{equation}
 	\end{Theorem}
-	In the following Lemma we show that the transformations $Y_d^*$ and $Y_{DR}^*$ are equivalent and thus theorem 5.1 can be implied to show that $Y_{DR}^*(\mathcal{O}; G_0, \tilde{S})$, $Y_{DR}^*(\mathcal{O}; \tilde{G}, S_0)$ and $Y_{DR}^*(\mathcal{O}; G_0, S_0)$ are each CUTs.
+	In the following lemma we show that the transformations $Y_d^*$ and $Y_{DR}^*$ are equivalent and thus Theorem 5.1 can be applied to show that $Y_{DR}^*(\mathcal{O}; G_0, \tilde{S})$, $Y_{DR}^*(\mathcal{O}; \tilde{G}, S_0)$ and $Y_{DR}^*(\mathcal{O}; G_0, S_0)$ are each CUTs.
 	
 	\begin{Lemma}
-		Using the regularity conditions described in theorem \ref{thm:dr} it holds that $Y_{DR}^*(\mathcal{O}; G_0, \tilde{S})$, $Y_{DR}^*(\mathcal{O}; \tilde{G}, S_0)$ and $Y_{DR}^*(\mathcal{O}; G_0, S_0)$ are each CUTs.
+		Using the regularity conditions described in Theorem \ref{thm:dr} it holds that $Y_{DR}^*(\mathcal{O}; G_0, \tilde{S})$, $Y_{DR}^*(\mathcal{O}; \tilde{G}, S_0)$ and $Y_{DR}^*(\mathcal{O}; G_0, S_0)$ are each CUTs.
 	\end{Lemma}
 	\begin{proof}
-		We show the lemma by proofing that $Y_d^*$ and $Y_{DR}^*$ both perform the same transformation and as a consequence theorem \ref{thm:dr} can be applied to $Y_{DR}^*$.
+		We show the lemma by proofing that $Y_d^*$ and $Y_{DR}^*$ both perform the same transformation and as a consequence Theorem \ref{thm:dr} can be applied to $Y_{DR}^*$.
 		The first two terms of the transformation $Y_d^*$ are equal to those in the transformation $Y_{DR}^*$.
 		Thus it is sufficient to show that
 		\begin{equation*}
@@ -618,7 +618,7 @@
 		&= \int_{0}^{Y}\frac{m(c,X;S)}{G(c\vert X)}d\Lambda_G(c \vert X).
 		\end{split}
 		\end{equation*}
-		As a consequence theorem \ref{thm:dr} can also be applied for $Y_{DR}^*$ and we obtain that the doubly robust transformation is a CUT if the survivor function $S(\cdot\vert X)$ or the censoring function $G(\cdot\vert X)$ are specified correctly.
+		As a consequence Theorem \ref{thm:dr} can also be applied for $Y_{DR}^*$ and we obtain that the doubly robust transformation is a CUT if the survival function $S(\cdot\vert X)$ or the censoring function $G(\cdot\vert X)$ are specified correctly.
 	\end{proof}
 
 	\subsection{Censoring unbiased loss functions}\label{sec:cudls}
@@ -777,17 +777,17 @@
 	\end{equation}
 	and $m_0(t,x;S) = 1$ for all pairs $(t,x)$.
 	
-	The transformation described above is equal to the doubly robust CUT described in section \ref{sec:drtrafo} and thus requires that at least one of the models $T\vert X$ or $C \vert X$ is correctly specified.
+	The transformation described above is equal to the doubly robust CUT described in Section \ref{sec:drtrafo} and thus requires that at least one of the models $T\vert X$ or $C \vert X$ is correctly specified.
 	
 	We can now define the response transformed $L_2$ loss, that uses the censoring unbiased outcome transformation $D(O_i;G,S)$ as the outcome:
 	\begin{equation*}
 	L_2^*(\mathcal{O}, \beta; G,S) = \frac{1}{n} \sum_{i=1}^n (D(O_i;G,S)-\beta(X_i))^2.
 	\end{equation*}
 	
-	Our main goal is to show that a deep learning algorithm, that uses the transformed data and the response transformed $L_2$ loss, is equivalent to the CUDL algorithms presented in section \ref{sec:cudls}.
+	Our main goal is to show that a deep learning algorithm, that uses the transformed data and the response transformed $L_2$ loss, is equivalent to the CUDL algorithms presented in Section \ref{sec:cudls}.
 	As a result, the CUDL algorithms inherits the desired doubly robustness property to the transformed data algorithm.
 	
-	This equivalence is stated in theorem 1 in \citet*{basearticle} and reproduced below.
+	This equivalence is stated in Theorem 1 in \citet*{basearticle} and reproduced below.
 	
 	\begin{Theorem}\label{thm:equi}
 		Under mild regularity conditions, the prediction model created using the CUDL algorithm with the loss function $L_{DR}^{(2)}(\mathcal{O}, \beta; G,S)$ is identical to the prediction model built using the full data deep learning algorithm implemented using the loss function $L_2^*(\mathcal{O}, \beta; G,S)$.
@@ -829,7 +829,7 @@
 		 
 		 If we can show that the penalization parameter selected by minimizing the cross-validated loss with the loss $L_2^*(\mathcal{O}, \beta; G,S)$ is the same if we replace the $L_2^*$ loss by $L_{DR}^{(2)}(\mathcal{O}, \beta; G,S)$, both prediction models produce the identical output.
 		
-		To show this, we use the notation from section \ref{basicsdl}.
+		To show this, we use the notation from Section \ref{basicsdl}.
 		Recall that $a_{i,l}$ indicates whether observation $i$ is an element of the subset $K_l$.
 		
 		As $L_2^*(\mathcal{O}, \beta; G,S)$ and $L_{DR}^{(2)}(\mathcal{O}, \beta; G,S)$ are equal up to a term that does not depend on $\beta$, it holds that
@@ -847,7 +847,7 @@
 	\end{proof}
 
 	The assumptions on the conditional censoring function $G(\cdot\vert\cdot)$ are flexible enough to allow for $G(t\vert x)=1$ for all pairs $(t,x)$.
-	And as it holds that $L_{BJ}(\mathcal{O}, \beta; \hat{S})=L_{DR}(\mathcal{O}, \beta; \hat{S}, \hat{G} = 1)$, theorem \ref{thm:equi} also applies to the CUDL using the Buckley-James loss.
+	And as it holds that $L_{BJ}(\mathcal{O}, \beta; \hat{S})=L_{DR}(\mathcal{O}, \beta; \hat{S}, \hat{G} = 1)$, Theorem \ref{thm:equi} also applies to the CUDL using the Buckley-James loss.
 	
 	Theorem \ref{thm:equi} allows us to implement the CUDL algorithm using software for fully observed outcomes.
 	This leads us to the following algorithm, as described in \citet*{basearticle}:
@@ -965,16 +965,24 @@
 	
 	\subsubsection{Selecting Truncation Time to Ensure Positivity}
 	
-	\citet*{drtrees}.
+	This section is based on \citet*{drtrees}.
+	
+	For the methods described in Section \ref{censored} it is necessary to ensure that an empirical version of the positivity assumption holds meaning that for an $\varepsilon>0$ it holds for the empirical censoring function that $\hat{G}(t\vert X) \geq \varepsilon$.
+	When considering the IPCW and the doubly robust mapping having a denominator too close to zero can result in unstable finite sample performance.
+	This is even the case if the empirical positivity assumption holds.
+	
+	To ensure that the empirical positivity assumption holds and that the empirical censoring function is not too small a truncation time $\tau$ is introduced.
+	
+	
 	
 	\subsubsection{Transformation of Survival Data}
 	
-	We now describe how the transformation of the responses $T$ described in section \ref{trafo} can be implemented in \texttt{R}.
+	We now describe how the transformation of the responses $T$ described in Section \ref{trafo} can be implemented in \texttt{R}.
 	
 	We use the Buckley-James as well as the doubly robust transformation to compare their performance.
 	
 	For the Buckley-James transformation we estimate the conditional expectation $\hat{m}$ using the random forest method with the Brier loss as full data loss.
-	The distribution of survival times is then calculated with a survival tree, as described in section \ref{estsurv}.
+	The distribution of survival times is then calculated with a survival tree, as described in Section \ref{estsurv}.
 	In this case, the transformed response is given by
 	\begin{equation*}
 	Y^*_{BJ}(\mathcal{O}(t)) = \Delta(t)I(T>t)+ (1-\Delta(t))\hat{m}(T, X; \hat{S}),
@@ -1021,7 +1029,7 @@
 	
 	As a first step, we transform the responses $Y=h(T)=I(T>t)$, with the prespecified time point $t$.
 	
-	The Cox PH model, which is explained in further detail in section \ref{cox}, can be estimated in \texttt{R} using the function \texttt{coxph} from the package \texttt{survival}.
+	The Cox PH model, which is explained in further detail in Section \ref{cox}, can be estimated in \texttt{R} using the function \texttt{coxph} from the package \texttt{survival}.
 	Refer to \citet*{survival-package} for further information.
 	We then create the corresponding survival curve using the function \texttt{survfit}.
 	
@@ -1035,8 +1043,10 @@
 	
 	The performance of all of the above mentioned models is evaluated using a IPC weighted mean squared error.
 	
+	\subsubsection{Brier Score}\label{brier-score}
+	
 	\subsection{Simulation Results}
-	In this section we compare the different methods for survival analysis, which are described in section \ref{keras} and \ref{comp}  for each of the settings presented in section \ref{settings}.
+	In this section we compare the different methods for survival analysis, which are described in Section \ref{keras} and \ref{comp}  for each of the settings presented in Section \ref{settings}.
 	
 	First the data is generated according to the current setting.
 	Then, the IPC weighted mean squared error of each of the models is calculated and used as our performance measure.
@@ -1067,7 +1077,7 @@
 	\newpage
 	\section{Application to a Real World Scenario}
 	%\todo[inline]{maybe change title}
-	In this section we analyze the performance of the models described in section \ref{impl} when applied to a real world scenario.
+	In this section we analyze the performance of the models described in Section \ref{impl} when applied to a real world scenario.
 	
 	\subsection{Mayo Clinic Primary Biliary Cholangitis Data}
 	The Mayo Clinic primary biliary cholangitis data can be found in the \texttt{R} package \texttt{survival} and is provided by \citet*{survival-book}.
@@ -1154,7 +1164,7 @@
 		\subsection{Auxiliary Lemma for Theorem \ref{thm:equi}}\label{proof:strawderman}
 		
 		\begin{Lemma}\label{lem:equi}
-			Using the notation introduced in section XXX, it holds that 
+			Using the notation introduced in Section XXX, it holds that 
 			\begin{equation*}
 				A_{0i}+B_{0i}-C_{0i}=1
 			\end{equation*}
@@ -1168,7 +1178,7 @@
 			\begin{equation}\label{eq:lemma}
 			A_{0i}+B_{0i}-C_{0i} = \frac{1}{G(T_i \vert X_i)} - \int_{0}^{T_i}\frac{1}{G(u\vert X_i)}d\Lambda_G(u\vert X_i).
 			\end{equation}
-			This formulation allows us to apply lemma 1 from \citet*{strawderman}.
+			This formulation allows us to apply Lemma 1 from \citet*{strawderman}.
 			Using the notation introduced in this thesis, the aforementioned lemma gives us the following equation:
 			\begin{equation}\label{eq:straw}
 			\frac{\Delta^*_i}{G(T_i\vert X_i)} = 1 - \int_{0}^{\infty} \frac{1}{G(s\vert X_i)} dM^*(s),
