@@ -242,8 +242,8 @@
 	There exists a clearly defined relationship between the survival function $S(t)$ and the hazard function $h(t)$:
 	\begin{equation*}
 	\begin{split}
-		S(t) &= \exp \left( - \int_{0}^{t}h(u)du\right) \\
-		h(t) & = - \left[ \frac{dS(t)/dt}{S(t)}\right].
+		S(t) &={} \exp \left( - \int_{0}^{t}h(u)du\right) \\
+		h(t) & ={} - \left[ \frac{dS(t)/dt}{S(t)}\right].
 	\end{split}
 	\end{equation*}
 	As a consequence, specifying one of the two functions directly gives the other one.
@@ -545,8 +545,8 @@
 		The desired property can be proven by using the tower rule
 		\begin{equation*}
 		\begin{split}
-		E\left[Y_{IPCW}^*(\mathcal{O}; G_0)\vert X\right] &= E\left[\frac{\Delta \tilde T}{G_0(\tilde T\vert X)}\vert X\right] = E\left[E\left[\frac{\Delta \tilde T}{G_0(\tilde T\vert X)}\vert X, \tilde T\right]\vert X\right]\\
-		&= E\left[\frac{\tilde T}{G_0(\tilde T \vert X)}P(\Delta = 1 \vert X, \tilde T)\right]
+		E\left[Y_{IPCW}^*(\mathcal{O}; G_0)\vert X\right] &={} E\left[\frac{\Delta \tilde T}{G_0(\tilde T\vert X)}\vert X\right] = E\left[E\left[\frac{\Delta \tilde T}{G_0(\tilde T\vert X)}\vert X, \tilde T\right]\vert X\right]\\
+		&={} E\left[\frac{\tilde T}{G_0(\tilde T \vert X)}P(\Delta = 1 \vert X, \tilde T)\right]
 		\end{split}
 		\end{equation*}
 		Now we can use that $P(\Delta = 1\vert X, \tilde T) = 1-P(\Delta = 0\vert X, \tilde T)$ to obtain
@@ -607,8 +607,8 @@
 		Thus the lower bound of the left hand integral can be set to 0.
 		\begin{equation*}
 		\begin{split}
-		\int_{-\infty}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}dF(c\vert X) &= \int_{0}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}dF(c\vert X)\\
-		&= \int_{0}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}d(-G(c\vert X))
+		\int_{-\infty}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}dF(c\vert X) &={} \int_{0}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}dF(c\vert X)\\
+		&={} \int_{0}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}d(-G(c\vert X))
 		\end{split}
 		\end{equation*}
 		For the second step we used the relation $F(\cdot\vert X)= 1-G(\cdot\vert X)$ and that a constant term in the integrator vanishes.
@@ -623,10 +623,10 @@
 		Using this identity and the density of $G$ yields
 		\begin{equation*}
 		\begin{split}
-		\int_{-\infty}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}dF(c\vert X) &= \int_{0}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}d(-G(c\vert X))\\
-		& = \int_{0}^{Y}\frac{m(c,X;S)}{G(c\vert X)}\frac{(-g(c\vert X))}{G(c\vert X)}dc\\
-		&= \int_{0}^{Y}\frac{m(c,X;S)}{G(c\vert X)}\frac{d\Lambda_G(c \vert X)}{dc}dc\\
-		&= \int_{0}^{Y}\frac{m(c,X;S)}{G(c\vert X)}d\Lambda_G(c \vert X).
+		\int_{-\infty}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}dF(c\vert X) &={} \int_{0}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}d(-G(c\vert X))\\
+		& ={} \int_{0}^{Y}\frac{m(c,X;S)}{G(c\vert X)}\frac{(-g(c\vert X))}{G(c\vert X)}dc\\
+		&={} \int_{0}^{Y}\frac{m(c,X;S)}{G(c\vert X)}\frac{d\Lambda_G(c \vert X)}{dc}dc\\
+		&={} \int_{0}^{Y}\frac{m(c,X;S)}{G(c\vert X)}d\Lambda_G(c \vert X).
 		\end{split}
 		\end{equation*}
 		As a consequence Theorem \ref{thm:dr} can also be applied for $Y_{DR}^*$ and we obtain that the doubly robust transformation is a CUT if the survival function $S(\cdot\vert X)$ or the censoring function $G(\cdot\vert X)$ are specified correctly.
@@ -657,7 +657,7 @@
 	The doubly robust loss function is defined as
 	\begin{equation}\label{eq:dr}
 	\begin{split}
-		L_{DR}(\mathcal{O}, \beta; G_0, S_0) = & \frac{1}{n} \sum_{i=1}^n \frac{\Delta_i L(h(T_i),\beta(X_i))}{G_0(\tilde{T}_i\vert X_i)}\\
+		L_{DR}(\mathcal{O}, \beta; G_0, S_0) ={} & \frac{1}{n} \sum_{i=1}^n \frac{\Delta_i L(h(T_i),\beta(X_i))}{G_0(\tilde{T}_i\vert X_i)}\\
 		~ & + \frac{1}{n} \sum_{i=1}^n \left(\frac{(1-\Delta_i)m_L(\tilde{T_i}, X_i, \beta; S_0)}{G_0(\tilde{T_i}\vert X_i)} \right.\\
 		& - \left. \int _0^{\tilde{T_i}} \frac{m_L(u, X_i, \beta; S_0)}{G_0(u \vert X_i)} d \Lambda_{G_0}(u \vert X_i) \right),
 	\end{split}
@@ -665,8 +665,8 @@
 	where for a survival curve $S$
 	\begin{equation}\label{eq:exploss}
 	\begin{split}
-		m_L(u,x,\beta; S) &= E_S[L(h(T), \beta(X)) \vert T \geq u, X = x]\\
-		&= - \int_u^{\infty} \frac{L(h(t), \beta(x))}{S(u \vert w)} dS(t\vert w)
+		m_L(u,x,\beta; S) &={} E_S[L(h(T), \beta(X)) \vert T \geq u, X = x]\\
+		&={} - \int_u^{\infty} \frac{L(h(t), \beta(x))}{S(u \vert w)} dS(t\vert w)
 	\end{split}
 	\end{equation}
 	and $\Lambda_G(u\vert X) = - \int_0^u  1/ G(t\vert X)dG(t \vert X)$ is the cumulative hazard function.
@@ -714,7 +714,7 @@
 	Using the Brier loss as the full data loss in Equation (\ref{eq:dr}) results in the doubly robust Brier loss, which is given by
 	\begin{equation*}
 	\begin{split}
-		L_{DR, t}(\mathcal{O}(t),\beta; \hat{G},\hat{S}) &=  \frac{1}{n} \sum_{i=1}^n \frac{\Delta_i(t)(I(\tilde{T}_i \geq t)-\beta(X_i))^2}{\hat{G}(\tilde{T}_i \vert X_i)}\\
+		L_{DR, t}(\mathcal{O}(t),\beta; \hat{G},\hat{S}) &={}  \frac{1}{n} \sum_{i=1}^n \frac{\Delta_i(t)(I(\tilde{T}_i \geq t)-\beta(X_i))^2}{\hat{G}(\tilde{T}_i \vert X_i)}\\
 		& + \frac{1}{n} \sum_{i=1}^n \frac{(1-\Delta_i(t))m_{L_2,t}(\tilde{T}_i(t),X_i,\beta; \hat{S})}{\hat{G}(\tilde{T}_i(t) \vert X_i)}\\
 		& - \int_{0}^{\tilde{T}_i(t)} \frac{m_{L_2,t}(u,X_i,\beta; \hat{S})d\hat{\Lambda}_G(u\vert X_i)}{\hat{G}(u \vert X_i)},
 	\end{split}
@@ -798,7 +798,7 @@
 		Using the notation we introduced earlier in this section, we can rewrite the doubly robust loss function with the $L_2$ loss as the full data loss as:
 		\begin{equation}\label{eq:rwdr}
 		\begin{split}
-		L_{DR}^{(2)}(\mathcal{O}, \beta; G,S) = \frac{1}{n} \sum_{i=1}^n & \left((A_{2i}+B_{2i}-C_{2i}) - 2(A_{1i}+B_{1i}-C_{1i})\beta(X_i) \right.\\
+		L_{DR}^{(2)}(\mathcal{O}, \beta; G,S) ={} \frac{1}{n} \sum_{i=1}^n & \left((A_{2i}+B_{2i}-C_{2i}) - 2(A_{1i}+B_{1i}-C_{1i})\beta(X_i) \right.\\
 		& \left.+ (A_{0i}+B_{0i}-C_{0i})\beta(X_i)^2\right).
 		\end{split}
 		\end{equation}
@@ -841,7 +841,7 @@
 		\begin{equation*}
 		\begin{split}
 		 &\argmin_{m \in \{1,\dots, M\}}\sum_{\ell=1}^{D} \sum_{i=1}^{n} a_{i,\ell} L_2^*(\mathcal{O}, \beta; G,S)\\
-		  = &\argmin_{m \in \{1,\dots, M\}}\sum_{\ell=1}^{D} \sum_{i=1}^{n} a_{i,\ell} L_{DR}^{(2)}(\mathcal{O}, \beta; G,S),
+		  ={} &\argmin_{m \in \{1,\dots, M\}}\sum_{\ell=1}^{D} \sum_{i=1}^{n} a_{i,\ell} L_{DR}^{(2)}(\mathcal{O}, \beta; G,S),
 		 \end{split}
 		\end{equation*}
 		which completes the proof.
@@ -952,9 +952,9 @@
 	Using this and plugging in the estimator of the survival curve $\hat{S}(\cdot\vert X)$ results in
 	\begin{equation*}
 	\begin{split}
-	\hat{m}_{k,t} (u, X_i; \hat{S}) &= E_{\hat{S}}[h^k(T)\vert T \geq u, X=X_i]\\
-	&=-\frac{1}{\hat{S}(u\vert X_i)}\int_u^{\infty}I(r> t)^kd\hat{S}(r\vert X_i)\\
-	&=-\frac{1}{\hat{S}(u\vert X_i)}\int_u^{\infty}I(r> t)d\hat{S}(r\vert X_i),
+	\hat{m}_{k,t} (u, X_i; \hat{S}) &={} E_{\hat{S}}[h^k(T)\vert T \geq u, X=X_i]\\
+	&={}-\frac{1}{\hat{S}(u\vert X_i)}\int_u^{\infty}I(r> t)^kd\hat{S}(r\vert X_i)\\
+	&={}-\frac{1}{\hat{S}(u\vert X_i)}\int_u^{\infty}I(r> t)d\hat{S}(r\vert X_i),
 	\end{split}
 	\end{equation*}
 	for $k=1,2$.
@@ -1072,6 +1072,13 @@
 	Penalized Cox and random forest result in the best estimators.
 	Doubly robust performs better than Buckle--James.
 	
+	\begin{figure}
+		\centering	
+		\input{../plots/setting1.tex}
+		\vspace{-0.3cm}
+		\caption{Comparison of the resulting IPCW weighted mean squared error for Setting 1. BJVCUDL denotes the CUDL algorithm that}
+ 	\end{figure}
+	
 	for setting 2:
 	
 	Penalized Cox and random forest are both significantly better than deep learning approaches.
@@ -1157,32 +1164,32 @@
 			For the first term we obtain:
 			\begin{equation*}
 			\begin{split}
-			E[\Delta Y\vert X] &= E[E[\Delta Y \vert Y, X]\vert X] = E[Y P(\Delta = 1\vert Y,X)\vert X]\\
-			&= E[Y G(Y\vert X)\vert X] = \int_{0}^{\tau} y G(y\vert X)d(1-S(y\vert X))\\
-			&= - \int_{0}^{\tau} y G(y\vert X)dS(y\vert X)
+			E[\Delta Y\vert X] &={} E[E[\Delta Y \vert Y, X]\vert X] = E[Y P(\Delta = 1\vert Y,X)\vert X]\\
+			&={} E[Y G(Y\vert X)\vert X] = \int_{0}^{\tau} y G(y\vert X)d(1-S(y\vert X))\\
+			&={} - \int_{0}^{\tau} y G(y\vert X)dS(y\vert X)
 			\end{split}
 			\end{equation*}
 			For the second term we obtain:
 			\begin{equation*}
 			\begin{split}
-			E[(1-\Delta)m(Y,X;S)] &= E[E[(1-\Delta)m(Y,X;S)\vert Y,X]\vert X]\\
-			&= E[m(Y,X;S)P(\Delta = 0\vert Y, X)\vert X]\\
-			&= E[m(Y,X;S)S(Y\vert X)\vert X]\\
-			&= E\left[-\frac{S(Y\vert X)}{S_0(Y\vert X)}\int_{Y}^{\tau}ydS_0(y\vert X)\right]\\
-			&= \int_{0}^{\tau}\frac{S(c\vert X)}{S_0(c\vert X)}\int_{Y}^{\tau}ydS_0(y\vert X)dG(c\vert X)\\
-			&= \int_0^{\infty}\int_0^{\infty} \frac{S(c\vert X)}{S_0(c\vert X)} I(c <y<\tau) y dS_0(y\vert X)dG(c\vert X)\\
-			&= \int_0^{\tau}y\int_0^y \frac{S(c\vert X)}{S_0(c\vert X)} dG(c\vert X)dS_0(y\vert X)
+			E[(1-\Delta)m(Y,X;S)] &={} E[E[(1-\Delta)m(Y,X;S)\vert Y,X]\vert X]\\
+			&={} E[m(Y,X;S)P(\Delta = 0\vert Y, X)\vert X]\\
+			&={} E[m(Y,X;S)S(Y\vert X)\vert X]\\
+			&={} E\left[-\frac{S(Y\vert X)}{S_0(Y\vert X)}\int_{Y}^{\tau}ydS_0(y\vert X)\right]\\
+			&={} \int_{0}^{\tau}\frac{S(c\vert X)}{S_0(c\vert X)}\int_{Y}^{\tau}ydS_0(y\vert X)dG(c\vert X)\\
+			&={} \int_0^{\infty}\int_0^{\infty} \frac{S(c\vert X)}{S_0(c\vert X)} I(c <y<\tau) y dS_0(y\vert X)dG(c\vert X)\\
+			&={} \int_0^{\tau}y\int_0^y \frac{S(c\vert X)}{S_0(c\vert X)} dG(c\vert X)dS_0(y\vert X)
 			\end{split}
 			\end{equation*}
 			Combining both and setting $S=S_0$ yields
 			\begin{equation*}
 			\begin{split}
 			E[Y_{BJ}^*(\mathcal{O}; S_0)\vert X] &= E[\Delta Y\vert X] + E[(1-\Delta)m(Y,X;S_0)]\\
-			&= - \int_{0}^{\tau} y G(y\vert X)dS_0(y\vert X) + \int_0^{\tau}y\int_0^y \frac{S_0(c\vert X)}{S_0(c\vert X)} dG(c\vert X)dS_0(y\vert X)\\
-			&= - \int_{0}^{\tau} y \left[G(y\vert X)-\int_0^ydG(c\vert X)\right]dS_0(y\vert X)\\
-			&= - \int_{0}^{\tau} y \left[G(y\vert X)-(G(y\vert X)-1)\right]dS_0(y\vert X)\\
-			&= - \int_{0}^{\tau} ydS_0(y\vert X)\\
-			&= E[Y\vert X].
+			&={} - \int_{0}^{\tau} y G(y\vert X)dS_0(y\vert X) + \int_0^{\tau}y\int_0^y \frac{S_0(c\vert X)}{S_0(c\vert X)} dG(c\vert X)dS_0(y\vert X)\\
+			&={} - \int_{0}^{\tau} y \left[G(y\vert X)-\int_0^ydG(c\vert X)\right]dS_0(y\vert X)\\
+			&={} - \int_{0}^{\tau} y \left[G(y\vert X)-(G(y\vert X)-1)\right]dS_0(y\vert X)\\
+			&={} - \int_{0}^{\tau} ydS_0(y\vert X)\\
+			&={} E[Y\vert X].
 			\end{split}
 			\end{equation*}
 		\end{proof}
@@ -1217,28 +1224,28 @@
 			Now we set $ \Delta^*_i=1$ for all $i=1,\dots,n$ and take a closer look at the definition of the function $M^*(s)$.
 			\begin{equation*}
 			\begin{split}
-			M^*(s) &= I\{T_i \leq s, \Delta^*_i = 0\} - \int_{0}^s I\{T_i\geq u\}d\Lambda_G(u\vert X_i)\\
-			& = - \int_{0}^s I\{T_i\geq u\}d\Lambda_G(u\vert X_i)\\
-			& = - \int_0^{min\{T_i,s\}}d\Lambda_G(u\vert X_i)\\
-			& = - \left(\Lambda_G(min\{T_i,s\}\vert X_i)-\Lambda_G(0\vert X_i)\right)\\
-			& = - \Lambda_G(min\{T_i,s\}\vert X_i)
+			M^*(s) &={} I\{T_i \leq s, \Delta^*_i = 0\} - \int_{0}^s I\{T_i\geq u\}d\Lambda_G(u\vert X_i)\\
+			& ={} - \int_{0}^s I\{T_i\geq u\}d\Lambda_G(u\vert X_i)\\
+			& ={} - \int_0^{min\{T_i,s\}}d\Lambda_G(u\vert X_i)\\
+			& ={} - \left(\Lambda_G(min\{T_i,s\}\vert X_i)-\Lambda_G(0\vert X_i)\right)\\
+			& ={} - \Lambda_G(min\{T_i,s\}\vert X_i)
 			\end{split}
 			\end{equation*}
 			Now we can plug in our choice of $\Delta^*_i$ and $M^*(s)$ to equation (\ref{eq:straw}).
 			\begin{equation}\label{eq:straw_trafo}
 			\begin{split}
-			\frac{1}{G(T_i\vert X_i)} &= 1 + \int_{0}^{\infty} \frac{1}{G(s\vert X_i)} d\Lambda_G(min\{T_i,s\}\vert X_i)\\
-			&= 1 + \int_{0}^{T_i} \frac{1}{G(s\vert X_i)} d\Lambda_G(s\vert X_i) + \int_{T_i}^{\infty} \frac{1}{G(s\vert X_i)} d\Lambda_G(T_i\vert X_i)\\
-			& = 1 + \int_{0}^{T_i} \frac{1}{G(s\vert X_i)} d\Lambda_G(s\vert X_i)
+			\frac{1}{G(T_i\vert X_i)} &={} 1 + \int_{0}^{\infty} \frac{1}{G(s\vert X_i)} d\Lambda_G(min\{T_i,s\}\vert X_i)\\
+			&={} 1 + \int_{0}^{T_i} \frac{1}{G(s\vert X_i)} d\Lambda_G(s\vert X_i) + \int_{T_i}^{\infty} \frac{1}{G(s\vert X_i)} d\Lambda_G(T_i\vert X_i)\\
+			& ={} 1 + \int_{0}^{T_i} \frac{1}{G(s\vert X_i)} d\Lambda_G(s\vert X_i)
 			\end{split}
 			\end{equation}
 		
 			Combining equation (\ref{eq:lemma}) and (\ref{eq:straw_trafo}) now yields:
 			\begin{equation*}
 			\begin{split}
-			A_{0i}+B_{0i}-C_{0i}&=\frac{1}{G(T_i \vert X_i)} - \int_{0}^{T_i}\frac{1}{G(u\vert X_i)}d\Lambda_G(u\vert X_i)\\
-			&= 1 + \int_{0}^{T_i} \frac{1}{G(s\vert X_i)} d\Lambda_G(s\vert X_i)  - \int_{0}^{T_i}\frac{1}{G(u\vert X_i)}d\Lambda_G(u\vert X_i)\\
-			&= 1.
+			A_{0i}+B_{0i}-C_{0i}&={}\frac{1}{G(T_i \vert X_i)} - \int_{0}^{T_i}\frac{1}{G(u\vert X_i)}d\Lambda_G(u\vert X_i)\\
+			&={} 1 + \int_{0}^{T_i} \frac{1}{G(s\vert X_i)} d\Lambda_G(s\vert X_i)  - \int_{0}^{T_i}\frac{1}{G(u\vert X_i)}d\Lambda_G(u\vert X_i)\\
+			&={} 1.
 			\end{split}
 			\end{equation*}
 		\end{proof}
