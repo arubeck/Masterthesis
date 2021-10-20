@@ -133,14 +133,26 @@
 	\pagenumbering{arabic}
 	%\setcounter{page}{2}
 	\section{Introduction} \label{introduction}
-	- growing importance of machine learning in many areas, as medicine
-	- many different approaches
-	- problem: treatment of missing data
-	- need specialized techniques as in contrast to standard regression or classification tasks the outcome can for example often not be fully observed
 	
+	Medicine, time to event analysis, missing data, want to apply ml algorithms as ...
+	Machine learning has gained more and more interest in the last decades.
+	The algorithms are of growing importance in many areas and can be extended to various types of data.
+	
+	problem: treatment of missing data;
+	need specialized techniques as in contrast to standard regression or classification tasks the outcome can for example often not be fully observed
+	
+	In this thesis we describe XXX
+	We start by pointing out the main ideas of survival analysis in Section~\ref{sec:sa}.
+	The concept of censoring, the layout of survival data, as well as parametric and semiparametric approaches to survival analysis are described.
+	Then we briefly describe deep learning focusing on feedforward networks.
+	In Section~\ref{uncensored} we illustrate how deep learning can be used to analyze survival data in the case where no observation is censored.
+	The main part of this thesis is Section~\ref{censored} where we consider censored data and how deep learning algorithms can be extended to account for this setting.
+	For this we introduce censoring unbiased loss functions and how they can be used to estimate survival probabilities and restricted mean survival.
+	Then we show that deep feedforward networks that use the censoring unbiased loss functions are equivalent to feedforward networks that use the $L_2$ loss with transformed data.
+	The resulting algorithms are analyzed in a simulation study and tested using the Mayo clinic primary biliary cholangitis data. 
 	\newpage
 	
-	\section{Principles of Survival Analysis}
+	\section{Principles of Survival Analysis}\label{sec:sa}
 		
 	In this section, following \citet*{sabook} and \citet*{mathsabook}, we briefly describe the main ideas of survival analysis, the concept of censoring, and parametric and semiparametric approaches to the problem of estimating survival times.
 	
@@ -737,8 +749,7 @@
 	
 	Another popular goal is to estimate the mean survival $E[T\vert X]$.
 	For this target parameter we can use the $L_2$ loss as our full data loss and set $h(t)=t$.
-	
-	\todo[inline]{add reason why we need tau from Strawderman 2000}
+
 	A direct estimation of the mean survival $E[T\vert X]$ requires strong assumptions.
 	This is why we alternatively estimate the restricted mean survival $E[\min(T, \tau)\vert X]$ for a fixed constant $\tau$.
 	
@@ -749,6 +760,8 @@
 	\end{equation*}
 	
 	Selecting the $L_2$ loss as the full data loss, choosing $h(t) = \min{t,\tau}$ and applying the CUDL algorithms to the modified data set gives us an estimator for the restricted mean survival.
+	
+	For a more detailed analysis of the estimation of restricted mean survival refer to \citet*{strawderman}. 
 	
 	\subsection{Implementation Based on a Doubly Robust Transformation}\label{trafo}
 
@@ -910,22 +923,22 @@
 	\end{setting}
 			
 	\subsection{Implementation of the CUDL Algorithm}\label{impl}
-	For the implementation we adapted the \texttt{R} code of \citet*{basearticle} which is publicly available in one of the authors github repository \url{https://www.github.com/jonsteingrimsson/CensoringDL}.
+	For the implementation we adapted the \texttt{R} code of \citet*{basearticle} which is publicly available in one of the authors GitHub repository \url{https://www.github.com/jonsteingrimsson/CensoringDL}.
 		
 	\subsubsection{Estimating the Survival Curves $S_0(\cdot\vert\cdot)$ and $G_0(\cdot\vert\cdot)$}\label{estsurv}
 	This section follows the ideas presented in \citet*{drcut} and \citet*{drtrees}.
 	
-	If the censoring time $C$ is completely independent of both, the event time $T$ and the explanatory variables $X$, the conditional censoring function $\tilde{G}(\cdot\vert X)=\tilde{G}(\cdot)$ can be efficiently estimated with the Kaplan-Meier (KM) estimator.
+	If the censoring time $C$ is completely independent of both, the event time $T$ and the explanatory variables $X$, the conditional censoring function $\tilde{G}(\cdot\vert X)=\tilde{G}(\cdot)$ can be efficiently estimated with the Kaplan--Meier (KM) estimator.
 	The KM estimator for the censoring function is given by
 	\begin{equation*}
 		\hat{G}(t) = \prod_{i:\text{~} \tilde T_{(i)} \leq t} \left(1-\frac{1}{\#\{j: \tilde T_{(j)} \geq\tilde T_{(i)} \}}\right)^{1-\Delta_i},
 	\end{equation*}
 	where $\tilde T_{(1)}<\dots<\tilde T_{(n)}$ are the increasingly ordered observed times.
 	
-	For example if we consider that censoring is caused by the end of the study, the above stated independence assumption is met and the conditional censoring time can be computed using the KM estimator.
+	For example if we consider that censoring is caused by the end of the study, the independence assumption stated above is met and the conditional censoring time can be computed using the KM estimator.
 	
 	To minimize the required number of assumptions and to cover previously excluded cases, we chose to estimate the censoring survival curve $G_0(t \vert X)$ using the survival tree method.
-	This tree based method extends the ph regression to tree-structured relative risk functions.
+	This tree-based method extends the PH regression to tree-structured relative risk functions.
 	The estimate is implemented in \texttt{R} in the following way.
 	First, we fit a survival tree using the function \texttt{rpart} with all tuning parameters set to their default values.
 	The function is provided in the package \texttt{rpart} and explained in greater detail in \citet*{rpart}.
@@ -938,7 +951,7 @@
 	In \texttt{R} this estimator can be implemented using the function \texttt{rfscr} from the package \texttt{randomForestSRC}. 
 	%For a detailed explanation refer to \citet*{drtrees}.
 	
-	It is possible to choose different estimators for $S_0(\cdot\vert X)$ and $G_0(\cdot\vert X)$ respectively.
+	It is possible to choose different estimation techniques for $S_0(\cdot\vert X)$ and $G_0(\cdot\vert X)$ respectively.
 	
 	When choosing the estimators it is important to avoid using an estimator for one of the functions that relies on the estimator of the other.
 	This is because it would negatively impact the doubly robustness property, if we specify one of the estimators incorrectly and thus affect the consistency of the other.
@@ -959,7 +972,7 @@
 	\end{equation*}
 	for $k=1,2$.
 	Because $h(T)$ is an indicator function, the conditional expectation does no longer depend on $k$.
-	In this thesis, when estimating the survival curve we always use discrete estimators having jumps at the finite observed event times $0=T_{(0)}<T_{(1)}<\dots<T_{(n)}$.
+	In this thesis, when estimating the survival curve we always use discrete estimators which have jumps at the finite observed event times $0=T_{(0)}<T_{(1)}<\dots<T_{(n)}$.
 	As a consequence the integral is in fact a finite sum, given by
 	\begin{equation*}
 	\hat{m}_t (u, X_i; \hat{S}) = -\frac{1}{\hat{S}(u\vert X_i)}\sum_{i=1}^n I(T_{(i)}>t)(T_{(i)}-T_{(i-1)}),
@@ -970,18 +983,18 @@
 	
 	This section relies on \citet*{drtrees}.
 	
-	For the methods described in Section \ref{censored} it is necessary to ensure that an empirical version of the positivity assumption holds meaning that for an $\varepsilon>0$ it holds for the empirical censoring function that $\hat{G}(t\vert X) \geq \varepsilon$.
-	When considering the IPCW and the doubly robust mapping having a denominator too close to zero can result in unstable finite sample performance.
+	For the methods described in Section \ref{censored} it is necessary to ensure that an empirical version of the positivity assumption holds meaning that for some $\varepsilon>0$ it holds for the empirical censoring function that $\hat{G}(t\vert X) \geq \varepsilon$.
+	When computing the IPCW and the doubly robust mapping, having a denominator too close to zero can result in unstable finite sample performance.
 	This is even the case if the empirical positivity assumption holds.
 	
 	To ensure that the empirical positivity assumption holds and that the empirical censoring function is not too small a truncation time $\tau>0$ is introduced.
-	For truncation the general idea is to cut off the data after the truncation time $\tau$ meaning that for each observed survival time we set $\tilde{T}_i(\tau)=\min{\tilde{T}_i, \tau}$.
-	There are different methods of truncation depending on how the event indicator $\Delta_i$ is changed and the selection of the truncation time.
+	The general idea of truncation is to cut off the data after the truncation time $\tau$ meaning that for each observed survival time we set $\tilde{T}_i(\tau)=\min(\tilde{T}_i, \tau)$.
+	There are different methods of truncation depending on how the event indicator $\Delta_i$ is changed and how the truncation time is selected.
 	One possible approach is to set $$\Delta_i(\tau) = \Delta_i I(\tilde{T_i} \leq \tau)$$  for $i=1,\dots,n$ and choose the truncation time as the $95\%$ quantile of the observed times.
 	In this setting we interpret each observed time that has been cut off as censored and keep the event indicator for data that has not been changed.
 	The choice of truncation time leads to $5\%$ truncated data.
 	
-	A different approach that leads according to \citet*{drtrees} to the best approximation results is to set $$\Delta_i(\tau) = \Delta_i I(\tilde{T}_i\leq \tau) + I(\tilde{T}_i > \tau)$$ for $i=1,\dots,n$ and choose the truncation time as the $90\%$ quantile.
+	A different approach, argued by \citet*{drtrees} on the basis of superior empirical results, is to set $$\Delta_i(\tau) = \Delta_i I(\tilde{T}_i\leq \tau) + I(\tilde{T}_i > \tau)$$ for $i=1,\dots,n$ and choose the truncation time as the $90\%$ quantile.
 	In this scenario we treat each subject whose observed survival time exceeds the truncation time as if they experienced the event at time $\tau$.
 	
 	For the implementation we choose the truncation method as proposed by \citet*{drtrees}.
@@ -1014,15 +1027,16 @@
 	For comparison we split each dataset in a training and a test set.
 	Analogous to \citet*{basearticle} we randomly chose $20\%$ of the data as our test set.
 	%XXX want to have the same proportion of censored and uncensored observations
+	\todo[inline]{alternativer Titel: competing methods}
 	\subsubsection{Keras Model for Transformed Data}\label{keras}
 	
 	In this section we describe how the deep learning model from Algorithm \ref{alg:censor} can be implemented in \texttt{R}.
 	
 	To predict the survival probabilities we use a feedforward network with two layers.
 	The first layer consists of 15 units and uses the relu activation function $\phi(x) = \max(0, x)$.
-	As this layer is our input layer, we use the dropout rate $1-p=0.2$.
+	As proposed in \citet*{deeplbook} we use the dropout rate $1-p=0.2$ for the input layer.
 	
-	The second layer, which is our output layer, consists of one unit and uses the sigmoid activation function, which is given by $\phi(x)=(1+e^{-x})^{-1}$.
+	The second layer, which is our output layer, consists of one unit and uses the sigmoid activation function $\phi(x)=(1+e^{-x})^{-1}$.
 	We choose this activation function to make sure that the resulting value can be interpreted as a probability.
 	
 	For the gradient descent we use the mean squared error as loss function, the batch size is set to 32 and we use 100 epochs.
@@ -1076,7 +1090,7 @@
 		\centering	
 		\input{../plots/setting1.tex}
 		\vspace{-0.3cm}
-		\caption{Comparison of the resulting IPCW weighted mean squared error for Setting 1. BJVCUDL denotes the CUDL algorithm that}
+		\caption{Comparison of the resulting IPCW weighted mean squared error for Setting 1. Lower values indicate better performance. BJCUDL and drCUDL are the CUDL algorithms that use the Buckley--James and the doubly robust transformation respectively. The Cox PH model and the penalized Cox PH model are denoted by cox and pencox. Rand is the random forest procedure.}
  	\end{figure}
 	
 	for setting 2:
@@ -1084,12 +1098,32 @@
 	Penalized Cox and random forest are both significantly better than deep learning approaches.
 	Doubly robust performs better than Buckley--James.
 	
+	\begin{figure}
+		\centering	
+		\input{../plots/setting2.tex}
+		\vspace{-0.3cm}
+		\caption{Comparison of the resulting IPCW weighted mean squared error for Setting 2. Lower values indicate better performance. BJCUDL and drCUDL are the CUDL algorithms that use the Buckley--James and the doubly robust transformation respectively. The Cox PH model and the penalized Cox PH model are denoted by cox and pencox. Rand is the random forest procedure.}
+	\end{figure}
+	
 	for setting 3:
+	
+	\begin{figure}
+		\centering	
+		\input{../plots/setting3.tex}
+		\vspace{-0.3cm}
+		\caption{Comparison of the resulting IPCW weighted mean squared error for Setting 3. Lower values indicate better performance. BJCUDL and drCUDL are the CUDL algorithms that use the Buckley--James and the doubly robust transformation respectively. The Cox PH model and the penalized Cox PH model are denoted by cox and pencox. Rand is the random forest procedure.}
+	\end{figure}
 	
 	Same as for setting 1 and 2.
 	
 	setting 4:
 	
+	\begin{figure}
+		\centering	
+		\input{../plots/setting4.tex}
+		\vspace{-0.3cm}
+		\caption{Comparison of the resulting IPCW weighted mean squared error for Setting 4. Lower values indicate better performance. BJCUDL and drCUDL are the CUDL algorithms that use the Buckley--James and the doubly robust transformation respectively. The Cox PH model and the penalized Cox PH model are denoted by cox and pencox. Rand is the random forest procedure.}
+	\end{figure}
 	
 
 	\newpage
@@ -1132,10 +1166,29 @@
 	%\todo[inline]{maybe change title}
 	
 	\todo[inline]{evaluate algorithms with data set}
+	
+	\begin{figure}
+		\centering	
+		\input{../plots/realData.tex}
+		\vspace{-0.3cm}
+		\caption{Comparison of the resulting IPCW weighted mean squared error for the PBC data. Lower values indicate better performance. BJCUDL and drCUDL are the CUDL algorithms that use the Buckley--James and the doubly robust transformation respectively. The Cox PH model and the penalized Cox PH model are denoted by cox and pencox. Rand is the random forest procedure.}
+	\end{figure}
+
 	\todo[inline]{compare resulting error}
 	\newpage
+	
 	\section{Conclusion}
-	nochmal wiederholen was passiert ist
+	In this thesis we briefly described the main concepts of survival analysis and deep learning respectively.
+	Then we analyzed how feedforward networks can be applied to uncensored data.
+	In the main part we considered censored data and studied how existing algorithms can be extended to survival data.
+	To achieve this we first introduced the concept of censoring unbiased transformations which preserve the conditional mean structure of the data. %add Buckley--James and doubly robust transformation
+	These transformations were then applied to full data loss functions which resulted in the class of censoring unbiased deep learning algorithms.
+	Then we proved that these algorithms are equivalent to deep learning algorithms that use the full data loss with transformed data as input.
+	As a next step we evaluated the performance of these deep learning algorithms in four different settings.
+	%add results
+	To conclude this thesis we also applied the methods to the Mayo clinic primary biliary cholangitis data.
+	
+	
 	
 	evtl als Ausblick: Erweiterung auf competing risks, time dependent explanatory variables, recurrent events; Test different estimators for $S$ and $G$
 	
