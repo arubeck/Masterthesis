@@ -308,11 +308,10 @@
 	This section relies on \citet*{deeplbook}.
 	
 	Machine learning describes a broad class of algorithms having the goal to learn or extract information from a given sample without the need of explicit programming.
-	
-	To achieve this goal machine learning algorithms require the specification of a task and a performance measure.
-	A task could be to recognize whether a cat or a dog is on a picture, given examples of already classified pictures.
+	To achieve this goal machine learning algorithms require a task and a performance measure.
+	Such a task could be to recognize whether a cat or a dog is on a picture, given examples of already classified pictures.
 	The algorithm then builds a prediction model based on a given training set.
-	In the example above the training set consists of pictures of cats and dogs and a corresponding label specifying what is seen on each picture.
+	In the example above the training set consists of pictures of cats and dogs and corresponding labels specifying what is visible on the respective picture.
 	The performance measure then describes how well this task was achieved by calculating some sort of distance between the predicted label and the real label that is given in the training set.
 	It is a key requirement to specify a suitable performance measure when applying machine learning algorithms.
 	
@@ -352,7 +351,7 @@
 	Before creating a deep feedforward network it is necessary to determine the structure of the associated directed acyclic graph.
 	This is achieved by setting the number of units and specifying how these units are connected.
 	
-	In the model each of the units $f^{(k)}_i$, $k=1,\dots,K$, $i = 1,\dots,n_{k}$ is associated with a vector of weights $a^{(k)}_i \in \mathbb{R}^{n_{k-1}}$, a bias term $b^{(k)}_i\in \mathbb{R}$ and an activation function $\phi: \mathbb{R} \to \mathbb{R}$.
+	In the model each of the units $f^{(k)}_i$, $k=1,\dots,K$, $i = 1,\dots,n_{k}$ is associated with a vector of weights~$a^{(k)}_i \in \mathbb{R}^{n_{k-1}}$, a bias term~$b^{(k)}_i\in \mathbb{R}$ and an activation function~$\phi: \mathbb{R} \to \mathbb{R}$.
 	The output of each unit $f^{(k)}_i$, $k=1,\dots,K$ is then computed as
 	\begin{equation*}
 	f_i^{(k)}(y) = \phi \left(\left(a^{(k)}_i\right)^Ty + b^{(k)}_i\right),
@@ -369,6 +368,7 @@
 	There are several techniques for this training procedure for instance stochastic variants of gradient descent.
 	
 	The networks described above are called feedforward networks because information only travels in one direction from input to output, i.e. there are no feedback connections between the layers.
+	This is the reason why we require the associated graph to be acyclic.
 	
 	When building deep feedforward networks, overfitting can occur.
 	A common approach to counteract this phenomenon is a regularization method called dropout.
@@ -377,6 +377,7 @@
 	As a consequence, each of the hidden units must be able to perform well regardless of the other units included in the model and the co-dependence is minimized.
 	Further details about dropout regularization can be found in \citet*{dropout}.
 	
+	In the following section we describe how survival data can be analyzed using feedforward networks
 	
 	\newpage
 	
@@ -389,7 +390,7 @@
 	In the example described above, a possible choice for $\delta$ could be $\delta = [0, 120] \times \{0,1,2\} \times [50, 200]$.
 	We assume that the outcome $T_i$ is possibly transformed via a monotone function $h: \mathbb{R}^+ \rightarrow \mathbb{R}$.
 	%XXX kurze Erklärung wieso das h sinnvoll ist bzw gebraucht wird
-	Possible choices for this transformation $h(\cdot)$ are for instance the identity function $h(T_i)=T_i$ or the logarithmic transformation $h(T_i)= \ln (T_i)$.
+	Possible choices for this transformation are for instance the identity function $h(t)=t$ or the logarithmic transformation $h(t)= \ln (t)$.
 	
 	In this section we assume that the data is not censored.
 	As a consequence, the event indicator is not required and the data set reduces to the fully observed data given by
@@ -448,6 +449,8 @@
  	If we use for example the $L_2$ loss, the population parameter estimated by the full data deep learning algorithm is the conditional mean $E[h(T) \vert X]$.
  	If we instead want to estimate survival probabilities $P(T\geq t \vert X )$ for a fixed time point $t$, we can use the Brier loss which is given by $E[(I(T\geq t)-\beta(X))^2]$.
  	
+ 	In the next section we describe how Algorithm \ref{alg:nocensor} can be extended to possibly censored data.
+ 	
 	\newpage
 	\section{Deep Learning for Censored Data} \label{censored}
 	
@@ -468,13 +471,11 @@
 	 For further computations we also assume that $G_0(T \vert X)\geq \varepsilon > 0$ for some $\varepsilon >0$, to ensure positivity of the conditional censoring function.
 	 We refer to this as the positivity assumption.
 	
-	The main difficulty in extending Algorithm \ref{alg:nocensor} to allow for censored data is to define a suitable loss function that can be calculated in the presence of censoring and at the same time reduces to the full data loss $L(h(T), f(X))$ if the data is not censored.
+	The main difficulty in extending Algorithm \ref{alg:nocensor} to allow for censored data is to define a suitable loss function that can be computed in the presence of censoring and at the same time reduces to the full data loss $L(h(T), f(X))$ if the data is not censored.
 	To close the gap between what is done in the presence and absence of censoring, we will now define \textit{censoring unbiased transformations}.
 	
 	\subsection{Censoring Unbiased Transformations}\label{sec:drtrafo}
 	This section is based on \citet*{culs} and \citet*{drcut}.
-	
- 	\todo{general case with Y response variable, could for example be event time}
 	
 	For prediction with right censored data, it is a popular approach to replace the possibly censored observations $\tilde T$ with surrogate values.
 	This can be achieved by using an appropriate mapping $$Y^*(\cdot): \mathbb{R}^+ \to \mathbb{R}.$$
@@ -512,7 +513,7 @@
 	If the response is censored, i.e. $\Delta = 0$, it is mapped to its conditional expectation. %%%besser formulieren, klingt bissi holprig
 	
 	\begin{Theorem}\label{thm:bj}
-		Under mild regularity conditions on the survival functions $S(\cdot\vert\cdot)$ and $G(\cdot\vert\cdot)$ it holds that $Y_{BJ}^*(\cdot; S_0)$ is a CUT.
+		Under the mild regularity conditions given in Appendix~\ref{regcond} it holds that $Y_{BJ}^*(\cdot; S_0)$ is a CUT.
 	\end{Theorem}
 	
 	The proof is given in Appendix \ref{proof:bjcut} and follows the ideas in \citet*{drcut} with $G(t\vert X)=1$ for all $t$.
@@ -524,7 +525,6 @@
 	\end{equation*}
 	
 	On the other hand, it requires the correct specification of the survival function~$S(\cdot\vert X)$.
-	\todo[inline]{check benefits of doubly robust trafo in contrast to Buckley--James OR downsides of BJ}
 
 	In contrast to the Buckley--James transformation, which depends on the survival function $S(\cdot\vert X)$, it is also possible to build mappings that instead depend only on the censoring mechanism.
 	One example for this is the inverse probability of censoring weighted (IPCW) mapping.
@@ -537,11 +537,29 @@
 
 	For the IPCW transformation we need to estimate the conditional censoring function given the explanatory variables $G(\cdot\vert X)$.
 	If this function is modeled correctly, meaning that $G(\cdot\vert X)=G_0(\cdot\vert X)$, the IPCW transformation $Y_{IPCW}^*(\cdot; G_0)$ is a CUT.
-	
-	\todo[inline]{add proof/reference that IPCW trafo is CUT for G=G0}
-	
-%	\todo[inline]{add sth about IPCW weights}
-	
+	This claim is stated in the following theorem.
+	\begin{Theorem}
+		Under the regularity conditions given in Appendix \ref{regcond} the IPCW transformation $Y_{IPCW}^*(\cdot; G_0)$ is a CUT.
+	\end{Theorem}
+	\begin{proof}
+		The desired property can be proven by using the tower rule
+		\begin{equation*}
+		\begin{split}
+		E\left[Y_{IPCW}^*(\mathcal{O}; G_0)\vert X\right] &= E\left[\frac{\Delta \tilde T}{G_0(\tilde T\vert X)}\vert X\right] = E\left[E\left[\frac{\Delta \tilde T}{G_0(\tilde T\vert X)}\vert X, \tilde T\right]\vert X\right]\\
+		&= E\left[\frac{\tilde T}{G_0(\tilde T \vert X)}P(\Delta = 1 \vert X, \tilde T)\right]
+		\end{split}
+		\end{equation*}
+		Now we can use that $P(\Delta = 1\vert X, \tilde T) = 1-P(\Delta = 0\vert X, \tilde T)$ to obtain
+		\begin{equation*}
+		E\left[Y_{IPCW}^*(\mathcal{O}; G_0)\vert X\right] = E\left[\frac{\tilde T}{G_0(\tilde T \vert X)}G_0(\tilde T \vert X)\vert X\right] = E[\tilde T \vert X].
+		\end{equation*}
+		
+	\end{proof}
+		
+	The IPCW transformed data is a weighted version of the observed time with weights
+	\begin{equation}\label{eq:ipcw}
+	\omega_{IPCW}(\mathcal{O}; G) = \frac{\Delta}{G(\tilde T \vert X)}.
+	\end{equation}
 
 	The Buckley--James estimator, as well as the IPCW mapping, depend on the nuisance parameters $S(\cdot\vert X)$ and $G(\cdot\vert X)$ respectively.
 	As a consequence, poor estimators of these two conditional functions can significantly degrade the performance of regression applied to the transformed data.
@@ -560,14 +578,10 @@
 	In total, the doubly robust transformation can be interpreted as an augmented inverse probability weighted mapping.
 	For further details about the augmentation refer to \citet*{bookfailuretime}.
 		
-	Then we can show the double robustness property using Theorem 3.1 in \citet*{drcut} which is reproduced below.
+	We can show the double robustness property using Theorem 3.1 in \citet*{drcut} which is reproduced below.
 	
 	\begin{Theorem}\label{thm:dr}
-		Suppose that the observed time $\tilde T$ and the censoring time $C$ are continuous random variables, that they are conditionally independent given the explanatory variables $X$, and that the conditional distribution $F_0(\cdot \vert X) = 1 - G_0(\cdot \vert X)$ has a conditional density $f_0(\cdot \vert X)$.
-		Assume that $\tilde T \leq \tau < \infty$ for some $\tau$ and that $\tilde{S}(\tau \vert X)=0$ with probability one for some conditional function $\tilde{S}(\cdot \vert X)$.
-		Suppose further that $\tilde{G}(\tau \vert X)\geq \varepsilon > 0$ for some $\varepsilon$ and conditional survival function $\tilde{G}(\cdot \vert X)$, with corresponding conditional density $\tilde{g}(\cdot\vert X)$.
-		Assume that $\tilde{g}(\cdot\vert X)$ is absolutely continuous with respect to $g_0(\cdot\vert X)$ for all $X$.
-		We will use the convention that $m(t,X;\tilde{S})$ is set to zero if $\tilde{S}(t \vert X)=0$.
+		Assume that the regularity conditions given in Appendix \ref{regcond} are met.
 		Then, if either $S_0(\cdot\vert X)$ or $G_0(\cdot\vert X)$ are specified correctly, i.e. $\tilde{S}(\cdot\vert X)=S_0(\cdot\vert X)$ or $\tilde{G}(\cdot\vert X)=G_0(\cdot\vert X)$, it holds that
 		\begin{equation*}
 		E[Y_{d}^*(\mathcal{O};\tilde{G}, \tilde{S})\vert X] = E[\tilde T \vert X],
@@ -580,7 +594,7 @@
 	In the following lemma we show that the transformations $Y_d^*$ and $Y_{DR}^*$ are equivalent and thus Theorem 5.1 can be applied to show that $Y_{DR}^*(\cdot; G_0, \tilde{S})$, $Y_{DR}^*(\cdot; \tilde{G}, S_0)$ and $Y_{DR}^*(\cdot; G_0, S_0)$ are each CUTs.
 	
 	\begin{Lemma}
-		Using the regularity conditions described in Theorem \ref{thm:dr} it holds that $Y_{DR}^*(\mathcal{O}; G_0, \tilde{S})$, $Y_{DR}^*(\mathcal{O}; \tilde{G}, S_0)$ and $Y_{DR}^*(\mathcal{O}; G_0, S_0)$ are each CUTs.
+		Assuming the regularity conditions given in Appendix \ref{regcond} it holds that $Y_{DR}^*(\mathcal{O}; G_0, \tilde{S})$, $Y_{DR}^*(\mathcal{O}; \tilde{G}, S_0)$ and $Y_{DR}^*(\mathcal{O}; G_0, S_0)$ are each CUTs.
 	\end{Lemma}
 	\begin{proof}
 		We verify the lemma by proving that $Y_d^*$ and $Y_{DR}^*$ both perform the same transformation and as a consequence Theorem \ref{thm:dr} can be applied to $Y_{DR}^*$.
@@ -619,15 +633,15 @@
 	\end{proof}
 
 	\subsection{Censoring Unbiased Loss Functions}\label{sec:cudls}
-	\citet*{culs} and \citet*{basearticle}.
+	This section follows the ideas presented in \citet*{culs} and \citet*{basearticle}.
 	
 	The theory of censoring unbiased transformations can be directly applied to loss functions and results in a class of censoring unbiased loss functions. 
 	These loss functions can be computed in the presence and absence of censoring, and reduce to the full data loss if the survival time is not censored.
 	
-	In this thesis we focus on estimation of the loss $\mathcal{R} (\beta) = E[L(h(T),\beta(X))]$, where $\beta(X)$ is the learning parameter estimated using the explanatory variables $X$.
+	In this thesis we focus on estimation of the expected loss~$\mathcal{R} (\beta) = E[L(h(T),\beta(X))]$, where $\beta(X)$ is the learning parameter estimated using the explanatory variables $X$.
 	For this we consider two censoring unbiased estimators that both reduce to the full data loss in the absence of censoring: the doubly robust loss function and the Buckley--James estimator.
-	
-	\todo[inline]{add from basearticle: why IPCW is no longer considered/no suitable choice for estimator of full data loss}
+	We will not consider the IPCW transformed loss as censored observations are not taken into account apart from potentially through computation of the censoring function $\hat{G}$.
+	According to \citet*{basearticle-arxiv} this leads to an inefficient estimator for the full data loss.
 	
 	The Buckley--James estimator for $\mathcal{R}(\beta)$ is given by
 	\begin{equation}\label{eq:bj}
@@ -672,7 +686,7 @@
 	The empirical doubly robust loss function is given by
 	\begin{equation*}
 	\begin{split}
-	L_{DR}(\mathcal{O}, \beta; \tilde{G}, \tilde{S}) \mathrel{=} & \frac{1}{n} \sum_{i=1}^n \frac{\Delta_i L(h(T_i),\beta(X_i))}{\tilde{G}(\tilde{T}_i\vert X_i)}\\
+	L_{DR}(\mathcal{O}, \beta; \tilde{G}, \tilde{S}) ={} & \frac{1}{n} \sum_{i=1}^n \frac{\Delta_i L(h(T_i),\beta(X_i))}{\tilde{G}(\tilde{T}_i\vert X_i)}\\
 	~ & + \frac{1}{n} \sum_{i=1}^n \left(\frac{(1-\Delta_i)m_L(\tilde{T_i}, X_i, \beta; \tilde{S})}{\tilde{G}(\tilde{T_i}\vert X_i)} \right.\\
 	& - \left. \int _0^{\tilde{T_i}} \frac{m_L(u, X_i, \beta; \tilde{S})}{\tilde{G}(u \vert X_i)} d \Lambda_{\tilde{G}}(u \vert X_i) \right).
 	\end{split}
@@ -719,13 +733,13 @@
 
 	\subsection{Estimating Mean Survival}
 	
-	This section follows the ideas presented in \citet*{basearticle} and \citet*{strawderman}.
+	This section relies on \citet*{basearticle} and \citet*{strawderman}.
 	
 	Another popular goal is to estimate the mean survival $E[T\vert X]$.
-	For this target parameter we can use the $L_2$ loss as our full data loss.
+	For this target parameter we can use the $L_2$ loss as our full data loss and set $h(t)=t$.
 	
 	\todo[inline]{add reason why we need tau from Strawderman 2000}
-	A direct estimation of the mean survival $E[T\vert X]$ requires strong assumptions about the survival function $S$.
+	A direct estimation of the mean survival $E[T\vert X]$ requires strong assumptions.
 	This is why we alternatively estimate the restricted mean survival $E[\min(T, \tau)\vert X]$ for a fixed constant $\tau$.
 	
 	Analogously to the estimation of survival probabilities, we need to incorporate the constant $\tau$ in the data set.
@@ -738,10 +752,11 @@
 	
 	\subsection{Implementation Based on a Doubly Robust Transformation}\label{trafo}
 
-	This section relies on \citet*{basearticle}.
+	This section follows the ideas presented in \citet*{basearticle}.
 	
 	We now describe how we can implement the doubly robust and Buckley--James CUDL algorithm using a specific response transformation.
 	
+		
 	We use the following response transformation for each subject $i$ with observations $\mathcal{O}_i = (h(\tilde{T_i}), \Delta_i, X_i) \in \mathcal{O}$:
 	\begin{equation*}
 	D(\mathcal O_i; G,S) = A_{1i}+B_{1i} - C_{1i},
@@ -845,6 +860,7 @@
 		\end{enumerate}
 	\end{Algorithm}
 
+	In the following section we analyze the performance of the algorithm presented above in a simulation study.
 	\newpage
 
 	\section{Simulation Study} \label{simulation}
@@ -899,21 +915,22 @@
 	\subsubsection{Estimating the Survival Curves $S_0(\cdot\vert\cdot)$ and $G_0(\cdot\vert\cdot)$}\label{estsurv}
 	This section follows the ideas presented in \citet*{drcut} and \citet*{drtrees}.
 	
-	If the censoring time $C$ is completely independent of both, the event time $T$ and the explanatory variables $X$, the conditional survival function $\tilde{G}(\cdot\vert X)=\tilde{G}(\cdot)$ can be efficiently estimated with the Kaplan-Meier (KM) estimator.
+	If the censoring time $C$ is completely independent of both, the event time $T$ and the explanatory variables $X$, the conditional censoring function $\tilde{G}(\cdot\vert X)=\tilde{G}(\cdot)$ can be efficiently estimated with the Kaplan-Meier (KM) estimator.
 	The KM estimator for the censoring function is given by
 	\begin{equation*}
 		\hat{G}(t) = \prod_{i:\text{~} \tilde T_{(i)} \leq t} \left(1-\frac{1}{\#\{j: \tilde T_{(j)} \geq\tilde T_{(i)} \}}\right)^{1-\Delta_i},
 	\end{equation*}
 	where $\tilde T_{(1)}<\dots<\tilde T_{(n)}$ are the increasingly ordered observed times.
 	
-	For example if we consider that censoring is caused by the end of the study, the above stated independence assumption is met and the conditional censoring time can be calculated using the KM estimator.
+	For example if we consider that censoring is caused by the end of the study, the above stated independence assumption is met and the conditional censoring time can be computed using the KM estimator.
 	
 	To minimize the required number of assumptions and to cover previously excluded cases, we chose to estimate the censoring survival curve $G_0(t \vert X)$ using the survival tree method.
 	This tree based method extends the ph regression to tree-structured relative risk functions.
 	The estimate is implemented in \texttt{R} in the following way.
-	First, we fit a survival tree using the function \texttt{rpart}, that is provided in the package \texttt{rpart} and explained in greater detail in \citet*{rpart}.
+	First, we fit a survival tree using the function \texttt{rpart} with all tuning parameters set to their default values.
+	The function is provided in the package \texttt{rpart} and explained in greater detail in \citet*{rpart}.
 	The tree method classifies the observations according to the explanatory variables in different subgroups.
-	Within each subgroup a KM estimator is calculated for the related data and then the estimators are connected to an overall estimator for the observations. %XXXX
+	Within each subgroup a KM estimator is computed for the related data and then the estimators are connected to an overall estimator for the observations. %XXXX
 	Further details can be found in \citet*{relativerisktrees}.
 	
 	The survival curve $S_0(t\vert X)$ should not be estimated using the KM estimator, as we presume that the observed time $\tilde T$ depends on the explanatory variables $X$.
@@ -951,7 +968,7 @@
 	
 	\subsubsection{Selecting Truncation Time to Ensure Positivity}
 	
-	This section is based on \citet*{drtrees}.
+	This section relies on \citet*{drtrees}.
 	
 	For the methods described in Section \ref{censored} it is necessary to ensure that an empirical version of the positivity assumption holds meaning that for an $\varepsilon>0$ it holds for the empirical censoring function that $\hat{G}(t\vert X) \geq \varepsilon$.
 	When considering the IPCW and the doubly robust mapping having a denominator too close to zero can result in unstable finite sample performance.
@@ -968,19 +985,19 @@
 	In this scenario we treat each subject whose observed survival time exceeds the truncation time as if they experienced the event at time $\tau$.
 	
 	For the implementation we choose the truncation method as proposed by \citet*{drtrees}.
-	\subsubsection{Transformation of Survival Data}
+	\subsubsection{Preparation of Survival Data}
 	
 	We now describe how the transformation of the responses $\tilde T$ described in Section \ref{trafo}, namely the Buckley--James and the doubly robust transformation, can be implemented in \texttt{R}.
 	
 	For the Buckley--James transformation we estimate the conditional expectation $\hat{m}$ using the random forest method with the Brier loss as full data loss.
-	The survival function is then calculated with a survival tree, as described in Section \ref{estsurv}.
+	The survival function is then computed with a survival tree, as described in Section \ref{estsurv}.
 	In this case, the transformed response is given by
 	\begin{equation*}
 	Y^*_{BJ}(\mathcal{O}(t)) = \Delta(t)I(\tilde T>t)+ (1-\Delta(t))\hat{m}(\tilde T, X; \hat{S}),
 	\end{equation*}
 	which equals the Buckley--James transformation given in equation (\ref{eq:bjtrafo}) with the observations $\mathcal{O}(t)$.
 	
-	For the doubly robust transformation given in equation (\ref{eq:drcut}) we have to calculate $A_{1i}$, $B_{1i}$ and $C_{1i}$.
+	For the doubly robust transformation given in equation (\ref{eq:drcut}) we have to compute $A_{1i}$, $B_{1i}$ and $C_{1i}$.
 	Again, we can plug in $h(\tilde T)=I(\tilde T>t)$, the estimated conditional expectation $\hat{m}$ and the estimated censoring function $\hat{G}$ and obtain
 	\begin{equation*}
 		A_{1i}(t)=\frac{\Delta_i(t)I(\tilde{T}_i >t)}{\hat{G}(\tilde{T}_i\vert X_i)},
@@ -992,7 +1009,11 @@
 	\begin{equation*}
 	C_{1i}(t) = \int_{0}^{\tilde T_i}\frac{\hat{m}(h(u), X_i; \hat{S})}{\hat{G}(u\vert X_i)}d\Lambda_{\hat{G}}(u \vert X_i).
 	\end{equation*}
-	The parameter $C_{1i}(t)$ can again be calculated using a finite sum.
+	The parameter $C_{1i}(t)$ can again be computed using a finite sum.
+	
+	For comparison we split each dataset in a training and a test set.
+	Analogous to \citet*{basearticle} we randomly chose $20\%$ of the data as our test set.
+	%XXX want to have the same proportion of censored and uncensored observations
 	\subsubsection{Keras Model for Transformed Data}\label{keras}
 	
 	In this section we describe how the deep learning model from Algorithm \ref{alg:censor} can be implemented in \texttt{R}.
@@ -1005,15 +1026,14 @@
 	We choose this activation function to make sure that the resulting value can be interpreted as a probability.
 	
 	For the gradient descent we use the mean squared error as loss function, the batch size is set to 32 and we use 100 epochs.
-	In one epoch we go through the whole dataset in batches of 32, which means that we perform the gradient descent algorithm $(number of observations)/32*100$ -- times to find the optimal parameter.
-	\todo[inline]{Add dimension of weight vector (which is 25*15+15+15+1)}
-	After fitting the keras model with the training data, we evaluate its performance with the test data and the resulting Brier Score.
+	In one epoch we go through the whole dataset in batches of 32, which means that we perform the gradient descent algorithm $(\# \text{observations})/32\cdot100$ -- times to find the optimal parameter.
 	
-	As a second deep learning model we perform 5-fold cross validation to choose a suitable penalization term $\eta$ from the sequence $(0, 0.001, 0.01, 0.1)$.
-	The performance of the resulting penalized feedforward network is also evaluated with the Brier Score.
+	Then we perform 5-fold cross validation to choose a suitable penalization term $\eta$ from the sequence $(0, 0.001, 0.01, 0.1)$.
+	As proposed by \citet*{basearticle} the performance of the resulting penalized feedforward network is evaluated with an IPCW weighted mean squared error.
+	This error is computed estimating the IPCW weights which are described in Equation (\ref{eq:ipcw}) and multiplying them with the mean squared error.
 	
 	The procedure described above is performed twice.
-	First for the response that is transformed using the Buckley--James transformation and then for the doubly robust transformed response.
+	For the observed times that are transformed using the Buckley--James transformation and for the doubly robust transformed observed times.
 	\subsubsection{Models Used for Comparison}\label{comp}
 	\todo[inline]{think of better title}
 	
@@ -1033,19 +1053,18 @@
 	This can be implemented using the \texttt{R} function \texttt{rfscr} from the package \texttt{randomForestSRC}.
 	The resulting survival curve is estimated using the function \texttt{predict}.
 	
-	The performance of all of the above mentioned models is evaluated using the Brier Score.
+	The performance of all of the above mentioned models is evaluated using an IPCW weighted mean squared error.
 	
 	
 	\subsection{Simulation Results}
 	In this section we compare the different methods for survival analysis, which are described in Section \ref{keras} and \ref{comp}  for each of the settings presented in Section \ref{settings}.
 	
 	First the data is generated according to the current setting.
-	Then, the IPC weighted mean squared error of each of the models is calculated and used as our performance measure.
+	Then, the IPCW weighted mean squared error of each  model is computed and used as our performance measure.
+	
 	We repeat this procedure 50 times and compare the resulting errors.
 	
 	XXXXXXXXXXX
-	
-	Overall: does not affect performance of Cox, penalized Cox and random forest procedure if they are applied to transformed data instead of not transformed.
 	
 	for setting 1:
 	
@@ -1065,6 +1084,7 @@
 	setting 4:
 	
 	
+
 	\newpage
 	\section{Application to a Real World Scenario}
 	%\todo[inline]{maybe change title}
@@ -1080,21 +1100,27 @@
 	Additional 106 cases did not participate in the clinical trial but were followed for survival.
 	This results in data of 418 individuals.
 	
-	For further calculations we exclude cases with missing entries.
+	For further computations we exclude cases with missing explanatory variables.
 	This leads to 276 observations that can be used for our models.
 	
 	In the data set the survival time of each individual is given by the variable \texttt{time}.
-	It is described as the number of days between registration and either death, transplantation ot the end of the study and takes values between 41 and 4795.
+	It describes the number of days between registration and either death, transplantation or the end of the study and takes values between 41 and 4795.
 	The \texttt{status} variable is an event indicator for three possible cases, either the patient was right censored, received a transplant or experienced the event meaning that the subject died.
 	As we only consider one event instead of two, each patient that received a transplant is treated as censored.
 	This leads to approximately $59.78\%$ censoring.
 	
 	The data set contains 17 explanatory variables, which are age in years, sex, a treatment variable that indicates if the patient was in the placebo or treatment group or was not part of the clinical trial and various other medical features that might influence the survival time.
 	All of the given explanatory variables are transformed into numerical values.
-	\todo[inline]{explanatory variables in Tabelle genauer erklären}
 	
-	As a next step we added a uniformly distributed confounder to assure that each observed survival time is different.
-	This is very important for the estimation of the survival and censoring functions, as estimators like the KM estimator assume the observed times to be distinct. 
+	As a next step we added uniformly distributed noise in the range $[0, 0.1]$ to assure that each observed survival time is different.
+	This is important for the estimation of the survival and censoring functions, as estimators like the KM estimator assume the observed times to be distinct.
+	
+	We estimate the survival probabilities using 50 equidistant time points on the interval $[850,4500]$.
+	The lower bound of this interval was chosen to ensure that at least five subjects in the dataset were censored beforehand.
+	This prevents the estimation procedures described in Section \ref{impl} from using a constant estimator for the censoring function.
+	
+	For each time point we randomly split the data into a training and test set and compute the prediction error of the five models described in Section \ref{impl} to compare their performance. 
+	As proposed by \citet*{basearticle} we use $20\%$ of the data as the test set. 
 	\subsection{Results}
 	%\todo[inline]{maybe change title}
 	
@@ -1102,6 +1128,7 @@
 	\todo[inline]{compare resulting error}
 	\newpage
 	\section{Conclusion}
+	nochmal wiederholen was passiert ist
 	
 	evtl als Ausblick: Erweiterung auf competing risks, time dependent explanatory variables, recurrent events; Test different estimators for $S$ and $G$
 	
@@ -1114,6 +1141,13 @@
 	\newpage
 	
 	\begin{appendices}
+		\section{Regularity Conditions}\label{regcond}
+		As proposed in Theorem 3.1 in \citet*{drcut} we make the following assumptions.
+		Suppose that the observed time $\tilde T$ and the censoring time $C$ are continuous random variables, that they are conditionally independent given the explanatory variables $X$, and that the conditional distribution $F_0(\cdot \vert X) = 1 - G_0(\cdot \vert X)$ has a conditional density $f_0(\cdot \vert X)$.
+		Assume that $\tilde T \leq \tau < \infty$ for some $\tau$ and that $\tilde{S}(\tau \vert X)=0$ with probability one for some conditional function $\tilde{S}(\cdot \vert X)$.
+		Suppose further that $\tilde{G}(\tau \vert X)\geq \varepsilon > 0$ for some~$\varepsilon$ and conditional survival function $\tilde{G}(\cdot \vert X)$, with corresponding conditional density $\tilde{g}(\cdot\vert X)$.
+		Assume that $\tilde{g}(\cdot\vert X)$ is absolutely continuous with respect to $g_0(\cdot\vert X)$ for all~$X$.
+		We will use the convention that $m(t,X;\tilde{S})$ is set to zero if $\tilde{S}(t \vert X)=0$.
 		\section{Proofs}
 		\subsection{Proof of Theorem \ref{thm:bj}}\label{proof:bjcut}
 		\begin{proof}
