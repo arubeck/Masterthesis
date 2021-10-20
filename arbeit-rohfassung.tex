@@ -64,8 +64,8 @@
 }
 
 \pagestyle{plain} %maybe headings, not sure yet
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{2pt} %XXX maybe change distance
+%\setlength{\parindent}{0pt}
+%\setlength{\parskip}{\medskip} %XXX maybe change distance
 
 \theoremstyle{definition}
 \newtheorem{Algorithm}{Algorithm}[section]
@@ -142,7 +142,7 @@
 	
 	\section{Principles of Survival Analysis}
 		
-	In this section following \citet*{sabook} and \citet*{mathsabook} we briefly describe the main ideas of survival analysis, the concept of censoring, and parametric and semiparametric approaches to the problem of estimating survival times.
+	In this section, following \citet*{sabook} and \citet*{mathsabook}, we briefly describe the main ideas of survival analysis, the concept of censoring, and parametric and semiparametric approaches to the problem of estimating survival times.
 	
 	Survival analysis is used in various fields such as medicine, insurance and finance to predict a certain risk.
 	The main goal is to estimate and analyze the time until a specified event occurs.
@@ -223,7 +223,7 @@
 	
 	%\todo[inline]{outcome is possibly transformed: h(T) instead of T}
 	
-	Two important functions are frequently used for analysis and prediction of survival times: the survival function and the hazard function.
+	Two important functions are frequently used for analysis and prediction of survival times:~the survival function and the hazard function.
 	The survival function $S(t) = P(T > t)$ specifies the distribution of the survival time given by $F(t) = 1 - S(t)$.
 	It can for example be used to analyze and compare the time to event of two different groups.
 	The survival function has three important properties: $S(\cdot)$ is a non-increasing function, $S(0)=1$ and $\lim_{t \to \infty} S(t)=0$.
@@ -258,41 +258,40 @@
 	
 	An approach to the estimation of survival time are \emph{parametric survival models}.
 	Here, we assume a specific family of distributions for the survival time and then use the given data to estimate the parameters of the distribution.
-	These parameters can for examples be estimated using linear, logistic or Poisson regression.
+	These parameters can for example be estimated using linear, logistic or Poisson regression.
 	Common choices for the family of distributions when analyzing survival times are the Weibull, exponential or lognormal distribution.
-	The parametric approach is discussed in further detail in \citet*{sabook}
+	The parametric approach is discussed in further detail in \citet*{sabook}.
 	
-	Three of the main advantages of the parametric survival model are its simplicity,  that it is consistent with the theoretical survival function $S(t)$ and that it specifies the whole survival function.
+	Three of the main advantages of the parametric survival model are its simplicity,  that it is consistent with the theoretical survival function $S(\cdot)$ and that it specifies the whole survival function.
 	
-	A big disadvantage is, that the quality of the estimation using parametric models strongly depends on a suitable choice of the family of distributions.
+	A big disadvantage is that the quality of the estimation using parametric models strongly depends on a suitable choice of the family of distributions.
 	As a consequence, a detailed analysis of the data and a precise understanding of the families of distributions are required.
 	The Cox proportional hazard model tries to overcome these limitations by relaxing the parametric approach and is described in the following.
 	
 	The \emph{Cox proportional hazards model} (Cox PH model) is a popular approach to analyzing survival data.
-	
 	The model is built upon the following assumption about the form of the hazard function:
 	\begin{equation*}
 	h(t,x) = h_0(t) \exp \left(\sum_{i=1}^p \beta_i x_i\right),
 	\end{equation*}
 	where $x=(x_1,\dots,x_p)$ are the explanatory variables and $\beta = (\beta_1,\dots, \beta_p)$ is a vector of weights.
 	This includes the central assumption of the Cox PH model, which is the proportional hazards (PH) assumption.
-	It states that there exists a function $h_0(t)$, the baseline hazard, that does not involve the predictor variables and is thus independent of the explanatory variables.
+	It states that there exists a function $h_0$, the \emph{baseline hazard}, that does not involve the predictor variables and is thus independent of the explanatory variables.
 
 	Typically, maximum likelihood is used to estimate the weights $\beta_i$, $i=1,\dots ,p$.
-	As the baseline hazard $h_0(t)$ is not specified, the Cox PH model is a semiparametric model.
+	As the baseline hazard $h_0$ is not specified, the Cox PH model is a semiparametric model.
 	
 	In contrast to parametric models, the Cox PH model does not require an assumption about the distribution of the outcome.
-	Another important advantages is its robustness meaning that it closely approximates the correct parametric model of the survival function.
+	Another important advantage is its robustness, meaning that it closely approximates the correct parametric model of the survival function.
 	
-	If we are sure which family of distributions models the survival times correctly, parametric models give the best estimate.
-	But if we are in doubt that the model is correct, the Cox PH model gives reliable results.
+	If we are sure which family of distributions models the survival times adequately, parametric models give the best estimate.
+	But if we are in doubt that the model is a good fit, the Cox PH model gives reliable results.
 	
 	As it is necessary for the performance of the Cox PH model that the PH assumption holds, there are several tests that can be performed, e.g. graphical techniques or goodness-of-fit-tests.
 	Further details can for example be found in \citet*[Chapter~3]{sabook}.
 	
-	If the PH assumption is not fulfilled, we can for example use a stratified Cox procedure instead, which is a modified version of the Cox PH model.
+	If the PH assumption is not fulfilled, we can for example use a stratified Cox procedure instead, a modified version of the Cox PH model.
 	The general idea is to categorize the data and divide it into subgroups in a way that within each subgroup the PH assumption is met.
-	Then for each subgroup the Cox PH model can be applied to obtain partial likelihood functions, that can then be combined to an overall likelihood.
+	Then for each subgroup the Cox PH model can be applied to obtain partial likelihood functions, which can then be combined to an overall likelihood.
 	This approach is explained in greater detail in \citet*[Chapter~5]{sabook}.
 	
 	There exist various other modifications of the Cox PH model.
@@ -310,14 +309,14 @@
 	
 	Machine learning describes a broad class of algorithms having the goal to learn or extract information from a given sample without the need of explicit programming.
 	
-	To achieve this machine learning algorithms require the specification of a task and a performance measure.
+	To achieve this goal machine learning algorithms require the specification of a task and a performance measure.
 	A task could be to recognize whether a cat or a dog is on a picture, given examples of already classified pictures.
 	The algorithm then builds a prediction model based on a given training set.
 	In the example above the training set consists of pictures of cats and dogs and a corresponding label specifying what is seen on each picture.
 	The performance measure then describes how well this task was achieved by calculating some sort of distance between the predicted label and the real label that is given in the training set.
 	It is a key requirement to specify a suitable performance measure when applying machine learning algorithms.
 	
-	Machine learning algorithms are often classified according to what kind of experience they are allowed to have during the learning process.
+	%Machine learning algorithms are often classified according to what kind of experience they are allowed to have during the learning process.
 
 	The central challenge for a machine learning algorithm is that it must perform well on new and previously unseen inputs meaning that the error measure on the test set should be as small as possible and at the same time the error measure on the training set should also be reduced.
 	This means that there are two factors that determine how well a machine learning algorithm will perform:
@@ -327,56 +326,56 @@
 	If the second task is not fullfilled, overfitting occurs. In this case, the gap between training and test error is too large.
 	
 	A common approach to reduce the possibility of overfitting is regularization.
-	In principal, regularization is any modification of a learning algorithm, that aims to reduce its generalization error.
+	In principle, regularization is any modification of a learning algorithm that aims to reduce its generalization error.
 	In practice this is often achieved by adding a penalty to the cost function.
 	
-	Deep Learning models are machine learning models that are based on artificial neural networks.
-	A commonly used class of deep learning models are deep feedforward networks. Analogous to other estimators they aim to approximate some function $f^*$.
-	More precisely, given the data $x$ and the desired output $y$, the goal is to find $f^*$, such that $f^*(x)=y$.
+	Deep learning models are machine learning models that are based on artificial neural networks.
+	A common class of deep learning models are deep feedforward networks. Analogous to other estimators they aim to approximate some function~$f^*$.
+	More precisely, given the data~$x$ and the desired output~$y$, the goal is to find $f^*$, such that $f^*(x)=y$.
 	This is achieved by defining a mapping $y = f(x; \beta)$ and learning the parameters $\beta$ that result in the best function approximation.
 	In this setting loss functions are used as a performance measure.
-	Possible choices include the $L_2$--loss or the Brier loss which are both further described in Section \ref{censored}.
+	Possible choices include the $L_2$ loss or the Brier loss which are both further described in Section \ref{censored}.
 	
 	The term 'network' suggests that the mapping $f$ is a composition of many different functions.
 	A directed acyclic graph is used to describe how these functions are composed together in the model.
-	For example, the network could consist of a chain of $K$ functions $ f(x) = f^{(K)}\circ \dots \circ f^{(1)}(x)$.
-	In this case each function $f^{(k)}$, $k=1,\dots,K$ forms a layer and the number of composed functions $K$ gives the depth of the model.
+	For example, the network could consist of a chain of $K$ functions $ f = f^{(K)}\circ \dots \circ f^{(1)}$.
+	In this case each function~$f^{(k)}$, $k=1,\dots,K$ forms a layer and the number of composed functions $K$ gives the depth of the model.
 	The dimension of the output of each layer $f^{(k)}$ is denoted by $n_k$ and determines the width of the layer.
-	Typically these functions are vector valued and instead of thinking of the layer as a vector-to-vector function, we can interpret it as many \emph{units} that each represent a vector-to-scalar function.
+	Typically these functions are vector-valued and instead of thinking of the layer as a vector-to-vector function, we can interpret it as many \emph{units} that each represent a vector-to-scalar function.
 	Considering $f^{(1)}(x,y)= (x^2+y,2y)$ we can represent the function by two units $f^{(1)}_1 (x,y) = x^2+y$ and $f^{(1)}_2(x,y) = 2y$.
 	
 	The final layer is called the output layer.
 	We want to achieve that this layer produces a value that is close to the desired output $y$, i.e. for each data $x$ and corresponding label $y$: $y \approx f^*(x)$.
 	
-	The remaining layers are called hidden layers because we do not specify what output they generate.
+	The remaining layers are called hidden layers because their results and their inner workings do not constitute the observed output of the network.
 	We are only interested in the prediction, the output of the final layer.
-	Before using a deep feedforward network it is necessary to determine the structure of the associated directed acyclic graph.
+	Before creating a deep feedforward network it is necessary to determine the structure of the associated directed acyclic graph.
 	This is achieved by setting the number of units and specifying how these units are connected.
 	
 	In the model each of the units $f^{(k)}_i$, $k=1,\dots,K$, $i = 1,\dots,n_{k}$ is associated with a vector of weights $a^{(k)}_i \in \mathbb{R}^{n_{k-1}}$, a bias term $b^{(k)}_i\in \mathbb{R}$ and an activation function $\phi: \mathbb{R} \to \mathbb{R}$.
-	The output of each unit $f^{(k)}_i$, $k=1,\dots,K$ is then calculated in the following manner
+	The output of each unit $f^{(k)}_i$, $k=1,\dots,K$ is then computed as
 	\begin{equation*}
 	f_i^{(k)}(y) = \phi \left(\left(a^{(k)}_i\right)^Ty + b^{(k)}_i\right),
 	\end{equation*}
 	where $y$ is the output of layer $f^{(k-1)}$.
 	These units are then combined to form the output of the whole layer which is given by $f^{(k)} = \left(f^{(k)}_1,\dots, f^{(k)}_{n_k}\right)^T$.
-	The output of the first layer $f^{(1)}$ is calculated using the data $x$ as input and $n_0$ is defined as the dimension of $x$.
-	Popular choices for the activation function are the relu activation function given by $\phi(x) = max(0,x)$ or the sigmoid activation function given by $\phi(x) = (1+e^{-x})^{-1}$.
+	The output of the first layer $f^{(1)}$ is computed using the data $x$ as input and $n_0$ is defined as the dimension of $x$.
+	Popular choices for the activation function are the ReLU activation function given by $\phi(x) = \max(0,x)$ or the sigmoid activation function given by $\phi(x) = (1+e^{-x})^{-1}$.
 	The weights and the biases make up the learning parameter $\beta$.
 	
-	The above described procedure can be used to iteratively calculate the output of the final layer.
+	The above described procedure can be used to iteratively compute the output of the final layer.
 	
 	A central question in dealing with feedforward networks is how to determine appropriate weights and biases.
-	There are several techniques for this training procedure for instance stochastic gradient descent.
+	There are several techniques for this training procedure for instance stochastic variants of gradient descent.
 	
-	The above described networks are called feedforward networks because information only travels in one direction from input to output, i.e. there are no feedback connections between the layers.
+	The networks described above are called feedforward networks because information only travels in one direction from input to output, i.e. there are no feedback connections between the layers.
 	
-	When building deep feedforward networks overfitting can occur.
-	A common approach to counteract this effect is a regularization method called dropout.
-	According to \citet*{dropout} the principle idea is to randomly drop units from the neural network during each step of the learning algorithm.
-	For this method, a dropout rate $p$ must be chosen which specifies, that a unit is included in the current iteration with probability $1-p$.
+	When building deep feedforward networks, overfitting can occur.
+	A common approach to counteract this phenomenon is a regularization method called dropout.
+	According to \citet*{dropout} the idea is to randomly drop units from the neural network during each step of the learning algorithm.
+	For this method, a dropout rate $p$ must be chosen which specifies that a unit is included in the current iteration with probability $1-p$.
 	As a consequence, each of the hidden units must be able to perform well regardless of the other units included in the model and the co-dependence is minimized.
-	Further details about the dropout regularization can be found in \citet*{dropout}.
+	Further details about dropout regularization can be found in \citet*{dropout}.
 	
 	
 	\newpage
@@ -385,12 +384,12 @@
 	This section follows the ideas of \citet*{basearticle} and insights described in \citet*{deeplbook}.
 	
 	As described in Section \ref{sabasics}, we assume that the dataset consists for each subject $i = 1,\dots,n$ of a positive continuous failure time $T_i \in \mathbb{R}^+$ and a vector of explanatory variables $X_i = (X_{i1}, \dots , X_{ip}) \in \delta \subset \mathbb{R}^p$.
-	When evaluating a medical study these explanatory variables could for example be age, in which treatment group the patient was or the individuals oxygen concentration in blood at the beginning of the study.
+	In the context of a medical study these explanatory variables could for example be age, in which treatment group the patient was or the oxygen concentration in blood at the beginning of the study.
 	The set $\delta$ describes the bounded space consisting of all values that the explanatory variables can take in the specific context.
-	In the example described above, a possible choice for $\delta$ could be $\delta = [0, 120] \times \{0,1,2\} \times [50, 200]$
+	In the example described above, a possible choice for $\delta$ could be $\delta = [0, 120] \times \{0,1,2\} \times [50, 200]$.
 	We assume that the outcome $T_i$ is possibly transformed via a monotone function $h: \mathbb{R}^+ \rightarrow \mathbb{R}$.
 	%XXX kurze Erklärung wieso das h sinnvoll ist bzw gebraucht wird
-	Possible choices for this transformation $h(T_i)$ are the identity function $h(T_i)=T_i$ or the logarithmic transformation $h(T_i)= \ln (T_i)$.
+	Possible choices for this transformation $h(\cdot)$ are for instance the identity function $h(T_i)=T_i$ or the logarithmic transformation $h(T_i)= \ln (T_i)$.
 	
 	In this section we assume that the data is not censored.
 	As a consequence, the event indicator is not required and the data set reduces to the fully observed data given by
@@ -404,7 +403,7 @@
 		~
 	\begin{enumerate}
 		\item Setup the structure of the neural network.
-		\item Estimate the weight vector.
+		\item Estimate the learning parameter.
 		\item Use cross-validation to select the penalization parameter $\eta$ from a predetermined sequence $\eta_1,\dots,\eta_M$.
 		\item Create the final prediction model.
 	\end{enumerate}
@@ -413,14 +412,15 @@
 	We now further analyze these steps.
 
 	First we define the layout of the neural network that we want to use for our prediction.
-	For this, we need to set the number of layers $K$ and define the functions $f_{\beta_k}^{(k)}(X)$ for each layer $k = 1, \dots, K$.
-	The output of the hidden layer architecture is then given by $f_{\beta}(X) = f_{\beta_K}^{(K)} \circ f_{\beta_{K-1}}^{(K-1)} \circ \dots \circ f_{\beta_1}^{(1)}(X)$, where $\beta = (\beta_1^T, \dots, \beta_K^T)^T$ is a vector of unknown weights which will be estimated next.
+	For this, we need to set the number of layers $K$ and define the functions $f_{\beta_k}^{(k)}$ for each layer $k = 1, \dots, K$.
+	The output of the hidden layer architecture is then given by $f_{\beta}(X) = f_{\beta_K}^{(K)} \circ f_{\beta_{K-1}}^{(K-1)} \circ \dots \circ f_{\beta_1}^{(1)}(X)$, where $\beta = (\beta_1^T, \dots, \beta_K^T)^T$ is a vector of unknown weights and biases which will be estimated next.
 	
-	In the second step, the estimation of the weight vector, we need a prespecified loss function $L(h(T), f(X))$, that describes the difference between the prediction of our model $f(X)$ and the desired outcome $h(T)$.
-	We also use a penalization parameter $\eta$, that tries to keep the weights as small as possible.
+	In the second step, the estimation of the learning parameter, we need a prespecified loss function $L(h(T), f(X))$ that describes the difference between the prediction of our model $f(X)$ and the desired outcome $h(T)$.
+	As we described in Section \ref{basicsdl} the learning parameter $\beta$ consists of weights and biases.
+	We also use a penalization parameter~$\eta$ to try to keep the learning parameter as small as possible.
 	Large weights can be a sign of a complex network and thus overfitting of the training data.
 	To counteract this effect, we penalize such large weights.
-	We estimate the vector of weights $\beta$ by minimizing the empirical penalized loss function $\hat{L}(\beta)$ which is defined as:
+	We estimate the learning parameter $\beta$ by minimizing the empirical penalized loss function $\hat{L}$ which is defined as:
 	
 	\begin{equation}\label{eq:eplf}
 	\hat{L}(\beta) = \frac{1}{n} \sum_{i=1}^n L( h(T_i), f_{\beta}(X_i)) + \eta \Vert \beta \Vert ^2,
@@ -428,22 +428,22 @@
 	
 	where $\Vert \beta \Vert ^2$ is the $L_2$ norm of $\beta$, given by $\Vert \beta \Vert ^2 = \sum_{i=1}^q \vert \beta _i \vert ^2.$
 	
-	The third step ensures, that we make a suitable choice for the penalization parameter $\eta$.
-	To perform cross-validation, we first split the given dataset randomly into $D$ disjoint sets $K_1,\dots, K_D$ and choose a sequence of $M$ possible penalization parameters.
+	The third step ensures that we make a suitable choice for the penalization parameter~$\eta$.
+	To perform cross-validation, we first split the given dataset randomly into~$D$ disjoint sets $K_1,\dots, K_D$ and choose a sequence of $M$ possible penalization parameters.
 	Suitable choices for $\eta$ strongly depend on the model architecture.
 	A detailed analysis for neural networks with one hidden layer is given in \citet*{regpar}. 
-	Then, for a fixed subset $K_l$, $l \in \{1,\dots,D\}$ and penalization parameter $\eta_m$, $m \in \{1,\dots,M\}$, we set $\hat{\beta}_{\eta_{m}}^{(l)}$ as the vector of weights estimated in equation (\ref{eq:eplf}) using the penalization parameter $\eta_m$ and the data $\mathcal{F} \setminus K_l$.
-	Let $a_{i,l}$ be an indicator whether observation $i$ is included in the dataset $K_l$ ($a_{i,l} = 1$) or not ($a_{i,l}=0$).
-	The cross-validation error corresponding to the penalization parameter $\eta_m$ is then defined as
+	Then, for a fixed subset $K_{\ell}$, $\ell \in \{1,\dots,D\}$ and penalization parameter $\eta_m$, $m \in \{1,\dots,M\}$, we set $\hat{\beta}_{\eta_{m}}^{(\ell)}$ as the learning parameter estimated in equation~(\ref{eq:eplf}) using the penalization parameter~$\eta_m$ and the data~$\mathcal{F} \setminus K_{\ell}$.
+	Let $a_{i,\ell}$ be the indicator whether observation $i$ is included in the dataset~$K_\ell$ ($a_{i,\ell} = 1$) or not ($a_{i,\ell}=0$).
+	The cross-validation error corresponding to the penalization parameter~$\eta_m$ is then defined as
 	
 	\begin{equation*}
 	 \alpha(m) = \sum_{l=1}^D \sum_{i=1}^n a_{i,l} L(h(T_i), f_{\hat{\beta}_{\eta_m}^{(l)}}(X_i)).
  	\end{equation*}
  	Then we choose the penalization parameter that minimizes the cross-validation error for our model, i.e. let $\eta = \eta_{m^*}$, where $m^* = \argmin_{m \in \{1,\dots,M\}} \alpha(m)$.
  	
- 	In step four we use the optimal penalization parameter $\eta_{m^*}$ to estimate the vector of weights $\hat{\beta}_{\eta_{m^*}}^{(l)}$ and then build the final prediction model $f_{\hat{\beta}_{\eta_{m^*}}^{(l)}}(X)$.
+ 	In step four we use the optimal penalization parameter $\eta_{m^*}$ to estimate the learning parameter $\hat{\beta}_{\eta_{m^*}}^{(l)}$ and then build the final prediction model $f_{\hat{\beta}_{\eta_{m^*}}^{(l)}}$.
  	
- 	The vector of weights $\beta(X)$ that is estimated using the explanatory variables $X$ minimizes the expected loss used in the algorithm.
+ 	The learning parameter $\beta(X)$ that is estimated using the explanatory variables $X$ minimizes the expected loss used in the algorithm.
  	Thus, the parameter that we want to estimate determines the choice of loss function.
  	If we use for example the $L_2$ loss, the population parameter estimated by the full data deep learning algorithm is the conditional mean $E[h(T) \vert X]$.
  	If we instead want to estimate survival probabilities $P(T\geq t \vert X )$ for a fixed time point $t$, we can use the Brier loss which is given by $E[(I(T\geq t)-\beta(X))^2]$.
@@ -457,18 +457,18 @@
 	
 	The observed dataset consists of $n$ independent and identically distributed observations and is given by
 	$$\mathcal{O} = \{(\tilde{T_i} = \min \{T_i, C_i\}, \Delta_i = I(T_i \leq C_i), X_i); i = 1,\dots,n\},$$
-	 where $\tilde{T_i}$ denotes the observed time, which is either the event time $T_i$ or the censoring time $C_i$ and $\Delta_i$ indicates, whether subject $i$ experienced the event of interest or was censored.
-	 Again, the explanatory variables are given in $X_i$.
+	 where $\tilde{T_i}$ denotes the observed time, which is either the event time $T_i$ or the censoring time $C_i$, and $\Delta_i$ indicates whether subject $i$ experienced the event of interest or was censored.
+	 Again, the explanatory variables are given by $X_i$.
 	 
 	 We define the true conditional survival functions for the event time $T$ and the censoring time $C$ as $S_0(u \vert X)=P(T>u \vert X)$ and $G_0(u \vert X)=P(C>u \vert X)$ respectively.
 	 \todo{evtl zugehörige Verteilungsfunktion hier mit rein nehmen}
 	 In contrast to Section \ref{sabasics} the survival function now depends on the explanatory variables $X$.
 	 We assume that the censoring time $C$ is continuous and that the corresponding censoring mechanism is non-informative, i.e. that $C$ is independent of $T\vert X$.
 	 
-	 For further calculations we also assume that $G_0(T \vert X)\geq \varepsilon > 0$ for some $\varepsilon >0$, to ensure positivity of the conditional censoring function.
+	 For further computations we also assume that $G_0(T \vert X)\geq \varepsilon > 0$ for some $\varepsilon >0$, to ensure positivity of the conditional censoring function.
 	 We refer to this as the positivity assumption.
 	
-	The main difficulty in extending Algorithm \ref{alg:nocensor} to allow for censored data is to define a suitable loss function, that can be calculated in the presence of censoring and at the same time reduces to the full data loss $L(h(T), f(X))$ if the data is not censored.
+	The main difficulty in extending Algorithm \ref{alg:nocensor} to allow for censored data is to define a suitable loss function that can be calculated in the presence of censoring and at the same time reduces to the full data loss $L(h(T), f(X))$ if the data is not censored.
 	To close the gap between what is done in the presence and absence of censoring, we will now define \textit{censoring unbiased transformations}.
 	
 	\subsection{Censoring Unbiased Transformations}\label{sec:drtrafo}
@@ -476,7 +476,7 @@
 	
  	\todo{general case with Y response variable, could for example be event time}
 	
-	For prediction with right censored data it is a popular approach to replace the possibly censored observations $\tilde T$ with surrogate values.
+	For prediction with right censored data, it is a popular approach to replace the possibly censored observations $\tilde T$ with surrogate values.
 	This can be achieved by using an appropriate mapping $$Y^*(\cdot): \mathbb{R}^+ \to \mathbb{R}.$$
 	The transformed values are then inserted in standard smoothing algorithms.
 	
@@ -484,7 +484,6 @@
 	
 	\begin{Definition}
 	Let $\tilde T$ be a scalar function of the full data $\mathcal{F}$ and $Y^*(\mathcal{O})$ a scalar function of the observed data $\mathcal{O}$.
-	
 	Then $Y^*(\mathcal{O})$ is a \textit{censoring unbiased transformation (CUT)} for $\tilde T$ if for every point $X$ in $\delta$:
 	\begin{equation*}
 	E[Y^*(\mathcal{O}) \vert X] = E[\tilde T \vert X].
@@ -513,32 +512,31 @@
 	If the response is censored, i.e. $\Delta = 0$, it is mapped to its conditional expectation. %%%besser formulieren, klingt bissi holprig
 	
 	\begin{Theorem}\label{thm:bj}
-		Under mild regularity conditions on the survival functions $S(\cdot\vert\cdot)$ and $G(\cdot\vert\cdot)$ it holds that $Y_{BJ}^*(\mathcal{O}; S_0)$ is a CUT.
+		Under mild regularity conditions on the survival functions $S(\cdot\vert\cdot)$ and $G(\cdot\vert\cdot)$ it holds that $Y_{BJ}^*(\cdot; S_0)$ is a CUT.
 	\end{Theorem}
 	
-	The proof is given in appendix XXX and follows the ideas in \citet*{drcut} with $G(t\vert X)=1$ for all $(t,X)$.
+	The proof is given in Appendix \ref{proof:bjcut} and follows the ideas in \citet*{drcut} with $G(t\vert X)=1$ for all $t$.
 	
 	The Buckley--James Transformation has an important property.
-	Among all CUTs $Y^*(\mathcal{O})$ the mapping $Y_{BJ}^* (\mathcal{O})$ results in the best predictor of the original response, i.e.
-	
+	Among all CUTs~$Y^*(\cdot)$ the mapping~$Y_{BJ}^* (\cdot)$ results in the best predictor of the original response, i.e.
 	\begin{equation*}
-	Y_{BJ}^* (\mathcal{O})= \argmin_{Y^*(\mathcal{O})~is~a~CUT} E[ \vert Y^*(\mathcal{O}) - \tilde T \vert ^2].
+	Y_{BJ}^* (\mathcal{O})= \argmin_{\text{$Y^*(\cdot)$~is~a~CUT}} E[ \vert Y^*(\mathcal{O}) - \tilde T \vert ^2].
 	\end{equation*}
 	
-	On the other hand, it requires the correct specification of the survival function $S(\cdot\vert X)$.
+	On the other hand, it requires the correct specification of the survival function~$S(\cdot\vert X)$.
 	\todo[inline]{check benefits of doubly robust trafo in contrast to Buckley--James OR downsides of BJ}
 
 	In contrast to the Buckley--James transformation, which depends on the survival function $S(\cdot\vert X)$, it is also possible to build mappings that instead depend only on the censoring mechanism.
 	One example for this is the inverse probability of censoring weighted (IPCW) mapping.
 	Here, the basic idea is to weight the contribution of each uncensored observation by the inverse probability of being censored.
-	This way both, the censoring and the survival distributions, are taken into account.
+	This way both distributions, the censoring and the survival distributions, are taken into account.
 	The IPCW mapping is defined as follows:
 	\begin{equation*}
 	Y_{IPCW}^*(\mathcal{O}; G) = \frac{\Delta \tilde T}{G(\tilde T \vert X)}.
 	\end{equation*}
 
 	For the IPCW transformation we need to estimate the conditional censoring function given the explanatory variables $G(\cdot\vert X)$.
-	If this function is modeled correctly the IPCW transformation is a CUT.
+	If this function is modeled correctly, meaning that $G(\cdot\vert X)=G_0(\cdot\vert X)$, the IPCW transformation $Y_{IPCW}^*(\cdot; G_0)$ is a CUT.
 	
 	\todo[inline]{add proof/reference that IPCW trafo is CUT for G=G0}
 	
@@ -549,15 +547,14 @@
 	As a consequence, poor estimators of these two conditional functions can significantly degrade the performance of regression applied to the transformed data.
 	
 	A third mapping is the doubly robust mapping.
-	In this context doubly robust implies that the mapping requires a good approximation of either  $S(\cdot\vert X)$ or $G(\cdot\vert X)$, but not necessarily both.
+	In this context \say{doubly robust} implies that the mapping requires a good approximation of either  $S(\cdot\vert X)$ or $G(\cdot\vert X)$, but not necessarily both.
 	It is defined as follows:
-	
 	\begin{equation}\label{eq:drcut}
 	Y_{DR}^* (\mathcal{O}; G, S) = \frac{\Delta \tilde T}{G(\tilde T\vert X)} + \frac{(1-\Delta)m(C,X;S)}{G(C \vert X)} - \int_{0}^{\tilde T} \frac{m(c,X;S)}{G(c \vert X)} d\Lambda_G(c \vert X),
 	\end{equation}
-	with $m(c,X;S)$ as defined in equation (\ref{eq:condmean}) and the cumulative hazard function $\Lambda_G(t\vert X)=-\int_{0}^{t}1/G(u\vert X)dG(u\vert X)$.
+	with $m(c,X;S)$ as defined in Equation (\ref{eq:condmean}) and the cumulative hazard function $\Lambda_G(t\vert X)=-\int_{0}^{t}1/G(u\vert X)dG(u\vert X)$.
 	
-	The first term in equation (\ref{eq:drcut}) is equal to the IPCW transformation.
+	The first term in Equation (\ref{eq:drcut}) is as in the IPCW transformation.
 	Similar to the Buckley--James transformation, a term that considers the censored data is added.
 	The last part can be seen as an augmentation term.
 	In total, the doubly robust transformation can be interpreted as an augmented inverse probability weighted mapping.
@@ -580,13 +577,13 @@
 		Y_d^*(\mathcal{O}; G,S) = \frac{\Delta \tilde T}{G(\tilde T\vert X)}+\frac{(1-\Delta)m(C,X;S)}{G(C \vert X)}-\int_{-\infty}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}dF(c\vert X)
 		\end{equation}
 	\end{Theorem}
-	In the following lemma we show that the transformations $Y_d^*$ and $Y_{DR}^*$ are equivalent and thus Theorem 5.1 can be applied to show that $Y_{DR}^*(\mathcal{O}; G_0, \tilde{S})$, $Y_{DR}^*(\mathcal{O}; \tilde{G}, S_0)$ and $Y_{DR}^*(\mathcal{O}; G_0, S_0)$ are each CUTs.
+	In the following lemma we show that the transformations $Y_d^*$ and $Y_{DR}^*$ are equivalent and thus Theorem 5.1 can be applied to show that $Y_{DR}^*(\cdot; G_0, \tilde{S})$, $Y_{DR}^*(\cdot; \tilde{G}, S_0)$ and $Y_{DR}^*(\cdot; G_0, S_0)$ are each CUTs.
 	
 	\begin{Lemma}
 		Using the regularity conditions described in Theorem \ref{thm:dr} it holds that $Y_{DR}^*(\mathcal{O}; G_0, \tilde{S})$, $Y_{DR}^*(\mathcal{O}; \tilde{G}, S_0)$ and $Y_{DR}^*(\mathcal{O}; G_0, S_0)$ are each CUTs.
 	\end{Lemma}
 	\begin{proof}
-		We show the lemma by proofing that $Y_d^*$ and $Y_{DR}^*$ both perform the same transformation and as a consequence Theorem \ref{thm:dr} can be applied to $Y_{DR}^*$.
+		We verify the lemma by proving that $Y_d^*$ and $Y_{DR}^*$ both perform the same transformation and as a consequence Theorem \ref{thm:dr} can be applied to $Y_{DR}^*$.
 		The first two terms of the transformation $Y_d^*$ are equal to those in the transformation $Y_{DR}^*$.
 		Thus it is sufficient to show that
 		\begin{equation*}
@@ -609,7 +606,7 @@
 		\begin{equation*}
 		\frac{d\Lambda_G(c \vert X)}{dc} = -\frac{g(c\vert X)}{G(c\vert X)}.
 		\end{equation*}
-		Using this and the density of $G$ yields
+		Using this identity and the density of $G$ yields
 		\begin{equation*}
 		\begin{split}
 		\int_{-\infty}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}dF(c\vert X) &= \int_{0}^{Y}\frac{m(c,X;S)}{G^2(c\vert X)}d(-G(c\vert X))\\
@@ -625,15 +622,14 @@
 	\citet*{culs} and \citet*{basearticle}.
 	
 	The theory of censoring unbiased transformations can be directly applied to loss functions and results in a class of censoring unbiased loss functions. 
-	These loss functions can be calculated in the presence and absence of censoring, and reduce to the full data loss if the survival time is not censored.
+	These loss functions can be computed in the presence and absence of censoring, and reduce to the full data loss if the survival time is not censored.
 	
-	In this thesis we focus on estimation of the loss $\mathcal{R} (\beta) = E[L(h(T),\beta(X))]$, where $\beta(X)$ is the weight vector estimated using the explanatory variables $X$.
+	In this thesis we focus on estimation of the loss $\mathcal{R} (\beta) = E[L(h(T),\beta(X))]$, where $\beta(X)$ is the learning parameter estimated using the explanatory variables $X$.
 	For this we consider two censoring unbiased estimators that both reduce to the full data loss in the absence of censoring: the doubly robust loss function and the Buckley--James estimator.
 	
 	\todo[inline]{add from basearticle: why IPCW is no longer considered/no suitable choice for estimator of full data loss}
 	
 	The Buckley--James estimator for $\mathcal{R}(\beta)$ is given by
-	
 	\begin{equation}\label{eq:bj}
 	L_{BJ}(\mathcal{O}, \beta; S_0) = \frac{1}{n} \sum_{i=1}^n \left[ \Delta_i L(h(T_i), \beta(X_i))+(1-\Delta_i)m_L(C_i, X_i, \beta; S_0)\right].
 	\end{equation}
@@ -642,12 +638,9 @@
 	Again, the structure of this estimator is rather intuitive.
 	For uncensored observations we add the full data loss $L(h(T_i), \beta(X_i))$ and for censored observations we use the expectation of the full data loss $m_L(C_i, X_i, \beta; S_0)$ given by equation (\ref{eq:exploss}).
 	
-	In order to consistently estimate $\mathcal{R}(\beta)$, this loss function requires a consistent estimator for the conditional survival function $S_0(\cdot\vert X)$.
+	In order to well-estimate $\mathcal{R}(\beta)$, this loss function requires to find a suitable estimator for the conditional survival function $S_0(\cdot\vert X)$.
 	
 	The doubly robust loss function is defined as
-	
-	%\todo[inline]{schauen ob Schreibweise konsistent ist, zB tilde(T) etc}
-	
 	\begin{equation}\label{eq:dr}
 	\begin{split}
 		L_{DR}(\mathcal{O}, \beta; G_0, S_0) = & \frac{1}{n} \sum_{i=1}^n \frac{\Delta_i L(h(T_i),\beta(X_i))}{G_0(\tilde{T}_i\vert X_i)}\\
@@ -664,33 +657,30 @@
 	\end{equation}
 	and $\Lambda_G(u\vert X) = - \int_0^u  1/ G(t\vert X)dG(t \vert X)$ is the cumulative hazard function.
 	
-	Again, we obtain this loss function by calculating the average of the full data loss that is now transformed via equation (\ref{eq:drcut}).
+	Again, we obtain this loss function by computing the average of the full data loss that is now transformed via equation (\ref{eq:drcut}).
 	
 	Theorem \ref{thm:dr} also holds for the doubly robust loss function.
-	As a consequence we only need to model either $S(\cdot\vert X)$ or $G(\cdot\vert X)$ correctly, to obtain a suitable estimator.
+	As a consequence we only need to model either $S(\cdot\vert X)$ or $G(\cdot\vert X)$ correctly in order to obtain a suitable estimator for $\mathcal{R}(\beta)$.
 	
 	As a next step we can plug in estimators $\hat{S}$ and $\hat{G}$ for the conditional survival functions $S_0$ and $G_0$ respectively to obtain empirical estimators for the full data loss.
 	
 	For the empirical Buckley--James loss we obtain
-	
 	\begin{equation*}
 	L_{BJ}(\mathcal{O}, \beta; \hat{S}) = \frac{1}{n} \sum_{i=1}^n \left( \Delta_i L(h(T_i), \beta(X_i))+(1-\Delta_i)m_L(C_i, X_i, \beta; \hat{S})\right).
 	\end{equation*}
 	
 	The empirical doubly robust loss function is given by
-	
 	\begin{equation*}
 	\begin{split}
-	L_{DR}(\mathcal{O}, \beta; \tilde{G}, \tilde{S}) = & \frac{1}{n} \sum_{i=1}^n \frac{\Delta_i L(h(T_i),\beta(X_i))}{\tilde{G}(\tilde{T}_i\vert X_i)}\\
+	L_{DR}(\mathcal{O}, \beta; \tilde{G}, \tilde{S}) \mathrel{=} & \frac{1}{n} \sum_{i=1}^n \frac{\Delta_i L(h(T_i),\beta(X_i))}{\tilde{G}(\tilde{T}_i\vert X_i)}\\
 	~ & + \frac{1}{n} \sum_{i=1}^n \left(\frac{(1-\Delta_i)m_L(\tilde{T_i}, X_i, \beta; \tilde{S})}{\tilde{G}(\tilde{T_i}\vert X_i)} \right.\\
 	& - \left. \int _0^{\tilde{T_i}} \frac{m_L(u, X_i, \beta; \tilde{S})}{\tilde{G}(u \vert X_i)} d \Lambda_{\tilde{G}}(u \vert X_i) \right).
 	\end{split}
 	\end{equation*}
 	
-	If we use the incorrect model specification, that $\hat{G}(t,x)=1$ for all pairs $(t,x)$, the empirical  Buckley--James loss is equivalent to the empirical doubly robust loss, i.e. $L_{BJ}(\mathcal{O}, \beta; \hat{S})=L_{DR}(\mathcal{O}, \beta; \hat{S}, \hat{G} = 1)$.
-	\todo{evtl kurz zeigen?}
-	
-	We can now replace the full data loss function $L(h(T), f(X)))$ in Algorithm \ref{alg:nocensor} with either the empirical Buckley--James loss $L_{BJ}$ or the empirical doubly robust loss $L_{DR}$ and obtain a prediction model, that can be calculated with the observed data $\mathcal{O}$.
+	If we use the incorrect model specification that $\hat{G}(t\vert X)=1$ for all~$t$, the empirical  Buckley--James loss is equivalent to the empirical doubly robust loss, i.e. $L_{BJ}(\mathcal{O}, \beta; \hat{S})=L_{DR}(\mathcal{O}, \beta; \hat{S}, \hat{G} = 1)$.
+		
+	We can now replace the full data loss function $L(h(T), f(X))$ in Algorithm \ref{alg:nocensor} with either the empirical Buckley--James loss $L_{BJ}$ or the empirical doubly robust loss $L_{DR}$ and obtain a prediction model that can be computed with the observed data~$\mathcal{O}$.
 	We refer to the resulting algorithms as the Buckley--James or the doubly robust deep learning algorithms respectively.
 	As both loss functions are censoring unbiased loss functions, we refer to the resulting algorithms as censoring unbiased deep learning (CUDL). 
 	
@@ -701,15 +691,13 @@
 	In this section we specify how the survival probabilities $P(T\geq t \vert X)$ can be estimated for a specified time point $t$.
 	As mentioned before, the target parameter determines the choice of loss function.
 	For the estimation of survival probabilities we can use the Brier loss $L_{t,2}(T, \beta(X)) = (I(T \geq t) - \beta(X))^2$ as our full data loss.
-	\todo{beweisen?}
 	
 	As a first step we have to define a modified dataset with respect to the fixed time point $t$:
 	\begin{equation*}
 		\mathcal{O}(t) = \{(\tilde{T}_i(t)=\min(T_i, C_i, t), \Delta_i(t) = I(\min(T_i, t) \leq C_i), X_i); i = 1,\dots,n\}.
 	\end{equation*}
 	
-	Using the Brier loss as the full data loss in equation (\ref{eq:dr}) results the doubly robust Brier loss, which is given by
-	
+	Using the Brier loss as the full data loss in Equation (\ref{eq:dr}) results in the doubly robust Brier loss, which is given by
 	\begin{equation*}
 	\begin{split}
 		L_{DR, t}(\mathcal{O}(t),\beta; \hat{G},\hat{S}) &=  \frac{1}{n} \sum_{i=1}^n \frac{\Delta_i(t)(I(\tilde{T}_i \geq t)-\beta(X_i))^2}{\hat{G}(\tilde{T}_i \vert X_i)}\\
@@ -723,7 +711,6 @@
 	 \end{equation*}
 	
 	Analogously, by plugging in the Brier risk to the Buckley--James estimators we obtain the empirical Buckley--James Brier loss given by
-	
 	\begin{equation*}
 		L_{BJ,t}(\mathcal{O},\beta; \hat{S}) = \frac{1}{n} \sum_{i=1}^n \left( \Delta_i(t)(I(\tilde{T}_i\geq t)-\beta(X_i))^2 + (1- \Delta_i(t))m_{L_2,t}(\tilde{T}_i(t), X_i; \hat{S})\right)
 	\end{equation*}
@@ -744,7 +731,7 @@
 	Analogously to the estimation of survival probabilities, we need to incorporate the constant $\tau$ in the data set.
 	This leads us to the modified version	
 	\begin{equation*}
-		\mathcal{O}(\tau) = \{\tilde{T}_i(\tau) = \min\{T_i, C_i, \tau\}, \Delta_i(\tau) = I(\min\{T_i, \tau\}\leq C_i), X_i; i = 1, \dots , n\}.
+		\mathcal{O}(\tau) = \{(\tilde{T}_i(\tau) = \min\{T_i, C_i, \tau\}, \Delta_i(\tau) = I(\min\{T_i, \tau\}\leq C_i), X_i); i = 1, \dots , n\}.
 	\end{equation*}
 	
 	Selecting the $L_2$ loss as the full data loss, choosing $h(t) = \min{t,\tau}$ and applying the CUDL algorithms to the modified data set gives us an estimator for the restricted mean survival.
@@ -784,7 +771,7 @@
 	\end{equation*}
 	
 	Our main goal is to show that a deep learning algorithm, that uses the transformed data and the response transformed $L_2$ loss, is equivalent to the CUDL algorithms presented in Section \ref{sec:cudls}.
-	As a result, the CUDL algorithms inherits the desired doubly robustness property to the transformed data algorithm.
+	As a result, the deep learning algorithm that uses the transformed data inherits the desired doubly robustness property from the CUDL algorithm.
 	
 	This equivalence is stated in Theorem 1 in \citet*{basearticle} and reproduced below.
 	
@@ -802,21 +789,21 @@
 		\end{equation}
 		This equality can be shown by reordering the terms in the sum above in alphabetical order.
 		
-		Lemma \ref{lem:equi} provided in the appendix states that $A_{0i}+B_{0i}-C_{0i} = 1$ holds true.
-		This leads us to
+		Lemma \ref{lem:equi} provided in the appendix states that $A_{0i}+B_{0i}-C_{0i} = 1$.
+		This observation leads us to
 		\begin{equation*}
 		L_{DR}^{(2)}(\mathcal{O}, \beta; G,S) = \frac{1}{n} \sum_{i=1}^n  \left((A_{2i}+B_{2i}-C_{2i}) - 2(A_{1i}+B_{1i}-C_{1i})\beta(X_i) + \beta(X_i)^2\right).
 		\end{equation*}
 		
-		We can also reformulate the response transformed $L_2$ loss by calculating the square and obtain
+		We can also reformulate the response transformed $L_2$ loss by expanding the square and obtain
 		\begin{equation}\label{eq:rtl2}
 		L_2^*(\mathcal{O}, \beta; G,S) = \frac{1}{n} \sum_{i=1}^n \left((A_{1i}+B_{1i}-C_{1i})^2 - 2 (A_{1i}+B_{1i}-C_{1i}) \beta(X_i)+\beta(X_i)^2\right).
 		\end{equation}
 		
-		We can see that the loss functions in equation (\ref{eq:rwdr}) and equation (\ref{eq:rtl2}) are actually very similar.
+		We can see that the loss functions in Equation (\ref{eq:rwdr}) and Equation (\ref{eq:rtl2}) are actually very similar.
 		Only the first term in the sum, which is independent of $\beta$, is different for each loss function.
 	
-		As a consequence for a fixed penalization parameter $\eta$ minimizing 
+		As a consequence for a fixed penalization parameter $\eta$, minimizing 
 		\begin{equation*}
 		L_2^*(\mathcal{O}, \beta; G,S) + \eta \Vert \beta \Vert_p^2
 		\end{equation*}
@@ -824,37 +811,37 @@
 		\begin{equation*}
 		L_{DR}^{(2)}(\mathcal{O}, \beta; G,S) + \eta \Vert \beta \Vert_p^2
 		\end{equation*}
-		 results in the same weight vector $\beta$.
+		 results in the same learning parameter $\beta$.
 		 
 		 If we can show that the penalization parameter selected by minimizing the cross-validated loss with the loss $L_2^*(\mathcal{O}, \beta; G,S)$ is the same if we replace the $L_2^*$ loss by $L_{DR}^{(2)}(\mathcal{O}, \beta; G,S)$, both prediction models produce the identical output.
 		
 		To show this, we use the notation from Section \ref{basicsdl}.
-		Recall that $a_{i,l}$ indicates whether observation $i$ is an element of the subset $K_l$.
+		Recall that $a_{i,\ell}$ indicates whether observation $i$ is an element of the subset $K_\ell$.
 		
 		As $L_2^*(\mathcal{O}, \beta; G,S)$ and $L_{DR}^{(2)}(\mathcal{O}, \beta; G,S)$ are equal up to a term that does not depend on $\beta$, it holds that
 		\begin{equation*}
-		\sum_{l=1}^{D} \sum_{i=1}^{n} a_{i,l} L_2^*(\mathcal{O}, \beta; G,S) = \sum_{l=1}^{D} \sum_{i=1}^{n} a_{i,l} L_{DR}^{(2)}(\mathcal{O}, \beta; G,S) + const(\mathcal{O}; G,S).
+		\sum_{\ell=1}^{D} \sum_{i=1}^{n} a_{i,\ell} L_2^*(\mathcal{O}, \beta; G,S) = \sum_{\ell=1}^{D} \sum_{i=1}^{n} a_{i,\ell} L_{DR}^{(2)}(\mathcal{O}, \beta; G,S) + const(\mathcal{O}; G,S).
 		\end{equation*}
 		This shows that
 		\begin{equation*}
 		\begin{split}
-		 &\argmin_{m \in \{1,\dots, M\}}\sum_{l=1}^{D} \sum_{i=1}^{n} a_{i,l} L_2^*(\mathcal{O}, \beta; G,S)\\
-		  = &\argmin_{m \in \{1,\dots, M\}}\sum_{l=1}^{D} \sum_{i=1}^{n} a_{i,l} L_{DR}^{(2)}(\mathcal{O}, \beta; G,S),
+		 &\argmin_{m \in \{1,\dots, M\}}\sum_{\ell=1}^{D} \sum_{i=1}^{n} a_{i,\ell} L_2^*(\mathcal{O}, \beta; G,S)\\
+		  = &\argmin_{m \in \{1,\dots, M\}}\sum_{\ell=1}^{D} \sum_{i=1}^{n} a_{i,\ell} L_{DR}^{(2)}(\mathcal{O}, \beta; G,S),
 		 \end{split}
 		\end{equation*}
 		which completes the proof.
 	\end{proof}
 
-	The assumptions on the conditional censoring function $G(\cdot\vert\cdot)$ are flexible enough to allow for $G(t\vert x)=1$ for all pairs $(t,x)$.
+	The assumptions on the conditional censoring function $G(\cdot\vert X)$ are flexible enough to allow for $G(t\vert X)=1$ for all $t$.
 	And as it holds that $L_{BJ}(\mathcal{O}, \beta; \hat{S})=L_{DR}(\mathcal{O}, \beta; \hat{S}, \hat{G} = 1)$, Theorem \ref{thm:equi} also applies to the CUDL using the Buckley--James loss.
 	
-	Theorem \ref{thm:equi} allows us to implement the CUDL algorithm using software for fully observed outcomes.
+	Theorem \ref{thm:equi} allows us to implement the CUDL algorithm using techniques for fully observed outcomes.
 	This leads us to the following algorithm, as described in \citet*{basearticle}:
 	\begin{Algorithm}\label{alg:censor}~
 		\begin{enumerate}
-			\item Use the observed data $\mathcal{O}$ to calculate estimators for the survival curves $\hat{S}(\cdot\vert\cdot)$ and $\hat{G}(\cdot\vert\cdot)$
+			\item Use the observed data $\mathcal{O}$ to compute estimators for the survival curves $\hat{S}(\cdot\vert\cdot)$ and $\hat{G}(\cdot\vert\cdot)$
 			\item Perform the response transformation $D(O_i; \hat{G},\hat{S}),$~$ i = 1,\dots,n$
-			\item Perform an $L_2$ full data deep learning algorithm, e.g. algorithm \ref{alg:nocensor}, on the dataset $\{(D(O_i; \hat{G},\hat{S}), X_i); i = 1,\dots,n\}$.
+			\item Perform an $L_2$ full data deep learning algorithm, e.g. Algorithm \ref{alg:nocensor}, on the dataset $\{(D(O_i; \hat{G},\hat{S}), X_i); i = 1,\dots,n\}$.
 		\end{enumerate}
 	\end{Algorithm}
 
