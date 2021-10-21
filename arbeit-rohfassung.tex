@@ -27,7 +27,9 @@
 \usepackage{natbib}
 
 \usepackage{fancyvrb} 
-\usepackage{bm} 
+\usepackage{bm}
+
+\usepackage{tabularx,booktabs,ragged2e}
 
 \usepackage[colorinlistoftodos]{todonotes}
 
@@ -1026,34 +1028,30 @@
 	
 	For comparison we split each dataset in a training and a test set.
 	Analogous to \citet*{basearticle} we randomly chose $20\%$ of the data as our test set.
-	%XXX want to have the same proportion of censored and uncensored observations
-	\todo[inline]{alternativer Titel: competing methods}
-	\subsubsection{Keras Model for Transformed Data}\label{keras}
+	In order to preserve the ratio of censored and uncensored data we draw the $20\%$ for the test set from the censored and uncensored data separately.
+	
+	\subsubsection{Competing Methods}\label{comp}
 	
 	In this section we describe how the deep learning model from Algorithm \ref{alg:censor} can be implemented in \texttt{R}.
+	Then we explain three different methods for estimation of survival time that we use to compare the performance of the CUDL algorithms.
 	
-	To predict the survival probabilities we use a feedforward network with two layers.
-	The first layer consists of 15 units and uses the relu activation function $\phi(x) = \max(0, x)$.
+	To predict the survival probabilities with deep learning we use a feedforward network with two layers.
+	The first layer consists of 15 units and uses the ReLU activation function $\phi(x) = \max(0, x)$.
 	As proposed in \citet*{deeplbook} we use the dropout rate $1-p=0.2$ for the input layer.
-	
 	The second layer, which is our output layer, consists of one unit and uses the sigmoid activation function $\phi(x)=(1+e^{-x})^{-1}$.
 	We choose this activation function to make sure that the resulting value can be interpreted as a probability.
 	
 	For the gradient descent we use the mean squared error as loss function, the batch size is set to 32 and we use 100 epochs.
 	In one epoch we go through the whole dataset in batches of 32, which means that we perform the gradient descent algorithm $(\# \text{observations})/32\cdot100$ -- times to find the optimal parameter.
-	
 	Then we perform 5-fold cross validation to choose a suitable penalization term $\eta$ from the sequence $(0, 0.001, 0.01, 0.1)$.
 	As proposed by \citet*{basearticle} the performance of the resulting penalized feedforward network is evaluated with an IPCW weighted mean squared error.
 	This error is computed estimating the IPCW weights which are described in Equation (\ref{eq:ipcw}) and multiplying them with the mean squared error.
 	
 	The procedure described above is performed twice.
 	For the observed times that are transformed using the Buckley--James transformation and for the doubly robust transformed observed times.
-	\subsubsection{Models Used for Comparison}\label{comp}
-	\todo[inline]{think of better title}
 	
 	We compare the deep learning algorithms that use the transformed data to three different approaches: a Cox PH model, a penalized Cox model and a random forest model.
-	
-	As a first step, we transform the responses $Y=h(T)=I(T>t)$, with the prespecified time point $t$.
+	As a first step, we transform the responses $Y=h(T)=I(T>t)$, with the prespecified time point $t$ to account for the goal of estimating survival probabilities.
 	
 	The Cox PH model, which is explained in further detail in Section \ref{cox}, can be estimated in \texttt{R} using the function \texttt{coxph} from the package \texttt{survival}.
 	Refer to \citet*{survival-package} for further information.
@@ -1067,68 +1065,115 @@
 	This can be implemented using the \texttt{R} function \texttt{rfscr} from the package \texttt{randomForestSRC}.
 	The resulting survival curve is estimated using the function \texttt{predict}.
 	
-	The performance of all of the above mentioned models is evaluated using an IPCW weighted mean squared error.
-	
+	The performance of all of the above mentioned models is again evaluated using an IPCW weighted mean squared error.
 	
 	\subsection{Simulation Results}
-	In this section we compare the different methods for survival analysis, which are described in Section \ref{keras} and \ref{comp}  for each of the settings presented in Section \ref{settings}.
+	In this section we compare the different methods for survival analysis, which are described in Section \ref{comp}  for each of the settings presented in Section~\ref{settings}.
 	
 	First the data is generated according to the current setting.
-	Then, the IPCW weighted mean squared error of each  model is computed and used as our performance measure.
-	
+	For the CUDL algorithms the observed time is using the Buckley--James and the doubly robust transformation respectively.
+	Then the 300 observations are randomly split in a training and test set where the test set contains $20\%$ of the data.
+	The different methods are fit using the training data and evaluated with the IPCW weighted error.
 	We repeat this procedure 50 times and compare the resulting errors.
 	
-	XXXXXXXXXXX
+	For predicting the survival probability $P(T>t\vert X)$ we have to specify the time $t$.
+	Analogous to \citet*{basearticle} we used the median survival time for each setting.
+	We empirically computed the median by simulating the data 1000 times and taking the mean.%XXX
 	
-	for setting 1:
+	The resulting prediction errors are visualized using raincloud plots.
+	These plots extend boxplots by the empirical distribution of the considered data.
+	%XXX
 	
-	Deep learning approaches are outperformed by other algorithms.
-	Penalized Cox and random forest result in the best estimators.
-	Doubly robust performs better than Buckle--James.
-	
-	\begin{figure}
+	In Setting 1 we compute the survival times such that the PH assumption is met.
+	We used the empirically computed median $t = 0.4189946$ for the estimation.
+	Each of the considered models gives comparably good results.
+	In the 
+	\begin{figure}\label{setting1}
 		\centering	
 		\input{../plots/setting1.tex}
 		\vspace{-0.3cm}
 		\caption{Comparison of the resulting IPCW weighted mean squared error for Setting 1. Lower values indicate better performance. BJCUDL and drCUDL are the CUDL algorithms that use the Buckley--James and the doubly robust transformation respectively. The Cox PH model and the penalized Cox PH model are denoted by cox and pencox. Rand is the random forest procedure.}
  	\end{figure}
 	
-	for setting 2:
+	In Setting 2 we compute the survival times such that the PH assumption is mildly violated.
+	We used the empirically computed median $t = 0.7046207$ for the estimation.
 	
 	Penalized Cox and random forest are both significantly better than deep learning approaches.
 	Doubly robust performs better than Buckley--James.
 	
-	\begin{figure}
+	\begin{figure}\label{setting2}
 		\centering	
 		\input{../plots/setting2.tex}
 		\vspace{-0.3cm}
-		\caption{Comparison of the resulting IPCW weighted mean squared error for Setting 2. Lower values indicate better performance. BJCUDL and drCUDL are the CUDL algorithms that use the Buckley--James and the doubly robust transformation respectively. The Cox PH model and the penalized Cox PH model are denoted by cox and pencox. Rand is the random forest procedure.}
+		\caption{Comparison of the resulting IPCW weighted mean squared error for Setting 2. Lower values indicate better performance. The names of the different models are chosen as in Figure~\ref{setting1}.}
 	\end{figure}
 	
-	for setting 3:
+	In Setting 3 we compute the survival times such that the PH assumption is strongly violated.
+	We used the empirically computed median $t = 2,90718$ for the estimation.
 	
-	\begin{figure}
+	\begin{figure}\label{setting3}
 		\centering	
 		\input{../plots/setting3.tex}
 		\vspace{-0.3cm}
-		\caption{Comparison of the resulting IPCW weighted mean squared error for Setting 3. Lower values indicate better performance. BJCUDL and drCUDL are the CUDL algorithms that use the Buckley--James and the doubly robust transformation respectively. The Cox PH model and the penalized Cox PH model are denoted by cox and pencox. Rand is the random forest procedure.}
+		\caption{Comparison of the resulting IPCW weighted mean squared error for Setting 3. Lower values indicate better performance. The names of the different models are chosen as in Figure~\ref{setting1}.}
 	\end{figure}
 	
-	Same as for setting 1 and 2.
+	In Setting 4 we compute the survival times such that the censoring distribution depends on the explanatory variables.
+	We used the empirically computed median $t = 1,034881$ for the estimation.
 	
-	setting 4:
-	
-	\begin{figure}
+	\begin{figure}\label{setting4}
 		\centering	
 		\input{../plots/setting4.tex}
 		\vspace{-0.3cm}
-		\caption{Comparison of the resulting IPCW weighted mean squared error for Setting 4. Lower values indicate better performance. BJCUDL and drCUDL are the CUDL algorithms that use the Buckley--James and the doubly robust transformation respectively. The Cox PH model and the penalized Cox PH model are denoted by cox and pencox. Rand is the random forest procedure.}
+		\caption{Comparison of the resulting IPCW weighted mean squared error for Setting 4. Lower values indicate better performance. The names of the different models are chosen as in Figure~\ref{setting1}.}
 	\end{figure}
+	
+	\begin{table}
+		\footnotesize
+		{\tabcolsep=0pt\def\arraystretch{1.3}
+			\begin{tabularx}{\textwidth}{l *{4}{>{\Centering}X}}
+				\toprule
+				algorithm & 10\% quantile & mean & 90\% quantile & standard deviation\tabularnewline
+				\multicolumn{5}{c}{Setting 1}\tabularnewline
+				\cmidrule(lr){2-5}
+				BJCUDL	& 0.1905			& 0.2322			& \textbf{0.2714}	& \textbf{0.0372} \tabularnewline
+				cox 	& 0.1964			& 0.2485			& 0.3098			& 0.0458 \tabularnewline
+				drCUDL	& 0.1858			& 0.2444			& 0.2960			& 0.0414 \tabularnewline
+				pencox 	& 0.1858			& 0.2319			& 0.2862			& 0.0436 \tabularnewline
+				rand 	& \textbf{0.1852}	& \textbf{0.2301}	& 0.2773			& 0.0401 \tabularnewline
+				
+				\multicolumn{5}{c}{Setting 2}\tabularnewline
+				\cmidrule(lr){2-5}
+				BJCUDL 	& 0.2592			& 0.2771			& 0.2997			& \textbf{0.0163} \tabularnewline
+				cox 	& 0.2590			& 0.2939			& 0.3327			& 0.0292 \tabularnewline
+				drCUDL 	& \textbf{0.2434}	& 0.2828			& 0.3170			& 0.0349 \tabularnewline
+				pencox 	& 0.2581			& 0.2795			& 0.3115			& 0.0224 \tabularnewline
+				rand 	& 0.2527			& \textbf{0.2719}	& \textbf{0.2955}	& 0.0183 \tabularnewline
+				
+				\multicolumn{5}{c}{Setting 3}\tabularnewline
+				\cmidrule(lr){2-5}
+				BJCUDL 	& 0.1000			& \textbf{0.2375}	& \textbf{0.3074}	& \textbf{0.0810} \tabularnewline
+				cox 	& \textbf{0.0912}	& 0.2507			& 0.3350			& 0.0925 \tabularnewline
+				drCUDL 	& 0.0970			& 0.2441			& 0.3166			& 0.0868 \tabularnewline
+				pencox 	& 0.0943			& 0.2377			& 0.3092			& 0.0867 \tabularnewline
+				rand 	& 0.0956			& 0.2399			& 0.3084			& 0.0850 \tabularnewline
+				
+				\multicolumn{5}{c}{Setting 4}\tabularnewline
+				\cmidrule(lr){2-5}
+				BJCUDL 	& 0.2122			& 0.2683			& 0.3238			& \textbf{0.0422} \tabularnewline
+				cox 	& 0.2210			& 0.2844			& 0.3479			& 0.0610 \tabularnewline
+				drCUDL 	& 0.2099			& 0.2705			& 0.3278			& 0.0498 \tabularnewline
+				pencox 	& \textbf{0.2053}	& \textbf{0.2650}	& \textbf{0.3221}	& 0.0435 \tabularnewline
+				rand 	& 0.2058			& 0.2716			& 0.3265			& 0.0463 \tabularnewline
+				\bottomrule
+				
+		\end{tabularx}}
+		\caption{Comparison of 10\%- and 90\% quantile, mean and standard deviation of the prediction error of the models for each of the settings described above. The names of the different models are chosen as in Figure~\ref{setting1}.}
+	\end{table}
 	
 
 	\newpage
 	\section{Application to a Real World Scenario}
-	%\todo[inline]{maybe change title}
 	In this section we analyze the performance of the models described in Section \ref{impl} when applied to a real world scenario.
 	
 	\subsection{Mayo Clinic Primary Biliary Cholangitis Data}
@@ -1167,12 +1212,31 @@
 	
 	\todo[inline]{evaluate algorithms with data set}
 	
-	\begin{figure}
+	\begin{figure}\label{plot:realdata}
 		\centering	
 		\input{../plots/realData.tex}
 		\vspace{-0.3cm}
 		\caption{Comparison of the resulting IPCW weighted mean squared error for the PBC data. Lower values indicate better performance. BJCUDL and drCUDL are the CUDL algorithms that use the Buckley--James and the doubly robust transformation respectively. The Cox PH model and the penalized Cox PH model are denoted by cox and pencox. Rand is the random forest procedure.}
 	\end{figure}
+
+	\begin{table}
+		\footnotesize
+		{\tabcolsep=0pt\def\arraystretch{1.3}
+			\begin{tabularx}{\textwidth}{l *{4}{>{\Centering}X}}
+				\toprule
+				algorithm & 10\% quantile & mean & 90\% quantile & standard deviation\tabularnewline
+				\toprule
+				BJCUDL 	& 0.1263			& 0.3257			& 0.5554			& 0.1584 \tabularnewline
+				cox 	& 0.0756			& 0.1572			& 0.3011			& 0.0872 \tabularnewline
+				drCUDL 	& 0.1812			& 0.3707			& 0.5504			& 0.1549 \tabularnewline
+				pencox 	& \textbf{0.0679}	& 0.1544			& 0.3022			& 0.0891 \tabularnewline
+				rand 	& 0.0730			& \textbf{0.1532}	& \textbf{0.2491}	& \textbf{0.0761} \tabularnewline
+				\bottomrule
+				
+		\end{tabularx}}
+		\caption{Comparison of 10\%- and 90\% quantile, mean and standard deviation of the prediction error of the models for the Mayo clinic primary biliary cholangitis data. The names of the models are chosen as in Figure \ref{plot:realdata}.}
+	\end{table}
+	
 
 	\todo[inline]{compare resulting error}
 	\newpage
@@ -1210,10 +1274,11 @@
 		We will use the convention that $m(t,X;\tilde{S})$ is set to zero if $\tilde{S}(t \vert X)=0$.
 		\section{Proofs}
 		\subsection{Proof of Theorem \ref{thm:bj}}\label{proof:bjcut}
+		\textbf{Theorem {5.1.}} \textit{Under the mild regularity conditions given in Appendix~\ref{regcond} it holds that $Y_{BJ}^*(\cdot; S_0)$ is a CUT.}
 		\begin{proof}
 			The transformation $Y_{BJ}^*(\mathcal{O}; S_0)$ is a CUT if $E[Y_{BJ}^*(\mathcal{O}; S_0)\vert X] = E[Y\vert X]$ holds.
 			
-			Because of the linearity of the expectation we can analyze each term in $Y_{BJ}^*(\mathcal{O}; S_0)$ separately.
+			Because of the linearity of expectation we can analyze each term in $Y_{BJ}^*(\mathcal{O}; S_0)$ separately.
 			For the first term we obtain:
 			\begin{equation*}
 			\begin{split}
@@ -1242,14 +1307,14 @@
 			&={} - \int_{0}^{\tau} y \left[G(y\vert X)-\int_0^ydG(c\vert X)\right]dS_0(y\vert X)\\
 			&={} - \int_{0}^{\tau} y \left[G(y\vert X)-(G(y\vert X)-1)\right]dS_0(y\vert X)\\
 			&={} - \int_{0}^{\tau} ydS_0(y\vert X)\\
-			&={} E[Y\vert X].
+			&={} E[Y\vert X]. \qedhere
 			\end{split}
 			\end{equation*}
 		\end{proof}
 		\subsection{Auxiliary Lemma for Theorem \ref{thm:equi}}\label{proof:strawderman}
 		
 		\begin{Lemma}\label{lem:equi}
-			Using the notation introduced in Section XXX, it holds that 
+			Using the notation introduced in Section \ref{trafo}, it holds that 
 			\begin{equation*}
 				A_{0i}+B_{0i}-C_{0i}=1
 			\end{equation*}
@@ -1298,7 +1363,7 @@
 			\begin{split}
 			A_{0i}+B_{0i}-C_{0i}&={}\frac{1}{G(T_i \vert X_i)} - \int_{0}^{T_i}\frac{1}{G(u\vert X_i)}d\Lambda_G(u\vert X_i)\\
 			&={} 1 + \int_{0}^{T_i} \frac{1}{G(s\vert X_i)} d\Lambda_G(s\vert X_i)  - \int_{0}^{T_i}\frac{1}{G(u\vert X_i)}d\Lambda_G(u\vert X_i)\\
-			&={} 1.
+			&={} 1. \qedhere
 			\end{split}
 			\end{equation*}
 		\end{proof}
