@@ -129,6 +129,7 @@
 	
 	\thispagestyle{plain}
 	\tableofcontents
+	\enlargethispage{3em}
 	\newpage
 
 	
@@ -136,20 +137,26 @@
 	%\setcounter{page}{2}
 	\section{Introduction} \label{introduction}
 	
-	Medicine, time to event analysis, missing data, want to apply ml algorithms as ...
-	Machine learning has gained more and more interest in the last decades.
-	The algorithms are of growing importance in many areas and can be extended to various types of data.
+	Survival analysis %erklären mit time to event
+	is a pillar of statistical analysis of medical data. %insbesondere ist SA
+	Such data could for example originate from case studies conducted over some period of time. %Beispiel Medikamenten Studie bzw kurz case studies erklären
+	It might very well happen that in the limited time period of such a study, some event of interest does not occur. 
+	For instance a patient might neither recover nor die from a disease during the study.
+	Hence a fundamental issue is that if we do not observe the event we are presented with missing data. %which data is missing 
+	As a consequence analysis of survival data requires special methods. %To deal with missing data an den Anfang?
 	
-	problem: treatment of missing data;
-	need specialized techniques as in contrast to standard regression or classification tasks the outcome can for example often not be fully observed
-	
-	In this thesis we describe XXX
-	We start by pointing out the main ideas of survival analysis in Section~\ref{sec:sa}.
+	These methods often rely on assumptions about the data that might be too restrictive for complex data.
+	An alternative approach is to apply deep learning algorithms. %To overcome these limitations
+	To account for missing data, the usage of these algorithms entails a suitable specification of the loss function governing the training of feedforward networks.
+	However deep learning algorithms have the key advantage that they are less dependent on the validity of specific assumptions.
+
+	In this thesis we describe how survival data can be analyzed with deep learning algorithms as deep feedforward networks.
+	We start by presenting the main ideas of survival analysis in Section~\ref{sec:sa}.
 	The concept of censoring, the layout of survival data, as well as parametric and semiparametric approaches to survival analysis are described.
-	Then we briefly describe deep learning focusing on feedforward networks.
-	In Section~\ref{uncensored} we illustrate how deep learning can be used to analyze survival data in the case where no observation is censored.
+	Then we briefly outline deep learning focusing on feedforward networks.
+	In Section~\ref{uncensored} we illustrate how deep learning can be used to analyze survival data in the case where no observations are censored.
 	The main part of this thesis is Section~\ref{censored} where we consider censored data and how deep learning algorithms can be extended to account for this setting.
-	For this we introduce censoring unbiased loss functions and how they can be used to estimate survival probabilities and restricted mean survival.
+	For this goal we introduce censoring unbiased loss functions and how they can be used to estimate survival probabilities and restricted mean survival.
 	Then we show that deep feedforward networks that use the censoring unbiased loss functions are equivalent to feedforward networks that use the $L_2$ loss with transformed data.
 	The resulting algorithms are analyzed in a simulation study and tested using the Mayo clinic primary biliary cholangitis data. 
 	\newpage
@@ -179,7 +186,7 @@
 	This section relies on \citet*{sabook} and \citet*{mathsabook}.
 	
 	Survival data is often incomplete meaning that for some subjects the particular event is not observed within the study period.
-	We refer to this data as censored.
+	We refer to this data as \emph{censored}.
 	In this case we cannot observe the true survival time which is the time when the event occurs, but instead we observe the censoring time which is the time from which on the censored subject is no longer examined.
 	The observed survival time is then either given by the true survival time (if we observe that the patient experiences the event) or the censoring time (if the patient is censored).
 	
@@ -1067,7 +1074,7 @@
 	
 	The performance of all of the above mentioned models is again evaluated using an IPCW weighted mean squared error.
 	
-	\subsection{Simulation Results}
+	\subsection{Simulation Results}\label{seq:simresults}
 	In this section we compare the different methods for survival analysis, which are described in Section \ref{comp}  for each of the settings presented in Section~\ref{settings}.
 	
 	First the data is generated according to the current setting.
@@ -1081,13 +1088,15 @@
 	We empirically computed the median by simulating the data 1000 times and taking the mean.%XXX
 	
 	The resulting prediction errors are visualized using raincloud plots.
-	These plots extend boxplots by the empirical distribution of the considered data.
-	%XXX
+	These plots extend boxplots by the empirical distribution of the prediction error.
+	Table~\ref{table:settings} summarizes the $10\%$ and $90\%$ quantile, mean, and standard deviation for each model in each setting.
 	
 	In Setting 1 we compute the survival times such that the PH assumption is met.
 	We used the empirically computed median $t = 0.4189946$ for the estimation.
-	Each of the considered models gives comparably good results.
-	In the 
+	In Figure \ref{setting1} the resulting prediction error is illustrated.
+	
+	Each of the considered models gives comparably good results with prediction error mean of approximately $24\%$ and the $10\%$ quantile at approximately $19\%$.
+	The prediction error of the CUDL algorithm that uses the Buckley--James transformation has a lower $90\%$ quantile and standard deviation compared to the other methods.
 	\begin{figure}\label{setting1}
 		\centering	
 		\input{../plots/setting1.tex}
@@ -1128,7 +1137,7 @@
 		\caption{Comparison of the resulting IPCW weighted mean squared error for Setting 4. Lower values indicate better performance. The names of the different models are chosen as in Figure~\ref{setting1}.}
 	\end{figure}
 	
-	\begin{table}
+	\begin{table}\label{table:settings}
 		\footnotesize
 		{\tabcolsep=0pt\def\arraystretch{1.3}
 			\begin{tabularx}{\textwidth}{l *{4}{>{\Centering}X}}
@@ -1208,9 +1217,10 @@
 	For each time point we randomly split the data into a training and test set and compute the prediction error of the five models described in Section \ref{impl} to compare their performance. 
 	As proposed by \citet*{basearticle} we use $20\%$ of the data as the test set. 
 	\subsection{Results}
-	%\todo[inline]{maybe change title}
+	The Mayo clinic primary biliary cholangitis data fulfills the PH assumption.
+	As we already observed in Section \ref{seq:simresults} the Cox PH model as well as the penalized Cox PH model and the random forest procedure yield better results in this case.
 	
-	\todo[inline]{evaluate algorithms with data set}
+	In Figure \ref{plot:realdata}
 	
 	\begin{figure}\label{plot:realdata}
 		\centering	
@@ -1237,24 +1247,27 @@
 		\caption{Comparison of 10\%- and 90\% quantile, mean and standard deviation of the prediction error of the models for the Mayo clinic primary biliary cholangitis data. The names of the models are chosen as in Figure \ref{plot:realdata}.}
 	\end{table}
 	
-
-	\todo[inline]{compare resulting error}
 	\newpage
 	
 	\section{Conclusion}
-	In this thesis we briefly described the main concepts of survival analysis and deep learning respectively.
+	In this thesis we discussed how survival data can be implemented using deep learning algorithms as feedforward networks.
+	First we briefly described the main concepts of survival analysis and deep learning respectively.
 	Then we analyzed how feedforward networks can be applied to uncensored data.
 	In the main part we considered censored data and studied how existing algorithms can be extended to survival data.
-	To achieve this we first introduced the concept of censoring unbiased transformations which preserve the conditional mean structure of the data. %add Buckley--James and doubly robust transformation
+	To achieve this we first introduced the concept of censoring unbiased transformations which preserve the conditional mean structure of the data.
+	Two important examples for censoring unbiased transformations are the Buckley--James and the doubly robust transformation.
 	These transformations were then applied to full data loss functions which resulted in the class of censoring unbiased deep learning algorithms.
 	Then we proved that these algorithms are equivalent to deep learning algorithms that use the full data loss with transformed data as input.
 	As a next step we evaluated the performance of these deep learning algorithms in four different settings.
 	%add results
 	To conclude this thesis we also applied the methods to the Mayo clinic primary biliary cholangitis data.
+	Our implementations concluded similar results as in \citet*{basearticle}.
+	If the PH assumption is met the Cox PH model gives reliable results.
+	However, if the data is more complex it can be beneficial to use deep learning algorithms instead.
+	The CUDL algorithms could be further improved by choosing optimal values for the tuning parameters.
 	
-	
-	
-	evtl als Ausblick: Erweiterung auf competing risks, time dependent explanatory variables, recurrent events; Test different estimators for $S$ and $G$
+	In this thesis we considered a single event that can occur at most once.
+	For further research it could be interesting to study how the transformation can be extended to competing risks or recurrent events.
 	
 	\newpage
 	
@@ -1367,10 +1380,9 @@
 			\end{split}
 			\end{equation*}
 		\end{proof}
-	
-		%\section{Further Simulations}
 		
-		%\section{R-Code}
+		\section{R-Code}
+		The 
 		
 	\end{appendices}
 	
