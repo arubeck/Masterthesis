@@ -133,17 +133,16 @@
 	%\setcounter{page}{2}
 	\section{Introduction} \label{introduction}
 	
-	Survival analysis %erklären mit time to event
-	is a pillar of statistical analysis of medical data. %insbesondere ist SA
+	Survival analysis is a pillar of statistical analysis especially for medical data. 
 	Such data could for example originate from case studies conducted over some period of time. %Beispiel Medikamenten Studie bzw kurz case studies erklären
 	It might very well happen that in the limited time period of such a study, some event of interest does not occur. 
 	For instance a patient might neither recover nor die from a disease during the study.
-	Hence a fundamental issue is that if we do not observe the event we are presented with missing data. %which data is missing 
-	As a consequence analysis of survival data requires special methods. %To deal with missing data an den Anfang?
+	Hence a fundamental issue is that if we do not observe the event we are presented with missing data.
+	As a consequence, analysis of survival data requires special methods. %To deal with missing data an den Anfang?
 	
 	These methods often rely on assumptions about the data that might be too restrictive for complex data.
-	An alternative approach is to apply deep learning algorithms. %To overcome these limitations
-	To account for missing data, the usage of these algorithms entails a suitable specification of the loss function governing the training of feedforward networks.
+	An alternative approach is to apply deep learning techniques. %To overcome these limitations
+	To account for missing data, these techniques require the specification of a suitable loss function governing the training of feedforward networks.
 	However deep learning algorithms have the key advantage that they are less dependent on the validity of specific assumptions.
 
 	In this thesis we describe how survival data can be analyzed with deep learning algorithms as deep feedforward networks.
@@ -177,7 +176,7 @@
 	For further details refer to \citet*[Chapter~9]{bookfailuretime}.
 	
 	\subsection{Censoring} \label{censoring}
-	
+	\enlargethispage{3em}
 	This section follows \citet*{sabook} and \citet*{mathsabook}.
 	
 	Survival data is often incomplete meaning that for some subjects the particular event is not observed within the study period.
@@ -558,13 +557,13 @@
 		The desired property can be proven by using the tower rule
 		\begin{equation*}
 		\begin{split}
-		E\left[Y_{IPCW}^*(\mathcal{O}; G_0)\vert X\right] &={} E\left[\frac{\Delta \tilde T}{G_0(\tilde T\vert X)}\vert X\right] = E\left[E\left[\frac{\Delta \tilde T}{G_0(\tilde T\vert X)}\vert X, \tilde T\right]\vert X\right]\\
-		&={} E\left[\frac{\tilde T}{G_0(\tilde T \vert X)}P(\Delta = 1 \vert X, \tilde T)\vert X\right]
+		E\left[Y_{IPCW}^*(\mathcal{O}; G_0)\vert X\right] &={} E\left[\frac{\Delta \tilde T}{G_0(\tilde T\vert X)}\bigg\vert X\right] = E\left[E\left[\frac{\Delta \tilde T}{G_0(\tilde T\vert X)}\bigg\vert X, \tilde T\right]\bigg\vert X\right]\\
+		&={} E\left[\frac{\tilde T}{G_0(\tilde T \vert X)}P(\Delta = 1 \vert X, \tilde T)\bigg\vert X\right]
 		\end{split}
 		\end{equation*}
 		Now we can use that $P(\Delta = 1\vert X, \tilde T) = 1-P(\Delta = 0\vert X, \tilde T)$ to obtain
 		\begin{equation*}
-		E\left[Y_{IPCW}^*(\mathcal{O}; G_0)\vert X\right] = E\left[\frac{\tilde T}{G_0(\tilde T \vert X)}G_0(\tilde T \vert X)\vert X\right] = E[\tilde T \vert X]. \qedhere
+		E\left[Y_{IPCW}^*(\mathcal{O}; G_0)\vert X\right] = E\left[\frac{\tilde T}{G_0(\tilde T \vert X)}G_0(\tilde T \vert X)\bigg\vert X\right] = E[\tilde T \vert X]. \qedhere
 		\end{equation*}
 	\end{proof}
 		
@@ -688,7 +687,7 @@
 	Theorem \ref{thm:dr} also holds for the doubly robust loss function.
 	As a consequence we only need to model either $S(\cdot\vert X)$ or $G(\cdot\vert X)$ correctly in order to obtain a suitable estimator for $\mathcal{R}(\beta)$.
 	
-	As a next step we can plug in estimators $\hat{S}$ and $\hat{G}$ for the conditional survival functions $S_0$ and $G_0$ respectively to obtain empirical estimators for the full data loss.
+	As a next step we can plug in estimators $\hat{S}$ and $\hat{G}$ for the conditional survival functions $S_0$ and $G_0$ to obtain empirical estimators for the full data loss.
 	
 	For the empirical Buckley--James loss we obtain
 	\begin{equation*}
@@ -957,7 +956,7 @@
 	This is because it would negatively impact the doubly robustness property, if we specify one of the estimators incorrectly and thus affect the consistency of the other.
 	Further details can be found in \citet*{drtrees}.
 	
-	\subsubsection{Estimating the Conditional Expectation $\mathbf{m_k}$}
+	\subsubsection[Estimating the Conditional Expectation $m_k$]{Estimating the Conditional Expectation $\mathbf{m_k}$}\label{sim:condexp}
 	
 	This section is based on \citet*{drtrees}.
 	
@@ -979,7 +978,7 @@
 	\end{equation*}
 	which can be implemented in \texttt{R}.
 	
-	\subsubsection{Selecting Truncation Time to Ensure Positivity}
+	\subsubsection{Selecting Truncation Time to Ensure Positivity}\label{sim:trunc}
 	
 	This section relies on \citet*{drtrees}.
 	
@@ -998,7 +997,7 @@
 	In this scenario we treat each subject whose observed survival time exceeds the truncation time as if they experienced the event at time $\tau$.
 	
 	For the implementation we choose the truncation method as proposed by \citet*{drtrees}.
-	\subsubsection{Preparation of Survival Data}
+	\subsubsection{Preparation of Survival Data}\label{sim:trafo}
 	
 	We now describe how the transformation of the responses $\tilde T$ described in Section \ref{trafo}, namely the Buckley--James and the doubly robust transformation, can be implemented in \texttt{R}.
 	
@@ -1076,14 +1075,14 @@
 	
 	For predicting the survival probability $P(T>t\vert X)$ we have to specify the time $t$.
 	Analogous to \citet*{basearticle} we used the median survival time for each setting.
-	We simulated the data 1000 times, computed the medians, and averaged them.
+	We computed data according to the respective simulation setting 1000 times, computed the medians of the resulting survival times, and averaged them.
 	
 	The resulting prediction errors are visualized using raincloud plots.
 	These plots extend boxplots by the empirical distribution of the prediction error.
 	Table~\ref{table:settings} summarizes the $10\%$ and $90\%$ quantile, mean, and standard deviation for each model in each setting.
 	
 	In Setting 1 we simulate the survival times such that the PH assumption is met.
-	We used the empirically computed median~$t = 0.4189946$ to estimate the survival probability $P(T>t\vert X)$.
+	We used the empirically computed median~$t = 0.4190$ to estimate the survival probability $P(T>t\vert X)$.
 	In Figure \ref{setting1} the resulting prediction errors are illustrated.
 	Each of the considered models gives comparably good results with mean prediction error of approximately $24\%$ and the $10\%$ quantile at approximately $19\%$.
 	The prediction error of the CUDL algorithm that uses the Buckley--James transformation has a lower $90\%$ quantile and standard deviation compared to the other methods.
@@ -1096,45 +1095,53 @@
  	\end{figure}
 	
 	In Setting 2 we simulate the survival times such that the PH assumption is mildly violated.
-	We used the empirically computed median $t = 0.7046207$ to estimate the survival probability.
+	We used the empirically computed median $t = 0.7046$ to estimate the survival probability.
 	As seen in Table \ref{table:settings} the mean prediction error for each method is approximately $28\%$.
 	The Buckley--James CUDL results with approximately $1.6\%$ in the lowest standard deviation.
 	Additionally we can see in Figure \ref{setting2} that the prediction errors of the Buckley--James CUDL algorithm are denser distributed around the median than for the doubly robust CUDL algorithm.
-	The IPCW weighted mean squared error of the doubly robust CUDL algorithm has a $10\%$ quantile that lies beneath the other methods, with a value of approximately $24\%$.
-	The Cox PH model yields worse performance than the other models which can be attributed to the PH assumption not being met.
+	The IPCW weighted mean squared error of the doubly robust CUDL algorithm has a $10\%$ quantile that lies beneath the other methods, with a value of approximately~$24\%$.
+	The Cox PH model performs worse than the other models.
+	This can be attributed to the PH assumption not being met.
 
 	\begin{figure}
 		\centering	
 		\input{../plots/setting2.tex}
 		\vspace{-0.3cm}
-		\caption{Comparison of the resulting IPCW weighted mean squared error for Setting 2. Lower values indicate better performance. The names of the different models are chosen as in Figure~\ref{setting1}.}
+		\caption{Comparison of the resulting IPCW weighted mean squared error for Setting 2. Lower values indicate better performance. The names of the different models are as in Figure~\ref{setting1}.}
 		\label{setting2}
 	\end{figure}
 	
 	In Setting 3 we simulate the survival times such that the PH assumption is strongly violated.
-	We used the empirically computed median $t = 2,90718$ to estimate the survival probabilities.
+	We used the empirically computed median $t = 2,9072$ to estimate the survival probabilities.
+	In Figure~\ref{setting3} we can see that all methods give similar results.
+	The distribution of the prediction errors is dense around the median and has a nontrivial tail extending towards {0.07}.
+	According to the values in Table~\ref{table:settings} the Cox PH model performs worst on average.
+	
 	
 	
 	\begin{figure}
 		\centering	
 		\input{../plots/setting3.tex}
 		\vspace{-0.3cm}
-		\caption{Comparison of the resulting IPCW weighted mean squared error for Setting 3. Lower values indicate better performance. The names of the different models are chosen as in Figure~\ref{setting1}.}
+		\caption{Comparison of the resulting IPCW weighted mean squared error for Setting 3. Lower values indicate better performance. The names of the different models are as in Figure~\ref{setting1}.}
 		\label{setting3}
 	\end{figure}
 	
-	In Setting 4 we compute the survival times such that the censoring distribution depends on the explanatory variables.
-	We used the empirically computed median $t = 1,034881$ for the estimation.
-	
+	In Setting 4 we simulate the survival times such that the censoring distribution depends on the explanatory variables.
+	We used the empirically computed median~$t = 1,0349$ to estimate the survival probabilities.
+	The resulting prediction errors are visualized in Figure~\ref{setting4}.
+	The penalized Cox PH model has a mean prediction error of approximately $28\%$ and standard deviation of approximately $4\%$, thus performing better than the standard Cox PH model.
+	The remaining model perform similarly to the penalized Cox PH model.
 	\begin{figure}
 		\centering	
 		\input{../plots/setting4.tex}
 		\vspace{-0.3cm}
-		\caption{Comparison of the resulting IPCW weighted mean squared error for Setting 4. Lower values indicate better performance. The names of the different models are chosen as in Figure~\ref{setting1}.}
+		\caption{Comparison of the resulting IPCW weighted mean squared error for Setting 4. Lower values indicate better performance. The names of the different models are as in Figure~\ref{setting1}.}
 		\label{setting4}
 	\end{figure}
 
-	Overall the Buckley--James and doubly robust CUDL algorithms perform comparably good as the other methods.
+	Overall the simulation study suggests that the Buckley--James and doubly robust CUDL algorithms perform similarly well as the other methods.
+	The two algorithms showed superior performance in Setting~4 where we simulated the data such that the censoring distribution depends on the explanatory variables.
 	
 	\begin{table}
 		\footnotesize
@@ -1176,7 +1183,7 @@
 				\bottomrule
 				
 		\end{tabularx}}
-		\caption{Comparison of 10\%- and 90\% quantile, mean and standard deviation of the prediction error of the models for each of the settings described above. The names of the different models are chosen as in Figure~\ref{setting1}.}
+		\caption{Comparison of 10\% and 90\% quantile, mean and standard deviation of the prediction error of the models for each of the settings described above. The names of the different models are chosen as in Figure~\ref{setting1}.}
 		\label{table:settings}
 	\end{table}
 	
@@ -1208,9 +1215,9 @@
 	All of the given explanatory variables are transformed into numerical values.
 	
 	As a next step we added uniformly distributed noise in the range $[0, 0.1]$ to assure that each observed survival time is different.
-	This is important for the estimation of the survival and censoring functions, as estimators like the KM estimator assume the observed times to be distinct.
+	This is important for the estimation of the survival and censoring functions, as estimators like the KM estimator require the observed times to be distinct.
 	
-	We estimate the survival probabilities $P(T > t \vert X)$ at 50 equidistant time points $t$ on the interval $[850,4500]$.
+	We estimate the survival probabilities $P(T > t \vert X)$ at 50 equidistant time points~$t$ on the interval $[850,4500]$.
 	The lower bound of this interval was chosen to ensure that at least five subjects in the dataset were censored beforehand.
 	This prevents the estimation procedures described in Section \ref{impl} from using a constant estimator for the censoring function.
 	
@@ -1227,9 +1234,9 @@
 	Which can be tested for using the \texttt{R} function \texttt{cox.zph} from the \texttt{survival} package.
 	This function is based on \citet*{ph-test}.
 	
-	According to the simulations in Section \ref{seq:simresults} the Cox PH model, the penalized Cox PH model, and the random forest procedure should yield better results if the PH assumption is met.
+	According to the simulations in Section \ref{seq:simresults}, the Cox PH model, the penalized Cox PH model, and the random forest procedure should yield better results if the PH assumption is met.
 	As can be seen in Figure~\ref{plot:realdata}, the aforementioned observation also holds for the real world scenario.
-	While the Cox PH model, the penalized Cox PH model, and the random forest procedure result in a mean prediction error of approximately $15\%$, the Buckley--James and the doubly robust CUDL algorithm have a mean prediction error of approximately $33\%$ and $37\%$ respectively.
+	While the Cox PH model, the penalized Cox~PH model, and the random forest procedure result in a mean prediction error of approximately $15\%$, the Buckley--James and the doubly robust CUDL algorithm have a mean prediction error of approximately $33\%$ and $37\%$ respectively.
 	The standard deviation of the deep learning approaches is with approximately $15\%$ almost twice the standard deviation of the remaining models.
 	An analysis of the highest prediction errors of the Buckley--James and doubly robust CUDL suggests that the deep learning approaches struggle with times points $t$ that are close to the maximum and minimum values.
 	\begin{figure}
@@ -1255,7 +1262,7 @@
 				\bottomrule
 				
 		\end{tabularx}}
-		\caption{Comparison of 10\%- and 90\% quantile, mean and standard deviation of the prediction error of the models for the Mayo clinic primary biliary cholangitis data. The names of the models are chosen as in Figure \ref{plot:realdata}.}
+		\caption{Comparison of 10\% and 90\% quantile, mean and standard deviation of the prediction error of the models for the Mayo clinic primary biliary cholangitis data. The names of the models are chosen as in Figure \ref{plot:realdata}.}
 		\label{table:realdata}
 	\end{table}
 	
@@ -1263,20 +1270,24 @@
 	
 	\section{Conclusion}
 	In this thesis we discussed how survival data can be implemented using deep learning algorithms as feedforward networks.
-	First we briefly described the main concepts of survival analysis and deep learning respectively.
+	First we briefly described the main concepts of survival analysis and deep learning.
 	Then we analyzed how feedforward networks can be applied to uncensored data.
+	
 	In the main part we considered censored data and studied how existing algorithms can be extended to survival data.
 	To achieve this we first introduced the concept of censoring unbiased transformations which preserve the conditional mean structure of the data.
 	Two important examples for censoring unbiased transformations are the Buckley--James and the doubly robust transformation.
 	These transformations were then applied to full data loss functions which resulted in the class of censoring unbiased deep learning algorithms.
 	Then we proved that these algorithms are equivalent to deep learning algorithms that use the full data loss with transformed data as input.
+	
 	As a next step we evaluated the performance of these deep learning algorithms in four different settings.
-	%add results
 	To conclude this thesis we also applied the methods to the Mayo clinic primary biliary cholangitis data.
-	Our implementations concluded similar results as in \citet*{basearticle}.
+	Our implementations yielded similar results as in \citet*{basearticle}.
 	If the PH assumption is met the Cox PH model gives reliable results.
 	However, if the data is more complex it can be beneficial to use deep learning algorithms instead.
-	The CUDL algorithms could be further improved by choosing optimal values for the tuning parameters.
+	
+	Exploring the space of hyperparameters for the deep learning models is a computationally demanding task.
+	This is why both \citet*{basearticle} and we opted to not optimize the hyperparameter values and used default values instead.
+	It would be interesting to analyze whether the performance of the deep learning algorithms could be substantially increased by better hyperparameters.
 	
 	In this thesis we considered a single event that can occur at most once.
 	For further research it could be interesting to study how the transformation can be extended to competing risks or recurrent events.
@@ -1370,20 +1381,20 @@
 			M^*(s) &={} I\{T_i \leq s, \Delta^*_i = 0\} - \int_{0}^s I\{T_i\geq u\}d\Lambda_G(u\vert X_i)\\
 			& ={} - \int_{0}^s I\{T_i\geq u\}d\Lambda_G(u\vert X_i)\\
 			& ={} - \int_0^{min\{T_i,s\}}d\Lambda_G(u\vert X_i)\\
-			& ={} - \left(\Lambda_G(min\{T_i,s\}\vert X_i)-\Lambda_G(0\vert X_i)\right)\\
-			& ={} - \Lambda_G(min\{T_i,s\}\vert X_i)
+			& ={} - \left(\Lambda_G(\min(T_i,s)\vert X_i)-\Lambda_G(0\vert X_i)\right)\\
+			& ={} - \Lambda_G(\min(T_i,s)\vert X_i)
 			\end{split}
 			\end{equation*}
-			Now we can plug in our choice of $\Delta^*_i$ and $M^*(s)$ to equation (\ref{eq:straw}).
+			We plug in our choice of $\Delta^*_i$ and $M^*(s)$ to equation (\ref{eq:straw}) and obtain
 			\begin{equation}\label{eq:straw_trafo}
 			\begin{split}
-			\frac{1}{G(T_i\vert X_i)} &={} 1 + \int_{0}^{\infty} \frac{1}{G(s\vert X_i)} d\Lambda_G(min\{T_i,s\}\vert X_i)\\
+			\frac{1}{G(T_i\vert X_i)} &={} 1 + \int_{0}^{\infty} \frac{1}{G(s\vert X_i)} d\Lambda_G(\min(T_i,s)\vert X_i)\\
 			&={} 1 + \int_{0}^{T_i} \frac{1}{G(s\vert X_i)} d\Lambda_G(s\vert X_i) + \int_{T_i}^{\infty} \frac{1}{G(s\vert X_i)} d\Lambda_G(T_i\vert X_i)\\
 			& ={} 1 + \int_{0}^{T_i} \frac{1}{G(s\vert X_i)} d\Lambda_G(s\vert X_i)
 			\end{split}
 			\end{equation}
 		
-			Combining equation (\ref{eq:lemma}) and (\ref{eq:straw_trafo}) now yields:
+			Combining equation (\ref{eq:lemma}) and (\ref{eq:straw_trafo}) then yields:
 			\begin{equation*}
 			\begin{split}
 			A_{0i}+B_{0i}-C_{0i}&={}\frac{1}{G(T_i \vert X_i)} - \int_{0}^{T_i}\frac{1}{G(u\vert X_i)}d\Lambda_G(u\vert X_i)\\
@@ -1392,9 +1403,21 @@
 			\end{split}
 			\end{equation*}
 		\end{proof}
-		
-		\section{R-Code}
-		The 
+		\newpage
+		\section{R Code}
+		The \texttt{R} code that is used for the simulation study and the analysis of the PBC data is provided on the attached cd.
+		It mainly relies on the \texttt{R} code of \citet*{basearticle} which is publicly available in one of the authors GitHub repository \url{https://www.github.com/jonsteingrimsson/CensoringDL}.
+		It consists of six \texttt{R} script files that are briefly described below.
+		\begin{enumerate}
+			\item \textbf{create-data.R:} This script file contains the implementation of the four simulation settings described in Section \ref{settings} as well as the procedure that splits the data in the training and test set.
+			\item \textbf{transform-data.R:} In this script file the Buckley--James and the doubly robust transformations are implemented. It also contains the computation of the IPCW weights that are used for our performance measure.
+			\item \textbf{CUDLalgorithms.R:} This \texttt{R} script contains the implementation of the CUDL algorithms and is further described in Section~\ref{comp}.
+			\item \textbf{competing-methods.R:} In this script file the Cox PH model, the penalized Cox PH model, and the random forest procedure are implemented as described in Section~\ref{comp}.
+			\item \textbf{auxiliary-functions.R:} This script contains the implementation of the estimation procedures for the censoring function and the conditional expectation as described in Sections~\ref{estsurv} and \ref{sim:condexp}.
+			The computation of the parameters that are needed for the transformation is also implemented in this script.
+			It also contains a function that truncates the data as described in Section~\ref{sim:trunc}.
+			\item \textbf{runSimulation.R:} This \texttt{R} script file calls the methods described above to run the simulation.
+		\end{enumerate}
 		
 	\end{appendices}
 	
